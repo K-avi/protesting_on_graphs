@@ -13,3 +13,8 @@ the actual graphs I'll use will be retrieved from OSM and pretreated in python w
 (I'll write a script to do that at some point)         
 
  
+will have to write proper comments for the graph functions 
+
+also will have to do clean error reporting 
+
+need to finish the append node function 

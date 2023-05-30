@@ -3,6 +3,7 @@
 
 
 #include "common.h"
+#include <stdint.h>
 #include <stdio.h>
 
 
@@ -16,7 +17,9 @@ typedef struct s_node{
     uint32_t node_index;
     uint32_t neighboor_num;
 
-    Line * first_neighboor; 
+    uint32_t first_neighboor_index ; 
+    //using an index instead of a pointer bc it would cause problems after realloc 
+    //might use a pointer if realloc becomes unnecessary but it would imply more pre-treatment
 
 }Node; 
 

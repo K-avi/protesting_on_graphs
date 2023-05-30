@@ -1,0 +1,15 @@
+currently going over global skeleton of project and implementing the basic graph structure.
+will try to implement a basic "append nodes" function to the graph to test writing nodes
+
+
+my goal will be to be able to write / load formatted csv files w this function
+
+the graph implem is very minimalist so it might be tricky to implement
+
+once I'm done w this function I'll do a small test graph and will then move on to the basics of the walkers. 
+
+
+the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
+(I'll write a script to do that at some point)         
+
+ 

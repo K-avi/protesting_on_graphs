@@ -3,6 +3,7 @@
 
 
 #include "common.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -51,7 +52,7 @@ typedef struct s_graph { //Graph is basically a "wrapper" of nodes and lines
 uint8_t initGraph(Graph * g);
 void freeGraph(Graph * g);
 
-Graph * loadGraph(char* file, uint8_t * succes_flag);
+uint8_t loadGraph(Graph * g ,char* path); //should prolly take Graph * as arg and return succes
 uint8_t writeGraph( Graph * g,  char *path );
 
 uint8_t printGraph( Graph * g, FILE * stream);

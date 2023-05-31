@@ -4,4 +4,4 @@ the fields are separated by a comma. Inside the line field , the lines are
 separated by a colon. 
 
 
-node_index,number_of_lines,line1:line2:...lineN
+node_index,number_of_lines,line1:flux1;line2:flux2...lineN:fluxN

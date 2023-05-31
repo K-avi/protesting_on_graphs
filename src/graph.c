@@ -1,15 +1,18 @@
 #include "common.h"
-
 #include "graph.h"
 #include "memory.h"
+
+#include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 
 enum{ //enum of error flags for graph functions 
     G_OK, G_NODE , G_INIT_LINE, G_NULL, G_MALLOC_FAIL, G_NEIGHBOORS_ARR, G_REALLOC_FAIL,
-    G_NOWRITE, G_OPENFAIL
+    G_NOWRITE, G_OPENFAIL, G_NOREAD, G_READFAIL, G_PARSE
 }GraphErrFlag; 
 
 /* */
@@ -148,15 +151,15 @@ uint8_t printGraph(Graph * g, FILE * stream){
     LineArray * lineArr= g->ArrLine;
     
     for(uint32_t i=0; i<nodeArr->currently_in; i++){
-        fprintf(stream, "%u:%u:",nodeArr->array[i].node_index, nodeArr->array[i].neighboor_num);
+        fprintf(stream, "%u,%u,",nodeArr->array[i].node_index, nodeArr->array[i].neighboor_num);
         for(uint32_t j=0; j<nodeArr->array[i].neighboor_num; j++){
 
             uint32_t curindex= nodeArr->array[i].first_neighboor_index+j;
 
             if(j!=nodeArr->array[i].neighboor_num-1) 
-                fprintf(stream, "%u,", lineArr->array[curindex].node_index);
+                fprintf(stream, "%u:%d;", lineArr->array[curindex].node_index, lineArr->array[curindex].flux );
             else
-                fprintf(stream, "%u", lineArr->array[curindex].node_index);  
+                fprintf(stream, "%u:%d", lineArr->array[curindex].node_index, lineArr->array[curindex].flux );  
         }
         fprintf(stream, "\n");
     }
@@ -225,7 +228,9 @@ static uint8_t appLine( Graph * g , const uint32_t* new_neighboors, uint32_t nei
 
 
     return G_OK;
-}// tested; ok
+}// tested; ok ; useless 
+
+
 
 //will make static after testing
 uint8_t addAdjList( Graph * g, uint32_t node_index, uint32_t neighboor_num, uint32_t * neighboors_index){
@@ -268,24 +273,120 @@ uint8_t addAdjList( Graph * g, uint32_t node_index, uint32_t neighboor_num, uint
 }// tested ;ok
 
 
+static inline bool peek(const char * str, char expected){
+    return *str==expected;
+}
+
 /* function to handle proper I/O of graphs */
 
-Graph * loadGraph(char* file, uint8_t * succes_flag){
+static inline uint8_t appLineOne( Graph * g , uint32_t new_neighboor , int32_t flux ){
     /*
+    appends ONE line to the line array of a graph g ; variant of the appLine function ; 
+    easier to use in the load function
     */
 
-    *succes_flag=G_OK;
+    if(!g) return G_NULL;
 
-    return NULL;
-}//not done
+    if(g->ArrLine->capa <= g->ArrLine->currently_in ){
+        uint32_t oldCapa= g->ArrLine->capa;
+        g->ArrLine->capa=GROW_CAPACITY(g->ArrLine->capa);
+        g->ArrLine->array=(Line*) GROW_ARRAY(Line, g->ArrLine->array, oldCapa, g->ArrLine->capa);
+
+        if(!g->ArrLine->array){
+            perror("realloc error in appLine\n");
+            return G_REALLOC_FAIL;
+        }
+    }
+
+    g->ArrLine->array[g->ArrLine->currently_in].node_index= new_neighboor;
+    g->ArrLine->array[g->ArrLine->currently_in].flux=flux;
+
+    g->ArrLine->currently_in++;
+
+    return G_OK;
+}//not tested; should be ok though
+
+uint8_t loadGraph( Graph * g ,char* path){
+    /*
+    loads into an INITIALISED graph the csv formatted graph written in the 
+    file corresponding to the path given.
+
+    warning : this function expects an EMPTY initialised graph; I don't guarantee good
+    behavior on graphs already containing elements 
+    */
+    if(!g){
+        perror("in loadGraph , graph passed in NULL\n");
+        return G_NULL;
+    }
+
+    int acc_right= access(path, R_OK);
+    if(acc_right){
+        fprintf(stderr, "in loadGraph , can't write at the path given %d\n", acc_right);
+        return G_NOREAD;
+    }
+
+    FILE * f = fopen(path, "r");
+    if(!f) return G_READFAIL;
+
+    char line[256];
+    memset(line, 0, 256);
+    
+    g->ArrLine->currently_in=0;
+    g->ArrNode->currently_in=0;
+    
+    while(fgets(line, 256, f)){
+        char * end,*cur=line;
+
+        uint32_t node_index = (uint32_t) strtol(cur, &end, 10);
+        if(peek(end, ',') && cur!=end) cur=(++end);
+        else return G_PARSE;
+
+        uint32_t neighboor_num = (uint32_t) strtol(cur, &end, 10);
+        if(peek(end, ',') && cur!=end) cur=(++end);
+        else return G_PARSE;
+
+        uint8_t errflag= appNode(g, node_index, neighboor_num, g->ArrLine->currently_in);
+        if(errflag) return errflag; 
+
+        // adds the index and neighboor num to g->nodes
+        for(uint32_t i=0; i<neighboor_num; i++){
+            /*
+            adds the lines / flux
+            */
+            uint32_t new_neighboor= (uint32_t) strtol(cur, &end, 10);
+            if(peek(end, ':') && cur!=end) cur=(++end);
+            else {
+                printf("here\n");
+                return G_PARSE;
+            }
+
+            int32_t flux= strtol(cur, &end, 10);
+            if(i!=neighboor_num-1){
+                if(peek(end, ';') && cur!=end ) cur=(++end);
+                else {
+                    printf("there\n");
+                    return G_PARSE;
+                }
+            }else{
+                if( cur==end) return G_PARSE; 
+            }
+
+            uint8_t errflag_in = appLineOne(g, new_neighboor, flux);
+            if(errflag_in ) return errflag_in;
+        }    
+    }
+    fclose(f);
+    return G_OK;
+}//tested; seems ok ; ugly though ; error prone so watch out 
 
 uint8_t writeGraph(Graph * g, char *path ){
     /*
     more of a wrapper on the graph print function than anything else tbh 
     security flaws ; not sure they are really relevant though
     */
-    if(!access(path, W_OK)){
-        perror("in writeGraph , can't write at the path given\n");
+    int acc_right=access(path, W_OK);
+    if(acc_right){
+        fprintf(stderr, "in writeGraph , can't write at the path given %d\n", acc_right);
         return G_NOWRITE;
     }
     FILE * f = fopen(path, "w");

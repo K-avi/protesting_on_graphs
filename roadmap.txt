@@ -1,9 +1,7 @@
 currently going over global skeleton of project and implementing the basic graph structure.
-will try to implement a basic "append nodes" function to the graph to test writing nodes
 
 
 my goal will be to be able to write / load formatted csv files w this function
-
 the graph implem is very minimalist so it might be tricky to implement
 
 once I'm done w this function I'll do a small test graph and will then move on to the basics of the walkers. 
@@ -13,8 +11,66 @@ the actual graphs I'll use will be retrieved from OSM and pretreated in python w
 (I'll write a script to do that at some point)         
 
  
-will have to write proper comments for the graph functions 
-
 also will have to do clean error reporting 
 
-need to finish the append node function 
+done : 
+    - graphs are kinda implemented :)
+        - I can add stuf to them 
+        - I can print them :) (I can't load them from a file yet though)
+
+
+
+pending : 
+
+    - loadGraph function :
+        
+        consume 1 integer for index 
+        consume 1 for neighboor num 
+        while neighboor num -> consume integers for flux/ neighboor index  and skip stuff: 
+
+        
+    
+    - walker structure : 
+        - do I need access to every walker at a specific node in O(1)?
+            - if so implement them in a lil table thing 
+            ->need to think about the suppression cuz it might be annoying 
+            is there need for an actual walker entity guy going around? 
+    
+    - rule / tactics structure : 
+        - good question 
+    
+    - figure out the way to implement movement : 
+
+        if every walker moves at the "same moment" might have to make them all move and 
+        THEN update the flux values so I should prolly store old flux values somewhere or something like 
+        that in order to not mess up the decision process 
+
+        (ask about markov chains)
+    
+    - figure out the way to implement walkers : 
+
+        what state does each walker needs? 
+
+        how to implement the walker table exactly
+        (prolly hashtable w array resolving cuz it's cool)
+    
+    - make the pyhton script to retrieve / format / write real graphs from the real world
+      (god have mercy on me)
+        - should load a city into a networkx graph thingy (easy part)
+
+        - then do a function to handle the whole discretisation of the graph w a custom step 
+          (scary part)
+
+        - then do a function to dump it in the custom csv format (less scary but prolly hard part)
+
+        - the script should take an arg corresponding to a geaographical point ;  an arg for the radius 
+          of a circle around this point and an arg for the discretisation step 
+        
+          with all of that it will 
+          
+          - load a graph corresponding to the distance around a point 
+          - discretise it 
+          - write it in the correct format 
+
+          use osmnx.graph.graph_from_point to load 
+        

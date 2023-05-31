@@ -6,5 +6,6 @@
 #include "graph.h"
 #include "walker.h"
 
+uint8_t update(Graph* g , WalkerTable * table);
 
 #endif

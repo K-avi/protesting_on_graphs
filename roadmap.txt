@@ -18,23 +18,20 @@ done :
         - I can add stuf to them 
         - I can print them :) (I can't load them from a file yet though)
 
+        - I can also load them let's go 
+    
+    - script can load a city into a networkx graph thingy (easy part) 
+
 
 
 pending : 
-
-    - loadGraph function :
-        
-        consume 1 integer for index 
-        consume 1 for neighboor num 
-        while neighboor num -> consume integers for flux/ neighboor index  and skip stuff: 
-
-        
     
     - walker structure : 
         - do I need access to every walker at a specific node in O(1)?
             - if so implement them in a lil table thing 
             ->need to think about the suppression cuz it might be annoying 
             is there need for an actual walker entity guy going around? 
+        - should I even be able to identify each of them ????
     
     - rule / tactics structure : 
         - good question 
@@ -53,24 +50,38 @@ pending :
 
         how to implement the walker table exactly
         (prolly hashtable w array resolving cuz it's cool)
+
+        - actual movement of walkers on the graph : 
+        good question tbh 
     
     - make the pyhton script to retrieve / format / write real graphs from the real world
-      (god have mercy on me)
-        - should load a city into a networkx graph thingy (easy part)
+      (god have mercy on me) 
 
-        - then do a function to handle the whole discretisation of the graph w a custom step 
+        - do a function to handle the whole discretisation of the graph w a custom step 
           (scary part)
+
+          rely on networkx
+          -> convert graph to normal undir graph format ; then add 
 
         - then do a function to dump it in the custom csv format (less scary but prolly hard part)
 
-        - the script should take an arg corresponding to a geaographical point ;  an arg for the radius 
-          of a circle around this point and an arg for the discretisation step 
-        
-          with all of that it will 
-          
-          - load a graph corresponding to the distance around a point 
-          - discretise it 
-          - write it in the correct format 
+-> les marcheurs doivent bcp bouger 
 
-          use osmnx.graph.graph_from_point to load 
-        
+je veux acces aux marcheurs situes a 1 node en O(1)
+deplacement d'un marcheur en O(1)
+
+mise a jour des infos le concernant (position actuelle) en O(1)
+
+idee: table indexe par node (possiblement hache ?)
+
+(table impbriquee ?)
+
+-> suppression marcheurs d'un tableau -> echange avc dernier elmt ; nbelem --  
+    -> O(1)
+-> insertion au dernier elem 
+
+compatibilite avc mouvement??? (tt marcheurs doivent bouger en mm temps ) : bummer
+
+maintenir liste deja deplaces ig ?
+
+impact sur le flux -> avoir un champ flux en cours ; flux prec ?

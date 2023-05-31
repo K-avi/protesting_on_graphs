@@ -1,5 +1,4 @@
-TARGET := ../template_name
-
+TARGET := ../walking_on_graph
 TEST := ../test
 CC := gcc
 CFLAGS := -O2  -g -Wall -Wextra -Wpedantic -Wno-unused-parameter

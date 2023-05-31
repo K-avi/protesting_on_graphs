@@ -1,4 +1,4 @@
-TARGET:= template_name
+TARGET:= walking_on_graph
 TEST :=test
 
 ALLPROGS= $(TARGET) $(TEST)
@@ -12,7 +12,7 @@ $(TEST):
 	$(MAKE) -C src/ ../test
 
 $(TARGET): 
-	$(MAKE) -C src/ ../template_name
+	$(MAKE) -C src/ ../walking_on_graph
 
 clean:
 	$(MAKE) -C src/ clean

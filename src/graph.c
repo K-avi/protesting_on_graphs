@@ -400,3 +400,5 @@ uint8_t writeGraph(Graph * g, char *path ){
 
     return succes;
 }//tested; some security flaws ig
+
+    

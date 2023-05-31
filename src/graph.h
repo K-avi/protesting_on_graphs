@@ -5,6 +5,7 @@
 #include "common.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <sys/types.h>
 
 
 typedef struct s_line{
@@ -47,12 +48,18 @@ typedef struct s_graph { //Graph is basically a "wrapper" of nodes and lines
     
 }Graph; 
 
-int initGraph(Graph * g);
+uint8_t initGraph(Graph * g);
 void freeGraph(Graph * g);
 
-int loadGraph(char* file);
-int writeGraph( char *path );
+Graph * loadGraph(char* file, uint8_t * succes_flag);
+uint8_t writeGraph( Graph * g,  char *path );
 
-int printGraph( Graph * g, FILE * stream);
+uint8_t printGraph( Graph * g, FILE * stream);
+
+
+#ifdef debug_mode
+
+uint8_t addAdjList( Graph * g, uint32_t node_index, uint32_t neighboor_num, uint32_t * neighboors_index);
+#endif
 
 #endif

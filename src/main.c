@@ -12,7 +12,6 @@ int main(int argc , char ** argv){
     char * path = argv[1]; //boilerplate to prevent linters from whining
     printf("%s\n", path);
 
-
     Graph g;
     initGraph(&g);
 

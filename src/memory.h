@@ -5,8 +5,8 @@
 
 #include "common.h"
 
-#define DEFAULT_CAPA_LINE 256
-#define DEFAULT_CAPA_NODE 256
+#define DEFAULT_CAPA_LINE 1
+#define DEFAULT_CAPA_NODE 1
 
 #define GROW_CAPACITY(capacity) ((capacity) < 8 ? 8 : (capacity) * 2)
 

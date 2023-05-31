@@ -3,10 +3,13 @@
 #include "graph.h"
 #include "memory.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <unistd.h>
 
 
 enum{ //enum of error flags for graph functions 
-    G_OK, G_NODE , G_INIT_LINE, G_NULL, G_MALLOC_FAIL, G_NEIGHBOORS_ARR
+    G_OK, G_NODE , G_INIT_LINE, G_NULL, G_MALLOC_FAIL, G_NEIGHBOORS_ARR, G_REALLOC_FAIL,
+    G_NOWRITE, G_OPENFAIL
 }GraphErrFlag; 
 
 /* */
@@ -73,7 +76,7 @@ static void freeNodeArr( NodeArray * nodeArr){
 
 /* graph init / free */
 
-int initGraph(Graph * g){
+uint8_t initGraph(Graph * g){
     /*
     initialises an already allocated graph ; returns 0 on succes ; an error otherwise
     see documentation of initNodeArr and initLineArr
@@ -127,9 +130,12 @@ void freeGraph(Graph *g){
 }//tested; ok
 
 
-int printGraph(Graph * g, FILE * stream){
+uint8_t printGraph(Graph * g, FILE * stream){
     /*
     prints a graph in a adjacency list format 
+
+    probably faster to build one big string and then print it only once instead of calling print 
+    every time 
     */
 
     if(!g){
@@ -142,38 +148,87 @@ int printGraph(Graph * g, FILE * stream){
     LineArray * lineArr= g->ArrLine;
     
     for(uint32_t i=0; i<nodeArr->currently_in; i++){
-        fprintf(stream, "%u:",nodeArr->array[i].node_index);
+        fprintf(stream, "%u:%u:",nodeArr->array[i].node_index, nodeArr->array[i].neighboor_num);
         for(uint32_t j=0; j<nodeArr->array[i].neighboor_num; j++){
 
-            uint32_t curindex= nodeArr->array[i].first_neighboor_index+j; 
-            fprintf(stream, "%u %d:", lineArr->array[curindex].node_index, lineArr->array[curindex].flux);
+            uint32_t curindex= nodeArr->array[i].first_neighboor_index+j;
+
+            if(j!=nodeArr->array[i].neighboor_num-1) 
+                fprintf(stream, "%u,", lineArr->array[curindex].node_index);
+            else
+                fprintf(stream, "%u", lineArr->array[curindex].node_index);  
         }
         fprintf(stream, "\n");
     }
 
     return G_OK;
-}//not tested; placeholder; will prolly change
+}//tested; placeholder; will prolly change
+//will have to make it build a beeeeeg string and print it once instead of the current implem of it
+//at some point
+
+/* functions to add lines to the graph */
 
 
-static int appNode(Graph * g, uint32_t node_index , uint32_t neighboor_num, uint32_t first_neighboor){
 
-    //realloc case 
+static uint8_t appNode(Graph * g, uint32_t node_index , uint32_t neighboor_num, uint32_t first_neighboor){
+    /*
+    appends a node to the graph g given it's index , number of neighboors and first neighboor index
+    */
+    if(!g) return G_NULL;
+
+    if(g->ArrNode->currently_in==g->ArrNode->capa){
+        uint32_t oldCapa= g->ArrNode->capa;
+        g->ArrNode->capa=GROW_CAPACITY(g->ArrNode->capa);
+        g->ArrNode->array=(Node*) GROW_ARRAY(Node, g->ArrNode->array, oldCapa, g->ArrNode->capa);
+
+        if(!g->ArrNode->array){
+            perror("realloc error in appNode\n");
+            return G_REALLOC_FAIL;
+        }
+    }
 
     NodeArray * arrNode = g->ArrNode;
     arrNode->array[arrNode->currently_in].node_index=node_index; 
     arrNode->array[arrNode->currently_in].neighboor_num=neighboor_num; 
-    arrNode->array[arrNode->currently_in++].first_neighboor_index=first_neighboor;
+    arrNode->array[arrNode->currently_in].first_neighboor_index=first_neighboor;
+
+    arrNode->currently_in++;
 
     return G_OK;
-}//not done
+}// tested; ok
 
 
-static int appLine( Graph * g , uint32_t* new_neighboors, uint32_t neighboor_num ){
+static uint8_t appLine( Graph * g , const uint32_t* new_neighboors, uint32_t neighboor_num ){
+    /*
+    appends the array "new_neighboors" to the line array of a graph g 
+    */
+    if(!g) return G_NULL;
+
+    if(g->ArrLine->capa <= g->ArrLine->currently_in + neighboor_num){
+        uint32_t oldCapa= g->ArrLine->capa;
+        g->ArrLine->capa=GROW_CAPACITY(g->ArrLine->capa);
+        g->ArrLine->array=(Line*) GROW_ARRAY(Line, g->ArrLine->array, oldCapa, g->ArrLine->capa);
+
+        if(!g->ArrLine->array){
+            perror("realloc error in appLine\n");
+            return G_REALLOC_FAIL;
+        }
+    }
+
+    for(uint32_t i=0; i<neighboor_num ; i++){
+        
+        g->ArrLine->array[g->ArrLine->currently_in].node_index= new_neighboors[i];
+        g->ArrLine->array[g->ArrLine->currently_in].flux=0;
+
+        g->ArrLine->currently_in++;
+    }
+
 
     return G_OK;
-}//not done
+}// tested; ok
 
-int addAdjList( Graph * g, uint32_t node_index, uint32_t neighboor_num, uint32_t * neighboors_index){
+//will make static after testing
+uint8_t addAdjList( Graph * g, uint32_t node_index, uint32_t neighboor_num, uint32_t * neighboors_index){
     /*
     adds the node of index "node_index" into the graph g . 
 
@@ -195,12 +250,52 @@ int addAdjList( Graph * g, uint32_t node_index, uint32_t neighboor_num, uint32_t
     }
 
     uint32_t first_neighboor= g->ArrLine->currently_in;
-    appNode(g,  node_index, neighboor_num, first_neighboor);
+    uint8_t retval= appNode(g,  node_index, neighboor_num, first_neighboor);
 
-    appLine(g, neighboors_index, neighboor_num);
+    if(retval) {
+        perror("error caught in appNode in addAdjList\n");
+        return retval;
+    }
 
-    //need to handle the realloc case of the index 
+    retval= appLine(g, neighboors_index, neighboor_num);
 
+    if(retval) {
+        perror("error caught in appLine in addAdjList\n");
+        return retval;
+    }
 
     return G_OK;
+}// tested ;ok
+
+
+/* function to handle proper I/O of graphs */
+
+Graph * loadGraph(char* file, uint8_t * succes_flag){
+    /*
+    */
+
+    *succes_flag=G_OK;
+
+    return NULL;
 }//not done
+
+uint8_t writeGraph(Graph * g, char *path ){
+    /*
+    more of a wrapper on the graph print function than anything else tbh 
+    security flaws ; not sure they are really relevant though
+    */
+    if(!access(path, W_OK)){
+        perror("in writeGraph , can't write at the path given\n");
+        return G_NOWRITE;
+    }
+    FILE * f = fopen(path, "w");
+
+    if(!f){
+        return G_OPENFAIL;
+    }
+
+    uint8_t succes= printGraph(g, f);
+    fclose(f);
+
+    return succes;
+}//tested; some security flaws ig

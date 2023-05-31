@@ -1,0 +1,10 @@
+The repo is structured around a few folders. 
+
+The src folder contains all of the source code of the main part of the
+project, written in C 
+
+The city_graph folder contains the csv files representing the different
+cities used as well as the python script to retrieve the graphs from OSM /
+pretreat them them and write them in a CSV format. 
+
+

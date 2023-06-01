@@ -68,28 +68,31 @@ int main(){
     freeWalkerArray(&warray);
     freeWalkerTable(&wtable);
     */
-
+/*
     GraphTable gt; 
-    nLineArray* arrline= malloc(sizeof(nLineArray));
-    arrline->array=malloc(10*sizeof(nLine));
-    arrline->cur_in=0; 
-    arrline->size=10;
+ 
 
-    initGraphTab(&gt, 12, DEFAULT_CAPA_WTE, arrline);
+    initGraphTab(&gt, 12 ,10, DEFAULT_CAPA_WTE);
 
-    appLine(&gt, 1, 0);
-    appLine(&gt, 2, 0);
+    appLineGt(&gt, 1, 0);
+    appLineGt(&gt, 2, 0);
     appNodeGt(&gt, 0, 2, &gt.arrLine->array[0]);
 
     appNodeGt(&gt, 1, 0, NULL);
     appNodeGt(&gt, 2, 0, NULL);
+*/
+    //writeGraphTab(&gt, "test_graph/gt_test1.csv");
 
-    printGraphTab(&gt , stdout);
+  //  freeGraphTab(&gt);
 
-    freeGraphTab(&gt);
+    GraphTable gt1; 
+    
+    uint8_t failure = loadGraphTab( &gt1, "test_graph/gt_test1.csv", DEFAULT_CAPA_WTE);
 
-    free(arrline->array); 
-    free(arrline);
+    if(failure) printf("failure code : %u\n", failure);
+    printGraphTab(&gt1, stdout);
+
+    freeGraphTab(&gt1);
     
     return 0;
 }

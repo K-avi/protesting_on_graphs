@@ -1,12 +1,15 @@
 #include "graph_table.h"
+#include "graph.h"
 #include "memory.h"
 #include "walker.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 enum{
-    GT_OK, GT_NULL, GT_MALLOC, GT_REALLOC, GT_READ, GT_WRITE , GT_INDEX, GT_NOREAD, GT_READFAIL
+    GT_OK, GT_NULL, GT_MALLOC, GT_REALLOC, GT_READ, GT_WRITE , GT_INDEX, GT_NOREAD, GT_READFAIL,
+    GT_PARSE, GT_NOWRITE , GT_OPENFAIL
 }GT_Errflag;
 
 enum{ 
@@ -30,19 +33,46 @@ uint8_t initGtEntry( GraphTableEntry * gentry , int32_t we_size){
 }//tested; ok
 
 void freeGtEntry( GraphTableEntry * gentry){
+    /* frees the content of a gt entry ;*/
     if(!gentry) return;
     freeWalkerEntry(&gentry->walker_entry);
     
 }//tested; ok
 
-uint8_t initGraphTab(GraphTable *gt, uint32_t table_size, uint32_t we_size , nLineArray * line_arr_ref){
+
+static uint8_t initnLineArr( nLineArray * lineArr, uint32_t arrline_size){
+    /*
+    initialises an already allocated lineArr
+    */
+    if(!lineArr) return GT_NULL;
+
+    lineArr->array=NULL; 
+    lineArr->array=(nLine*) GROW_ARRAY(nLine, lineArr->array, 0, arrline_size);
+
+    if(!lineArr->array) return GT_MALLOC;
+
+    lineArr->cur_in=0; 
+    lineArr->size=arrline_size;
+
+    return GT_OK;
+}// tested ok
+
+static void freeLineArr( nLineArray * lineArr){
+    /*
+    frees the content of a lineArray
+    warning : doesn't free the line array itself
+    */
+    if(!lineArr) return;
+    if(lineArr->array) free(lineArr->array);
+} // tested ok
+
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size ){
     /*
     initialises a non null graph table 
     */
     if(!gt) return GT_NULL;
 
     gt->table_size= table_size; 
-    gt->arrLine= line_arr_ref;
     
     gt->entries=NULL;
     gt->entries=GROW_ARRAY(GraphTableEntry, gt->entries, 0, table_size );
@@ -55,6 +85,12 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t table_size, uint32_t we_size , nLi
         uint8_t failure = initGtEntry(&gt->entries[i], we_size);
         if(failure) return failure;
     }
+
+    gt->arrLine=malloc(sizeof(nLineArray));
+    if(!gt->arrLine) return GT_MALLOC;
+
+    uint8_t failure= initnLineArr(gt->arrLine, arrline_size);
+    if(failure) return failure;
 
     return GT_OK;
 }//tested ok;
@@ -70,6 +106,9 @@ void freeGraphTab( GraphTable * gt){
         freeGtEntry(&gt->entries[i]);
     }
     free(gt->entries);
+
+    freeLineArr(gt->arrLine);
+    free(gt->arrLine);
 
     return ;
 }//tested; ok
@@ -93,7 +132,7 @@ void freeGraphTab( GraphTable * gt){
 }//not tested 
 
 
- uint8_t appLine( GraphTable * gt , uint32_t node_index, uint32_t flux ){
+ uint8_t appLineGt( GraphTable * gt , uint32_t node_index, uint32_t flux ){
     /*
     appends ONE line to the line tab of a graph table ;
     checks for valid node 
@@ -144,21 +183,22 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
         fprintf(stream, "\n");
     }
     return GT_OK;
-}//not tested; based on the print graph function
+}// tested; seems ok
 
 
-uint8_t loadGraphTab(GraphTable *gt, char *path){
+static inline bool peek(const char * str, char expected){
+    return *str==expected;
+}
 
+uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
     /*
-    initialises a non nul , non initialised graph table and loads a graph into it 
+    takes a non initialised ; non null , empty gt and loads a graph stored at path into it
+    also pass walk table entry size parameter cuz it's better looking than to init w a global var
+
+    if there is more line than space for the graph (i.e : the size of the graph is actually inferior to)
+    the number of lines) the lines after the limit of the graph will be ignored
     */
     if(!gt) return GT_NULL;
-    
-    int acc_right= access(path, R_OK);
-    if(acc_right){
-        fprintf(stderr, "in loadGraph , can't write at the path given %d\n", acc_right);
-        return GT_NOREAD;
-    }
 
     FILE * f = fopen(path, "r");
     if(!f) return GT_READFAIL;
@@ -166,6 +206,86 @@ uint8_t loadGraphTab(GraphTable *gt, char *path){
     char line[256];
     memset(line, 0, 256);
 
+    if(!fgets(line, 256, f)) {//consume first line to retrieve size of graph and size of arrline
+        fclose(f);
+        return GT_NOREAD;
+    }
+
+    char * end1,*cur1=line;
+    uint32_t  table_size = (uint32_t) strtol(cur1, &end1, 10);
+    if(peek(end1, ',') && cur1!=end1) cur1=(++end1);
+    else{ fclose(f); return GT_PARSE; }
+    
+    uint32_t arrline_size = (uint32_t) strtol(cur1, &end1, 10);
+   
+    if(cur1!=end1) cur1=(++end1);
+    else{fclose(f); return GT_PARSE;}
+
+    //initialises graph with values consumed on the first line
+    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, we_size);
+    if(failure) { fclose(f); return failure;}
+
+    uint32_t cpt=0; 
+    //keep track of nblines consumed ; report error if nbline consumed higher than counter
+
+    while(fgets(line, 256, f) && cpt<table_size){
+        
+        cpt++;
+        char* end, *cur=line;
+
+        uint32_t node_index = (uint32_t) strtol(cur, &end, 10);
+        if(peek(end, ',') && cur!=end) cur=(++end);
+        else{return GT_PARSE;}
+
+        uint32_t neighboor_num = (uint32_t) strtol(cur, &end, 10);
+        if(peek(end, ',') && cur!=end) cur=(++end);
+        else {  return GT_PARSE;}
+
+        uint8_t errflag= appNodeGt(gt, node_index, neighboor_num, &gt->arrLine->array[gt->arrLine->cur_in]);
+        if(errflag) return errflag; 
+
+        for(uint32_t i=0; i<neighboor_num; i++){
+            /*
+            adds the lines / flux
+            */
+            uint32_t new_neighboor= (uint32_t) strtol(cur, &end, 10);
+            if(peek(end, ':') && cur!=end) cur=(++end);
+            else {
+              
+                return GT_PARSE;
+            }
+
+            int32_t flux= strtol(cur, &end, 10);
+            if(i!=neighboor_num-1){
+                if(peek(end, ';') && cur!=end ) cur=(++end);
+                else {
+                  
+                    return GT_PARSE;
+                }
+            }else{
+                if( cur==end) return GT_PARSE; 
+            }
+
+            uint8_t errflag_in = appLineGt(gt, new_neighboor, flux);
+            if(errflag_in ) return errflag_in;
+        }
+    }  
     fclose(f);
     return GT_OK;
-}
+}//not tested
+
+uint8_t writeGraphTab(GraphTable * gt, char *path ){
+    /*
+    more of a wrapper on the graph print function than anything else tbh 
+    security flaws ; not sure they are really relevant though
+    */
+    FILE * f = fopen(path, "w");
+    if(!f){
+        return GT_OPENFAIL;
+    }
+
+    uint8_t succes= printGraphTab(gt, f);
+    fclose(f);
+
+    return succes;
+}//tested; some security flaws ig

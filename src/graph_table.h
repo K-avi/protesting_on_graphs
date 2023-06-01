@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "walker.h"
+
 #include <stdint.h>
 
 
@@ -40,10 +41,10 @@ typedef struct s_graph_table{ //table indexed by key of node (it's an int)
 }GraphTable ;
 
 
-uint8_t initGraphTab(GraphTable * gt, uint32_t table_size, uint32_t we_size , nLineArray * line_arr_ref);
+uint8_t initGraphTab(GraphTable * gt,uint32_t arrline_size, uint32_t table_size, uint32_t we_size);
 void freeGraphTab(GraphTable * gt);
 
-uint8_t loadGraphTab(GraphTable * gt ,char* path); //should prolly take Graph * as arg and return succes
+uint8_t loadGraphTab(GraphTable * gt ,char* path, uint32_t we_size); //should prolly take Graph * as arg and return succes
 uint8_t writeGraphTab( GraphTable * gt,  char *path );
 
 uint8_t printGraphTab( GraphTable * gt, FILE * stream);
@@ -55,8 +56,7 @@ uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walke
 #ifdef debug_mode 
  uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighboor_num, \
                             nLine*  first_neighboor_ref);
-
- uint8_t appLine( GraphTable * gt , uint32_t node_index, uint32_t flux );
+ uint8_t appLineGt( GraphTable * gt , uint32_t node_index, uint32_t flux );
 #endif
 
 #endif

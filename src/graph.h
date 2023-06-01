@@ -57,6 +57,7 @@ uint8_t writeGraph( Graph * g,  char *path );
 
 uint8_t printGraph( Graph * g, FILE * stream);
 
+uint8_t qsortNodearr( Graph * g);
 
 #ifdef debug_mode
 

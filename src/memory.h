@@ -7,7 +7,9 @@
 #define DEFAULT_CAPA_TACTICS 8 //maybe less ?
 
 #define DEFAULT_CAPA_WALKTABLE 100 //completely random
-#define DEFAULT_CAPA_WTE 16
+#define DEFAULT_CAPA_WTE 16 //walk table entry 
+
+#define DEFAULT_CAPA_WALKARRAY 30 
 
 #define DEFAULT_CAPA_LINE 256
 #define DEFAULT_CAPA_NODE 256 //might be set to weird numbers during tests 

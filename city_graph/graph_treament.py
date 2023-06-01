@@ -22,7 +22,7 @@ def discretise(Graph, step):
             size= int(length/step)
          
             #makes newgraph from adj mat 
-            mat = np.eye(N=size, k=1, dtype=int)
+            """mat = np.eye(N=size, k=1, dtype=int)
             sym_mat= mat + mat.T
             G=nx.from_numpy_array(sym_mat) 
             
@@ -30,9 +30,9 @@ def discretise(Graph, step):
             G = nx.relabel_nodes(G, mapping, copy=False)
             
             #RetGraph.add_edge(a, G.)
-            print(G)
-            #RetGraph.add_edge(u,v_of_edge)s 
-            #actually create the new nodes
+            print(G)"""
+            
+            nx.add_path(RetGraph, a+[]+b )
             
         else : 
             ret_graph.add_edge(a, b)

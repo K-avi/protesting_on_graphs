@@ -5,14 +5,13 @@ this allows for movement of a Walker from a node to a node in ~O(1)
 
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
 (I'll write a script to do that at some point)         
-
  
 also will have to do clean error reporting 
 
 done : 
-    - graphs are kinda implemented :)
+    - graphs are kinda implemented
         - I can add stuf to them 
-        - I can print them :) (I can't load them from a file yet though)
+        - I can print them (I can't load them from a file yet though)
 
         - I can also load them let's go 
     
@@ -21,12 +20,22 @@ done :
     - walker structure pretty much done (testing pending though)
 
 
-
 pending : 
     
     - walker structure : 
         - test the thing ffs 
-    
+
+    - figure out a way to merge graphs n walker tab
+
+        - if I put the number of nodes n the number of edges when loading a graph I could 
+          just use a table to store both info on a node (neighboor etc) and info on the walkers 
+          in a node the upside is that I only store everything once; the downside is that it makes the 
+          graph harder to import/ export and the program will heavily rely on having every info passed to it 
+
+
+          I could also keep the current graph struct and SOLELY using when retrieving the graph , I could add 
+          the corresponding infos to the table and once the graph is loaded pass em to it 
+
     - rule / tactics structure : 
         - good question 
     
@@ -41,7 +50,6 @@ pending :
         - do a function to handle the whole discretisation of the graph w a custom step 
           (scary part)
         - then do a function to dump it in the custom csv format (less scary but prolly hard part)
-
 
 change the line arr to contain an union of key/pointer; 
 once the arrays are fully initialised -> change keys into reference to primary array 

@@ -45,11 +45,9 @@ void freeWalkerArray(WalkerArray * wArray);
 
 
 
-uint8_t initWalkerTable( WalkerTable * walkerTab,  uint32_t size);
+uint8_t initWalkerTable( WalkerTable * walkerTab,  uint32_t tab_size, uint32_t entry_size);
 void freeWalkerTable( WalkerTable * walkerTab);
 
 void printWalkerTable( WalkerTable * walkerTab, FILE * stream);
-
-uint8_t initPos( WalkerTable * walkerTab , WalkerArray * walkerArr );
 
 #endif

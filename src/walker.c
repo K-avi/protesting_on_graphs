@@ -30,6 +30,8 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){
     if(!wArray) return  WA_NULL;
 
     wArray->size=size;
+
+    wArray->array=NULL;
     wArray->array = (Walker*) GROW_ARRAY(Walker, wArray->array, 0, size);
 
     for(uint32_t i=0; i<size; i++){ //initialises the walkers 
@@ -52,14 +54,18 @@ void freeWalkerArray(WalkerArray * wArray){
 
 /* TABLE ENTRY MANIPULATION : */
 
-static uint8_t initWalkerEntry( WalkerTableEntry * tabEntry ){
+static uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size ){
     /*
+    initialises a tabEntry ; 
+    will cause memleak if used on already allocated tabEntry 
     */
     if(!tabEntry) return WTE_NULL;
 
-    tabEntry->capa= DEFAULT_CAPA_WTE;
+    tabEntry->capa= size;
     tabEntry->curr_in=0;
-    tabEntry->walkers= (Walker**) GROW_ARRAY(Walker*, tabEntry->walkers, 0, DEFAULT_CAPA_WTE);
+    
+    tabEntry->walkers=NULL;
+    tabEntry->walkers= (Walker**) GROW_ARRAY(Walker*, tabEntry->walkers, 0, size);
 
     if(!tabEntry->walkers){
         return WTE_REALLOC;
@@ -141,7 +147,7 @@ static void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
 
 /* TABLE MANIPULATION : */
 
-uint8_t initWalkerTable( WalkerTable * wtable, uint32_t tabsize){
+uint8_t initWalkerTable( WalkerTable * wtable, uint32_t tabsize, uint32_t entry_size){
     /*
     intitialises an allocated wtable
     */
@@ -149,10 +155,12 @@ uint8_t initWalkerTable( WalkerTable * wtable, uint32_t tabsize){
     if(!wtable) return WT_NULL;
 
     wtable->size=tabsize;
+
+    wtable->table=NULL;
     wtable->table=(WalkerTableEntry*) GROW_ARRAY(WalkerTableEntry, wtable->table, 0, tabsize);
 
     for(uint32_t i=0; i<tabsize ; i++){
-        uint8_t failure= initWalkerEntry(&wtable->table[i]);
+        uint8_t failure= initWalkerEntry(&wtable->table[i], entry_size);
         if(failure) return failure;
     }
 

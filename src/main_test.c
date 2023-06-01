@@ -5,6 +5,7 @@
 #include "walker.h"
 #include "movement.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -87,12 +88,24 @@ int main(){
 
     GraphTable gt1; 
     
-    uint8_t failure = loadGraphTab( &gt1, "test_graph/gt_test1.csv", DEFAULT_CAPA_WTE);
+    uint8_t failure = loadGraphTab( &gt1, "test_graph/gt_test0.csv", DEFAULT_CAPA_WTE);
 
     if(failure) printf("failure code : %u\n", failure);
     printGraphTab(&gt1, stdout);
 
     freeGraphTab(&gt1);
-    
+
+
+/*
+    Graph g; 
+    initGraph(&g);
+    uint8_t failure1 = loadGraph(&g, "test_graph/test_g1.csv" );
+
+    if(failure1) printf("failure code : %u\n", failure1);
+    printGraph(&g, stdout);
+
+    freeGraph(&g);
+    */
+
     return 0;
 }

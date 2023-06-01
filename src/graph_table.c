@@ -132,7 +132,7 @@ void freeGraphTab( GraphTable * gt){
 }//not tested 
 
 
- uint8_t appLineGt( GraphTable * gt , uint32_t node_index, uint32_t flux ){
+ uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
     /*
     appends ONE line to the line tab of a graph table ;
     checks for valid node 
@@ -173,11 +173,11 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
         for(uint32_t j=0; j<gt->entries[i].neighboor_num; j++){
             if(gt->entries->first_neighboor_ref){
                 if(j!=gt->entries[i].neighboor_num-1) 
-                    fprintf(stream, "%u:%d;", (gt->entries->first_neighboor_ref)->node_index,\
-                         (gt->entries->first_neighboor_ref)->flux );
+                    fprintf(stream, "%u:%d;", (gt->entries[i].first_neighboor_ref+j)->node_index,\
+                         (gt->entries[i].first_neighboor_ref)->flux );
                 else
-                    fprintf(stream, "%u:%d", (gt->entries->first_neighboor_ref)->node_index, \
-                        (gt->entries->first_neighboor_ref)->flux);  
+                    fprintf(stream, "%u:%d", (gt->entries[i].first_neighboor_ref+j)->node_index, \
+                        (gt->entries[i].first_neighboor_ref+j)->flux);  
             }
         }
         fprintf(stream, "\n");
@@ -241,7 +241,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
         if(peek(end, ',') && cur!=end) cur=(++end);
         else {  return GT_PARSE;}
 
-        uint8_t errflag= appNodeGt(gt, node_index, neighboor_num, &gt->arrLine->array[gt->arrLine->cur_in]);
+        uint8_t errflag= appNodeGt(gt, node_index, neighboor_num, &(gt->arrLine->array[gt->arrLine->cur_in]));
         if(errflag) return errflag; 
 
         for(uint32_t i=0; i<neighboor_num; i++){

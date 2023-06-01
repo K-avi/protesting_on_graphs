@@ -56,7 +56,7 @@ uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walke
 #ifdef debug_mode 
  uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighboor_num, \
                             nLine*  first_neighboor_ref);
- uint8_t appLineGt( GraphTable * gt , uint32_t node_index, uint32_t flux );
+ uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux );
 #endif
 
 #endif

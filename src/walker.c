@@ -66,7 +66,7 @@ void freeWalkerEntry(WalkerTableEntry * tabEntry){
   
 }// tested; ok 
 
-static uint8_t addWalkerEntry( WalkerTableEntry * tabEntry, Walker * walker_ref){
+uint8_t addWalkerEntry( WalkerTableEntry * tabEntry, Walker * walker_ref){
     /*
     */
     if(!tabEntry) return WTE_NULL;
@@ -88,7 +88,7 @@ static uint8_t addWalkerEntry( WalkerTableEntry * tabEntry, Walker * walker_ref)
 //not tested 
 
 
-static int64_t getWalkerIndex ( WalkerTableEntry * tabEntry , uint32_t walker_id){
+int64_t getWalkerIndex ( WalkerTableEntry * tabEntry , uint32_t walker_id){
     /*
     simple existence test for walker in an entry; returns index of walker in table; 
     -1 on failure 
@@ -103,7 +103,7 @@ static int64_t getWalkerIndex ( WalkerTableEntry * tabEntry , uint32_t walker_id
 }//not tested 
 
 
-static uint32_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr_index ){
+uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr_index ){
     /*
     "removes" a walker from an entry array by putting the walker at the last index in it's place 
     and diminishing the number of walkers currently in the array
@@ -120,7 +120,7 @@ static uint32_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t wa
 //should move around references to walkers if they get any more complex
 
 
-static void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
+void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
     /*
     */
     for(uint32_t i=0; i<tabEntry->curr_in ; i++){

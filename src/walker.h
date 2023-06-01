@@ -46,6 +46,13 @@ void freeWalkerArray(WalkerArray * wArray);
 uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size );
 void freeWalkerEntry(WalkerTableEntry * tabEntry);
 
+uint8_t addWalkerEntry( WalkerTableEntry * tabEntry, Walker * walker_ref);
+int64_t getWalkerIndex ( WalkerTableEntry * tabEntry , uint32_t walker_id);
+uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr_index );
+
+void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream);
+
+
 /*
 uint8_t initWalkerTable( WalkerTable * walkerTab,  uint32_t tab_size, uint32_t entry_size);
 void freeWalkerTable( WalkerTable * walkerTab);

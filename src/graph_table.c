@@ -1,4 +1,5 @@
 #include "graph_table.h"
+#include "common.h"
 #include "graph.h"
 #include "memory.h"
 #include "walker.h"
@@ -60,7 +61,8 @@ static void freeLineArr( nLineArray * lineArr){
 
 uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size ){
     /*
-    initialises a non null graph table 
+    initialises a non null graph table ; sets it's entries to default values and initialises 
+    it's walker entries
     */
     if(!gt) return GT_NULL;
 
@@ -106,7 +108,7 @@ void freeGraphTab( GraphTable * gt){
 }//tested; ok
 
 
- uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighboor_num, \
+static uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighboor_num, \
                             nLine*  first_neighboor_ref){
     /*
     doesn't if node already set to smtg  ; sets the ref of first elem , and neighboor num 
@@ -124,7 +126,7 @@ void freeGraphTab( GraphTable * gt){
 }//tested ; ok
 
 
-uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
+static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
     /*
     appends ONE line to the line tab of a graph table ;
     checks for valid node 
@@ -266,6 +268,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
     return GT_OK;
 }//tested; ok 
 
+
 uint8_t writeGraphTab(GraphTable * gt, char *path ){
     /*
     more of a wrapper on the graph print function than anything else tbh 
@@ -281,3 +284,43 @@ uint8_t writeGraphTab(GraphTable * gt, char *path ){
 
     return succes;
 }//tested; some security flaws ig
+
+
+////
+
+uint8_t addEntryGtVar ( GraphTableEntry * gtentry, Walker* walker){
+    /*
+    variant of the function where the walker is added from the entry directly 
+    */
+    if(!gtentry) return GTE_NULL;
+
+    uint8_t success= addWalkerEntry(&gtentry->walker_entry,walker);
+    return success;
+}//not tested 
+
+uint8_t addEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ){
+    /*
+    adds a walker entry in a walk table entry at index passed of a gtable 
+    */
+    if(!gtable) return GT_NULL;
+    if(index_entry> gtable->table_size) return GT_SIZE;
+
+    uint8_t failure = addWalkerEntry( &gtable->entries[index_entry].walker_entry , walker_ref);
+    if(failure) return failure;
+
+    return GT_OK;
+}//not tested 
+
+uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walker_id){
+    /*
+    */
+    if(!gtable) return GT_NULL;
+    if(index_entry> gtable->table_size) return GT_SIZE;
+
+    int64_t deletion_index=  getWalkerIndex( &gtable->entries[index_entry].walker_entry, walker_id);
+    if(deletion_index==-1) return WT_NOT_FOUND;
+
+    uint8_t succes= removeWalkerFromEntry(&gtable->entries[index_entry].walker_entry,deletion_index);
+    return succes;
+ 
+}//not tested

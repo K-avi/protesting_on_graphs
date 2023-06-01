@@ -68,8 +68,8 @@ int main(){
 
     freeWalkerArray(&warray);
     freeWalkerTable(&wtable);
-    */
-/*
+    
+
     GraphTable gt; 
  
 
@@ -81,7 +81,7 @@ int main(){
 
     appNodeGt(&gt, 1, 0, NULL);
     appNodeGt(&gt, 2, 0, NULL);
-*/
+
     //writeGraphTab(&gt, "test_graph/gt_test1.csv");
 
   //  freeGraphTab(&gt);
@@ -96,7 +96,7 @@ int main(){
     freeGraphTab(&gt1);
 
 
-/*
+
     Graph g; 
     initGraph(&g);
     uint8_t failure1 = loadGraph(&g, "test_graph/test_g1.csv" );

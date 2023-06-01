@@ -52,3 +52,9 @@ pending :
         - do a function to handle the whole discretisation of the graph w a custom step 
           (scary part)
         - then do a function to dump it in the custom csv format (less scary but prolly hard part)
+
+
+make a choice 
+  -> append by ref of entry (know which index) 
+  -> append by index of entry  (use the index)
+

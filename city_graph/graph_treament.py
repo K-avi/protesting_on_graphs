@@ -9,32 +9,36 @@ def discretise(Graph, step):
     nxGraph, step-> nxGraph  
     discretises a graph passed as arg with the step
     i.e : creates new nodes when the distance between the nodes a,b in a line 
-    is bigger than step 
-    
+    is bigger than step  
     returns new graph
     """
-    seen = set()
-    RetGraph=nx.Graph()
     
-    for l in Graph.edges(data="length"): 
-        (a,b,c)=l
-        if(c > step and not (a,b) in seen ): 
+    ret_graph=nx.Graph()
+    
+    for lines in Graph.edges(data="length"): 
+        (a,b,length)=lines
+        if(length > step ): 
             
-            seen.add( (a,b) )    
-            newEdges= np.linspace(a,b, num=step)
-            G=nx.from_numpy_array(newEdges)
-            print(G.edge)
-            #RetGraph.add_edge(u,v_of_edge)
+            size= int(length/step)
+         
+            #makes newgraph from adj mat 
+            mat = np.eye(N=size, k=1, dtype=int)
+            sym_mat= mat + mat.T
+            G=nx.from_numpy_array(sym_mat) 
             
+            mapping = dict()
+            G = nx.relabel_nodes(G, mapping, copy=False)
             
-            
+            #RetGraph.add_edge(a, G.)
+            print(G)
+            #RetGraph.add_edge(u,v_of_edge)s 
             #actually create the new nodes
             
         else : 
-            RetGraph.add_edge(a, b)
+            ret_graph.add_edge(a, b)
     
-    nx.convert_node_labels_to_integers(RetGraph)
-    return RetGraph
+    nx.convert_node_labels_to_integers(ret_graph)
+    return ret_graph
 
 def makeCSV(Graph, path):
     """

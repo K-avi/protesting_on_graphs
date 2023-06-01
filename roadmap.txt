@@ -1,11 +1,7 @@
-currently going over global skeleton of project and implementing the basic graph structure.
+Writing the walker storage structure; it's gonna be a beeg array w all of em and the table 
+will contain references to that array that I'll move around in the table at each generation 
 
-
-my goal will be to be able to write / load formatted csv files w this function
-the graph implem is very minimalist so it might be tricky to implement
-
-once I'm done w this function I'll do a small test graph and will then move on to the basics of the walkers. 
-
+this allows for movement of a Walker from a node to a node in ~O(1)
 
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
 (I'll write a script to do that at some point)         
@@ -22,66 +18,33 @@ done :
     
     - script can load a city into a networkx graph thingy (easy part) 
 
+    - walker structure pretty much done (testing pending though)
+
 
 
 pending : 
     
     - walker structure : 
-        - do I need access to every walker at a specific node in O(1)?
-            - if so implement them in a lil table thing 
-            ->need to think about the suppression cuz it might be annoying 
-            is there need for an actual walker entity guy going around? 
-        - should I even be able to identify each of them ????
+        - test the thing ffs 
     
     - rule / tactics structure : 
         - good question 
     
     - figure out the way to implement movement : 
+        - add iteration field to line arr and walkers; if don't match don't take into account 
+        - add curflux / netflux field to line arr , at the start of iteration set curflux to nextflux 
+          and reset nextflux 
 
-        if every walker moves at the "same moment" might have to make them all move and 
-        THEN update the flux values so I should prolly store old flux values somewhere or something like 
-        that in order to not mess up the decision process 
-
-        (ask about markov chains)
-    
-    - figure out the way to implement walkers : 
-
-        what state does each walker needs? 
-
-        how to implement the walker table exactly
-        (prolly hashtable w array resolving cuz it's cool)
-
-        - actual movement of walkers on the graph : 
-        good question tbh 
-    
     - make the pyhton script to retrieve / format / write real graphs from the real world
       (god have mercy on me) 
 
         - do a function to handle the whole discretisation of the graph w a custom step 
           (scary part)
-
-          rely on networkx
-          -> convert graph to normal undir graph format ; then add 
-
         - then do a function to dump it in the custom csv format (less scary but prolly hard part)
 
--> les marcheurs doivent bcp bouger 
 
-je veux acces aux marcheurs situes a 1 node en O(1)
-deplacement d'un marcheur en O(1)
+change the line arr to contain an union of key/pointer; 
+once the arrays are fully initialised -> change keys into reference to primary array 
+-> this allows to go through the graph fast 
 
-mise a jour des infos le concernant (position actuelle) en O(1)
-
-idee: table indexe par node (possiblement hache ?)
-
-(table impbriquee ?)
-
--> suppression marcheurs d'un tableau -> echange avc dernier elmt ; nbelem --  
-    -> O(1)
--> insertion au dernier elem 
-
-compatibilite avc mouvement??? (tt marcheurs doivent bouger en mm temps ) : bummer
-
-maintenir liste deja deplaces ig ?
-
-impact sur le flux -> avoir un champ flux en cours ; flux prec ?
+TEST THE GODDAMN TABLE FFS

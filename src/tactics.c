@@ -56,8 +56,11 @@ uint8_t addRule( Tactics * t , double rule_coeff,  uint32_t (*rule_fun)() ){
     return T_OK;
 }//not tested 
 
+/*
 static uint32_t ruleRand( Graph * g, uint32_t from_node ){
 
     //return neighboors[rand()%neighboor_num];
     return 1;
 }//placeholder
+
+*/

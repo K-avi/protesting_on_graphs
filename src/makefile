@@ -3,7 +3,7 @@ TEST := ../test
 CC := gcc
 CFLAGS := -O2  -g -Wall -Wextra -Wpedantic -Wno-unused-parameter
 
-SRCS := graph.c memory.c tactics.c trace.c walker.c 
+SRCS := graph.c memory.c tactics.c trace.c walker.c  graph_table.c
 
 all: $(TARGET)
 

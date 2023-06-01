@@ -54,7 +54,7 @@ void freeWalkerArray(WalkerArray * wArray){
 
 /* TABLE ENTRY MANIPULATION : */
 
-static uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size ){
+uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size ){
     /*
     initialises a tabEntry ; 
     will cause memleak if used on already allocated tabEntry 
@@ -71,15 +71,15 @@ static uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size ){
         return WTE_REALLOC;
     }
     return WTE_OK;
-}//not tested; prolly ok
+}// tested;  ok
 
-static void freeWalkerEntry(WalkerTableEntry * tabEntry){
+void freeWalkerEntry(WalkerTableEntry * tabEntry){
     /*
     */
     if(!tabEntry) return;
     if(tabEntry->walkers) free(tabEntry->walkers);
   
-}//not tested; prolly ok ; watch out for freeing walkers cuz they might become more intricate n so on
+}// tested; ok 
 
 static uint8_t addWalkerEntry( WalkerTableEntry * tabEntry, Walker * walker_ref){
     /*
@@ -142,7 +142,7 @@ static void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
         fprintf(stream, "%u\n",  tabEntry->walkers[i]->id);
     }
     fprintf(stream, "\n");
-}
+}//not tested 
 
 
 /* TABLE MANIPULATION : */
@@ -165,7 +165,7 @@ uint8_t initWalkerTable( WalkerTable * wtable, uint32_t tabsize, uint32_t entry_
     }
 
     return WT_OK;
-}//not tested ; prolly ok
+}//tested ;  ok
 
 void freeWalkerTable( WalkerTable * wtable ){
     /*
@@ -178,7 +178,7 @@ void freeWalkerTable( WalkerTable * wtable ){
     }
 
     free(wtable->table);
-}//not tested 
+}// tested ; ok
 
 uint8_t addEntry( WalkerTable* wtable, uint32_t index_entry, Walker * walker_ref ){
     /*
@@ -214,4 +214,4 @@ void printWalkerTable(WalkerTable * wtable, FILE * stream){
 
     }
     return;
-}//not done
+}//not tested 

@@ -43,11 +43,14 @@ typedef struct s_walker_table{
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size);
 void freeWalkerArray(WalkerArray * wArray);
 
+uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size );
+void freeWalkerEntry(WalkerTableEntry * tabEntry);
 
-
+/*
 uint8_t initWalkerTable( WalkerTable * walkerTab,  uint32_t tab_size, uint32_t entry_size);
 void freeWalkerTable( WalkerTable * walkerTab);
-
 void printWalkerTable( WalkerTable * walkerTab, FILE * stream);
-
+uint8_t addEntry( WalkerTable* wtable, uint32_t index_entry, Walker * walker_ref ); 
+uint8_t removeEntry( WalkerTable * wtable, uint32_t index_entry, uint32_t walker_id);
+*/
 #endif

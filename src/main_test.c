@@ -1,10 +1,12 @@
 #include "common.h"
 #include "graph.h"
+#include "graph_table.h"
 #include "memory.h"
 #include "walker.h"
 #include "movement.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 
 int main(){
@@ -53,7 +55,7 @@ int main(){
 
     /*
     tests 01/06
-    */
+    
 
     WalkerArray warray; warray.array=NULL;
     WalkerTable wtable; wtable.table=NULL;
@@ -65,6 +67,29 @@ int main(){
 
     freeWalkerArray(&warray);
     freeWalkerTable(&wtable);
+    */
+
+    GraphTable gt; 
+    nLineArray* arrline= malloc(sizeof(nLineArray));
+    arrline->array=malloc(10*sizeof(nLine));
+    arrline->cur_in=0; 
+    arrline->size=10;
+
+    initGraphTab(&gt, 12, DEFAULT_CAPA_WTE, arrline);
+
+    appLine(&gt, 1, 0);
+    appLine(&gt, 2, 0);
+    appNodeGt(&gt, 0, 2, &gt.arrLine->array[0]);
+
+    appNodeGt(&gt, 1, 0, NULL);
+    appNodeGt(&gt, 2, 0, NULL);
+
+    printGraphTab(&gt , stdout);
+
+    freeGraphTab(&gt);
+
+    free(arrline->array); 
+    free(arrline);
     
     return 0;
 }

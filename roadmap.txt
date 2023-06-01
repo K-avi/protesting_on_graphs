@@ -1,10 +1,18 @@
-Writing the walker storage structure; it's gonna be a beeg array w all of em and the table 
-will contain references to that array that I'll move around in the table at each generation 
+unify error code !!
 
-this allows for movement of a Walker from a node to a node in ~O(1)
+
+redesign of code structure count : 1 (hopefully it won't get higher)
+
+I'm changing the graph structure to something more intricate; the graph will be somewhat of a table 
+where table[i] stores relevant informations regarding the node i (adjacency list, number of walkers here etc)
+
+this structure is somewhat of a "merge" between the graph structure AND the WalkerTable structure. 
+
+it will NEED to have it's size passed to it before allocating it and WILL NOT rely on dynamic arrays.
+this also goes with the new Line structure I think 
 
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
-(I'll write a script to do that at some point)         
+  
  
 also will have to do clean error reporting 
 
@@ -18,6 +26,8 @@ done :
     - script can load a city into a networkx graph thingy (easy part) 
 
     - walker structure pretty much done (testing pending though)
+
+    - apparently I wrote a tactics structure I didn't even remember it 
 
 
 pending : 
@@ -35,9 +45,6 @@ pending :
 
           I could also keep the current graph struct and SOLELY using when retrieving the graph , I could add 
           the corresponding infos to the table and once the graph is loaded pass em to it 
-
-    - rule / tactics structure : 
-        - good question 
     
     - figure out the way to implement movement : 
         - add iteration field to line arr and walkers; if don't match don't take into account 

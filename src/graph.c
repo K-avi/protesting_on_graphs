@@ -165,7 +165,7 @@ uint8_t printGraph(Graph * g, FILE * stream){
     }
 
     return G_OK;
-}//tested; placeholder; will prolly change
+}//tested; 
 //will have to make it build a beeeeeg string and print it once instead of the current implem of it
 //at some point
 
@@ -304,7 +304,7 @@ static inline uint8_t appLineOne( Graph * g , uint32_t new_neighboor , int32_t f
     g->ArrLine->currently_in++;
 
     return G_OK;
-}//not tested; should be ok though
+}// tested; ok 
 
 uint8_t loadGraph( Graph * g ,char* path){
     /*

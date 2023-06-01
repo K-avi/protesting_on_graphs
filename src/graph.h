@@ -4,11 +4,9 @@
 
 #include "common.h"
 
-#include <stdint.h>
-#include <stdio.h>
-#include <sys/types.h>
 
 
+//deprecated  : replaced by the graph table struct 
 typedef struct s_line{
     uint32_t node_index; 
     int32_t flux;

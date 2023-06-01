@@ -2,13 +2,7 @@
 #include "graph.h"
 #include "memory.h"
 
-#include <ctype.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
+//deprecated : replaced by the graph table struct 
 
 enum{ //enum of error flags for graph functions 
     G_OK, G_NODE , G_INIT_LINE, G_NULL, G_MALLOC_FAIL, G_NEIGHBOORS_ARR, G_REALLOC_FAIL,

@@ -7,14 +7,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-enum{
-    GT_OK, GT_NULL, GT_MALLOC, GT_REALLOC, GT_READ, GT_WRITE , GT_INDEX, GT_NOREAD, GT_READFAIL,
-    GT_PARSE, GT_NOWRITE , GT_OPENFAIL
-}GT_Errflag;
-
-enum{ 
-    GE_OK, GE_NULL, GE_MALLOC, GE_REALLOC, GT_ARFULL,
-}GE_Errflag; 
 
 uint8_t initGtEntry( GraphTableEntry * gentry , int32_t we_size){
     /*
@@ -129,10 +121,10 @@ void freeGraphTab( GraphTable * gt){
     
     return GT_OK;
     
-}//not tested 
+}//tested ; ok
 
 
- uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
+uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
     /*
     appends ONE line to the line tab of a graph table ;
     checks for valid node 
@@ -151,7 +143,7 @@ void freeGraphTab( GraphTable * gt){
     arrline->cur_in++;
 
     return GT_OK;
-}//not tested 
+}//tested  ; ok
 
 //////////////
 
@@ -272,7 +264,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
     }  
     fclose(f);
     return GT_OK;
-}//not tested
+}//tested; ok 
 
 uint8_t writeGraphTab(GraphTable * gt, char *path ){
     /*

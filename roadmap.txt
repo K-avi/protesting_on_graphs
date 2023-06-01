@@ -29,23 +29,18 @@ done :
 
     - apparently I wrote a tactics structure I didn't even remember it 
 
+    - rewrote the graph implem in the GraphTable structure 
+
 
 pending : 
     
-    - walker structure : 
-        - test the thing ffs 
 
-    - figure out a way to merge graphs n walker tab
+    - finish the graph table : 
+        - implement the walker table functions ; once this is done I'll delete the old 
+          graph and walker files 
+          
+          I think I can reuse the old ones tbh 
 
-        - if I put the number of nodes n the number of edges when loading a graph I could 
-          just use a table to store both info on a node (neighboor etc) and info on the walkers 
-          in a node the upside is that I only store everything once; the downside is that it makes the 
-          graph harder to import/ export and the program will heavily rely on having every info passed to it 
-
-
-          I could also keep the current graph struct and SOLELY using when retrieving the graph , I could add 
-          the corresponding infos to the table and once the graph is loaded pass em to it 
-    
     - figure out the way to implement movement : 
         - add iteration field to line arr and walkers; if don't match don't take into account 
         - add curflux / netflux field to line arr , at the start of iteration set curflux to nextflux 
@@ -57,9 +52,3 @@ pending :
         - do a function to handle the whole discretisation of the graph w a custom step 
           (scary part)
         - then do a function to dump it in the custom csv format (less scary but prolly hard part)
-
-change the line arr to contain an union of key/pointer; 
-once the arrays are fully initialised -> change keys into reference to primary array 
--> this allows to go through the graph fast 
-
-TEST THE GODDAMN TABLE FFS

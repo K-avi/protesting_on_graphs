@@ -4,21 +4,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-
-enum{ 
-    WA_OK, WA_NULL, WA_ALLOC
-}WalkerArrayErrFlags;
-
-enum{ 
-    WTE_OK, WTE_NULL, WTE_REALLOC, WTE_IN
-}WalkerTableEntryErrFlags;
-
-enum{
-    WT_OK, WT_NULL, WT_REALLOC, WT_INDEX_TOO_BIG, WT_NOT_FOUND
-}WalkerTableErrFlags; 
-
-// this code is very wrong cuz I should pass a reference to a walker maybe i'm not sure actually tbh
-
 /* RAW WALKER ARRAY MANIPULATION */
 
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){

@@ -4,10 +4,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-enum { 
-    T_OK, T_NULL, T_REALLOC
-}TacticsErrFlag;
-
 
 uint8_t initTactics(Tactics * t){
     /*

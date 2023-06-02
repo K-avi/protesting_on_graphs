@@ -1,14 +1,13 @@
-unify error code !!
-
-
 redesign of code structure count : 1 (hopefully it won't get higher)
 
-I'm changing the graph structure to something more intricate; the graph will be somewhat of a table 
+I've changed the graph structure to something more intricate; the graph is some kind of table 
 where table[i] stores relevant informations regarding the node i (adjacency list, number of walkers here etc)
 
 this structure is somewhat of a "merge" between the graph structure AND the WalkerTable structure. 
 
-it will NEED to have it's size passed to it before allocating it and WILL NOT rely on dynamic arrays.
+it NEEDS to have it's size passed to it before allocating it and WILL NOT rely on dynamic arrays. 
+(except for the walker table entries of course )
+
 this also goes with the new Line structure I think 
 
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
@@ -31,15 +30,15 @@ done :
 
     - rewrote the graph implem in the GraphTable structure 
 
+    - wrote the table manip fn ; haven't tested them yet
 
-pending : 
-    
+
+pending :  
 
     - finish the graph table : 
-        - implement the walker table functions ; once this is done I'll delete the old 
-          graph and walker files 
-          
-          I think I can reuse the old ones tbh 
+        - test the fucking functions ffs 
+    
+    - once testing is done delete deprecated stuff 
 
     - figure out the way to implement movement : 
         - add iteration field to line arr and walkers; if don't match don't take into account 
@@ -53,8 +52,9 @@ pending :
           (scary part)
         - then do a function to dump it in the custom csv format (less scary but prolly hard part)
 
+    - once all of this is done I can actually start to simulate stuff 
 
 make a choice 
   -> append by ref of entry (know which index) 
   -> append by index of entry  (use the index)
-
+Imma implement both and see which one is the best 

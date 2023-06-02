@@ -1,13 +1,5 @@
 #include "graph_table.h"
-#include "common.h"
-#include "graph.h"
 #include "memory.h"
-#include "walker.h"
-
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 
 uint8_t initGtEntry( GraphTableEntry * gentry , int32_t we_size){
     /*
@@ -113,6 +105,8 @@ static uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighb
     /*
     doesn't if node already set to smtg  ; sets the ref of first elem , and neighboor num 
     of a node at index given
+
+    O(1)
     */
     if(!gt) return GT_NULL;
 
@@ -130,6 +124,8 @@ static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
     /*
     appends ONE line to the line tab of a graph table ;
     checks for valid node 
+
+    O(1)
     */
     if(!gt) return GT_NULL;
     if(!gt->arrLine) return GT_NULL;
@@ -184,6 +180,12 @@ static inline bool peek(const char * str, char expected){
     return *str==expected;
 }
 
+static bool emptyLine( char * str){
+    
+    while(*str==' ' || *str=='\r') str++;
+    return (*str=='\0' || *str=='\n');
+}
+
 uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
     /*
     takes a non initialised ; non null , empty gt and loads a graph stored at path into it
@@ -224,20 +226,26 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
 
     while(fgets(line, 256, f) && cpt<table_size){
         
-        cpt++;
+        
         char* end, *cur=line;
+        if(emptyLine(cur)) continue; // ignores empty lines
 
-        uint32_t node_index = (uint32_t) strtol(cur, &end, 10);
+
+        cpt++; 
+
+        uint32_t node_index = (uint32_t) strtol(cur, &end, 10); //retrieves index
         if(peek(end, ',') && cur!=end) cur=(++end);
         else{return GT_PARSE;}
 
-        uint32_t neighboor_num = (uint32_t) strtol(cur, &end, 10);
+        uint32_t neighboor_num = (uint32_t) strtol(cur, &end, 10); //retrieves neighboor num
         if(peek(end, ',') && cur!=end) cur=(++end);
         else {  return GT_PARSE;}
 
+        //appends node to the node section
         uint8_t errflag= appNodeGt(gt, node_index, neighboor_num, &(gt->arrLine->array[gt->arrLine->cur_in]));
         if(errflag) return errflag; 
-
+        
+        //loop to retrieve the formated neighboors 
         for(uint32_t i=0; i<neighboor_num; i++){
             /*
             adds the lines / flux
@@ -266,7 +274,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
     }  
     fclose(f);
     return GT_OK;
-}//tested; ok 
+}//tested; seems ok ; ugly 
 
 
 uint8_t writeGraphTab(GraphTable * gt, char *path ){
@@ -291,6 +299,8 @@ uint8_t writeGraphTab(GraphTable * gt, char *path ){
 uint8_t addEntryGtVar ( GraphTableEntry * gtentry, Walker* walker){
     /*
     variant of the function where the walker is added from the entry directly 
+
+    O(1) 
     */
     if(!gtentry) return GTE_NULL;
 
@@ -300,7 +310,8 @@ uint8_t addEntryGtVar ( GraphTableEntry * gtentry, Walker* walker){
 
 uint8_t addEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ){
     /*
-    adds a walker entry in a walk table entry at index passed of a gtable 
+    adds a walker entry in a walk table entry at index passed 
+    O(1)
     */
     if(!gtable) return GT_NULL;
     if(index_entry> gtable->table_size) return GT_SIZE;
@@ -309,10 +320,14 @@ uint8_t addEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_re
     if(failure) return failure;
 
     return GT_OK;
-}//not tested 
+}//tested ; seems ok
 
 uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walker_id){
     /*
+    "removes" the walker of id given as arg from a gt by swapping it 
+    w the last element of the walker array and decrementing the nb of walkers in the array
+
+    O(a) a is the number of elements in a WalkerEntry (small)
     */
     if(!gtable) return GT_NULL;
     if(index_entry> gtable->table_size) return GT_SIZE;
@@ -323,4 +338,15 @@ uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walke
     uint8_t succes= removeWalkerFromEntry(&gtable->entries[index_entry].walker_entry,deletion_index);
     return succes;
  
-}//not tested
+}//tested; seems ok
+
+
+void printEntriesGT( GraphTable * gtable, FILE * stream){
+    /*
+    prints the table entries of a gtable; usefull for trace 
+    */
+    for(uint32_t i=0; i<gtable->table_size; i++){
+        fprintf(stream, "%u:", i);
+        printWalkerEntry(&gtable->entries[i].walker_entry, stream);
+    }
+}//tested ; seems ok

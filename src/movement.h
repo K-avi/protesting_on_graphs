@@ -3,11 +3,12 @@
 
 #include "common.h"
 
-#include "graph.h"
+#include "graph_table.h"
+#include "tactics.h"
 #include "walker.h"
 
 
-uint8_t initPos( WalkerTable * walkerTab , WalkerArray * walkerArr );
-uint8_t update(Graph* g , WalkerTable * table);
+uint8_t initPos(GraphTable * gtable, WalkerArray *walkerArr);
+uint8_t update(GraphTable * gt, WalkerArray * walkerArr);
 
 #endif

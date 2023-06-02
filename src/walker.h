@@ -2,7 +2,6 @@
 #define WALKER_H 
 
 #include "common.h"
-#include "graph.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -30,15 +29,6 @@ typedef struct s_walker_table_entry{
 }WalkerTableEntry ; //deletion w swap ????
 //confused as to how to update this
 
-typedef struct s_walker_table{
-//table indexed by node key containing the walkers at a specific key
-
-    uint32_t size; //fixed size array cuz the size is the number of entries (possibly mod something ?)
-    WalkerTableEntry * table;
-
-}WalkerTable;
-
-
 
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size);
 void freeWalkerArray(WalkerArray * wArray);
@@ -52,12 +42,4 @@ uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr
 
 void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream);
 
-
-/*
-uint8_t initWalkerTable( WalkerTable * walkerTab,  uint32_t tab_size, uint32_t entry_size);
-void freeWalkerTable( WalkerTable * walkerTab);
-void printWalkerTable( WalkerTable * walkerTab, FILE * stream);
-uint8_t addEntry( WalkerTable* wtable, uint32_t index_entry, Walker * walker_ref ); 
-uint8_t removeEntry( WalkerTable * wtable, uint32_t index_entry, uint32_t walker_id);
-*/
 #endif

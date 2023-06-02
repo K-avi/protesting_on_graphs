@@ -2,7 +2,7 @@
 #define tactics_h 
 
 #include "common.h"
-#include "graph.h"
+#include "graph_table.h"
 #include <stdint.h>
 
 
@@ -29,6 +29,6 @@ uint8_t initTactics(Tactics * t);
 void freeTactics( Tactics * t);
 uint8_t addRule( Tactics * t , double rule_coeff,  uint32_t (*rule_fun)() ); //maybe not like this though
 
-uint32_t getToNode( Tactics * t , Rule * r, Graph * g, uint32_t from_node); 
+uint32_t getToNode( Tactics * t , Rule * r, GraphTable * gt, uint32_t from_node); 
 
 #endif 

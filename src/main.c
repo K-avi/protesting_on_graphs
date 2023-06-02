@@ -1,5 +1,4 @@
 #include "common.h"
-#include "graph.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -12,17 +11,6 @@ int main(int argc , char ** argv){
     }
 
     char * path = argv[1]; 
-    
-    Graph g; 
-    initGraph(&g);
 
-    uint8_t succes_flag=loadGraph( &g, path ); //should prolly change load graph actually bc this is stupid
-
-    if(succes_flag){
-        freeGraph(&g);
-        return succes_flag;
-    }
-
-    freeGraph(&g);
     return 0;
 }

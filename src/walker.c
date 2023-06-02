@@ -18,30 +18,28 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){
 
     wArray->array=NULL;
     wArray->array = (Walker*) GROW_ARRAY(Walker, wArray->array, 0, size);
+    if(!wArray->array) return WA_ALLOC;
 
     for(uint32_t i=0; i<size; i++){ //initialises the walkers 
         wArray->array[i].id=i; 
         wArray->array[i].curgen=0;
     }
 
-    if(!wArray->array) return WA_ALLOC;
-
     return WA_OK;
 }//ok
 
 
 void freeWalkerArray(WalkerArray * wArray){
-    /*
-    */
+    /*yes*/
     free(wArray->array);
-}
+}//ok
 
 
 /* TABLE ENTRY MANIPULATION : */
 
 uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size ){
     /*
-    initialises a tabEntry ; 
+    initialises a non null , empty tabEntry ; 
     will cause memleak if used on already allocated tabEntry 
     */
     if(!tabEntry) return WTE_NULL;
@@ -59,15 +57,17 @@ uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size ){
 }// tested;  ok
 
 void freeWalkerEntry(WalkerTableEntry * tabEntry){
-    /*
-    */
+    /*frees the content of a walker entry; doesn't free tabEntry */
     if(!tabEntry) return;
     if(tabEntry->walkers) free(tabEntry->walkers);
-  
+
 }// tested; ok 
 
 uint8_t addWalkerEntry( WalkerTableEntry * tabEntry, Walker * walker_ref){
     /*
+    addss the reference to a walker in an WalkerTableEntry 
+
+    O(1)
     */
     if(!tabEntry) return WTE_NULL;
 
@@ -92,6 +92,8 @@ int64_t getWalkerIndex ( WalkerTableEntry * tabEntry , uint32_t walker_id){
     /*
     simple existence test for walker in an entry; returns index of walker in table; 
     -1 on failure 
+
+    O(a) a is the number of walkers in a WalkerEntry (small)
     */
     if(!tabEntry) return -1;
 
@@ -107,6 +109,8 @@ uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr
     /*
     "removes" a walker from an entry array by putting the walker at the last index in it's place 
     and diminishing the number of walkers currently in the array
+
+    O(1)
     */
     if(!tabEntry) return WTE_NULL;
 
@@ -116,87 +120,12 @@ uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr
 
     return WTE_OK;
 }//not tested 
-
 //should move around references to walkers if they get any more complex
 
-
 void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
-    /*
-    */
+    /* */
     for(uint32_t i=0; i<tabEntry->curr_in ; i++){
         fprintf(stream, "%u\n",  tabEntry->walkers[i]->id);
     }
     fprintf(stream, "\n");
-}//not tested 
-
-
-/* TABLE MANIPULATION : */
-
-uint8_t initWalkerTable( WalkerTable * wtable, uint32_t tabsize, uint32_t entry_size){
-    /*
-    intitialises an allocated wtable
-    */
-
-    if(!wtable) return WT_NULL;
-
-    wtable->size=tabsize;
-
-    wtable->table=NULL;
-    wtable->table=(WalkerTableEntry*) GROW_ARRAY(WalkerTableEntry, wtable->table, 0, tabsize);
-
-    for(uint32_t i=0; i<tabsize ; i++){
-        uint8_t failure= initWalkerEntry(&wtable->table[i], entry_size);
-        if(failure) return failure;
-    }
-
-    return WT_OK;
-}//tested ;  ok
-
-void freeWalkerTable( WalkerTable * wtable ){
-    /*
-    frees EVERY ARRAY IN THE TABLE but not the TABLE POINTER ITSELF 
-    */
-    if(!wtable) return;
-
-    for(uint32_t i=0; i<wtable->size; i++){
-        freeWalkerEntry(&wtable->table[i]);
-    }
-
-    free(wtable->table);
-}// tested ; ok
-
-uint8_t addEntry( WalkerTable* wtable, uint32_t index_entry, Walker * walker_ref ){
-    /*
-    adds a walker at index index_entry in the wtable
-    */
-    if(!wtable) return WT_NULL;
-    if(index_entry> wtable->size) return WT_INDEX_TOO_BIG;
-
-    uint8_t succes = addWalkerEntry(&wtable->table[index_entry], walker_ref);
-    return succes ;
-}//not tested
-
-uint8_t removeEntry( WalkerTable * wtable, uint32_t index_entry, uint32_t walker_id){
-    /*
-    */
-    if(!wtable) return WT_NULL;
-    if(index_entry> wtable->size) return WT_INDEX_TOO_BIG;
-
-    int64_t deletion_index=  getWalkerIndex(&wtable->table[index_entry], walker_id);
-    if(deletion_index==-1) return WT_NOT_FOUND;
-
-    uint8_t succes= removeWalkerFromEntry(&wtable->table[index_entry],deletion_index);
-    return succes;
-}//not tested 
-
-
-void printWalkerTable(WalkerTable * wtable, FILE * stream){
-    /*
-    */
-    for(unsigned i=0; i<wtable->size; i++){
-        fprintf(stream, "%u: ", i);
-        printWalkerEntry(&wtable->table[i], stream);
-
-    }
-    return;
 }//not tested 

@@ -6,18 +6,21 @@
 
 typedef enum {
     FG_OK, GT_NULL, GT_MALLOC, GT_REALLOC, GT_READ, GT_WRITE , GT_INDEX, GT_NOREAD, GT_READFAIL,
-    GT_PARSE, GT_NOWRITE , GT_OPENFAIL, ERRFLAG_NOFILE, GE_OK, GE_NULL, GE_MALLOC, GE_REALLOC, 
+    GT_PARSE, GT_NOWRITE , GT_OPENFAIL, ERRFLAG_NOFILE,  GE_NULL, GE_MALLOC, GE_REALLOC, 
     GT_ARFULL, T_NULL, T_REALLOC, WA_NULL, WA_ALLOC,  WTE_NULL, WTE_REALLOC, WTE_IN, 
-    WT_NULL, WT_REALLOC, WT_INDEX_TOO_BIG, WT_NOT_FOUND, GT_SIZE, GTE_NULL,
+    WT_NULL, WT_REALLOC, WT_INDEX_TOO_BIG, WT_NOT_FOUND, GT_SIZE, GTE_NULL, NDREF_NULL, 
+    MV_NONEIGHBOORS,
 }ErrFlag;
 
-#define GT_OK FG_OK
-#define ERRFLAG_OK FG_OK
-#define MV_OK FG_OK
-#define T_OK FG_OK
-#define WA_OK FG_OK
-#define WTE_OK FG_OK 
-#define WT_OK FG_OK
+//fg just stands for flag
+#define GT_OK FG_OK //gt stands for graph table
+#define ERRFLAG_OK FG_OK //errglag are the global/ generic flags for 
+#define MV_OK FG_OK //mv stands for movement
+#define T_OK FG_OK //t stands for tactics 
+#define WA_OK FG_OK //wa stands from walker array
+#define WTE_OK FG_OK //wte stands for walker table entry 
+#define WT_OK FG_OK //wt stands for walker table (deprecated)
+#define GE_OK FG_OK //ge stands for graph table entry 
 
 #include <stdlib.h>
 #include <stdio.h>

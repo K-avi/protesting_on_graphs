@@ -51,6 +51,7 @@ uint8_t printGraphTab( GraphTable * gt, FILE * stream);
 
 uint8_t addEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ); 
 uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walker_id);
+void printEntriesGT( GraphTable * gtable, FILE * stream);
 
 
 #ifdef debug_mode 

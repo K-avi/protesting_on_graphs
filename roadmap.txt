@@ -1,15 +1,5 @@
 redesign of code structure count : 1 (hopefully it won't get higher)
 
-I've changed the graph structure to something more intricate; the graph is some kind of table 
-where table[i] stores relevant informations regarding the node i (adjacency list, number of walkers here etc)
-
-this structure is somewhat of a "merge" between the graph structure AND the WalkerTable structure. 
-
-it NEEDS to have it's size passed to it before allocating it and WILL NOT rely on dynamic arrays. 
-(except for the walker table entries of course )
-
-this also goes with the new Line structure I think 
-
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
   
  
@@ -24,7 +14,7 @@ done :
     
     - script can load a city into a networkx graph thingy (easy part) 
 
-    - walker structure pretty much done (testing pending though)
+    - walker structure pretty much done 
 
     - apparently I wrote a tactics structure I didn't even remember it 
 
@@ -32,13 +22,14 @@ done :
 
     - wrote the table manip fn ; haven't tested them yet
 
+    - graph table fully implmented 
+
+    - deleted deprecated stuff
+
+    - implemented some of the movement ; tested it 
+
 
 pending :  
-
-    - finish the graph table : 
-        - test the fucking functions ffs 
-    
-    - once testing is done delete deprecated stuff 
 
     - figure out the way to implement movement : 
         - add iteration field to line arr and walkers; if don't match don't take into account 
@@ -54,7 +45,15 @@ pending :
 
     - once all of this is done I can actually start to simulate stuff 
 
-make a choice 
+    - write propper error reporting 
+
+    - write the trace fn 
+
+    - maybe make a "misc" file w the memory + error functions in it 
+
+    - if I have the time use custom malloc 
+
+make a choice for the movement of walkers in the table 
   -> append by ref of entry (know which index) 
   -> append by index of entry  (use the index)
-Imma implement both and see which one is the best 
+I'll implement both and see which one is the best 

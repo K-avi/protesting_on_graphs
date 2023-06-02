@@ -114,7 +114,7 @@ uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr
     */
     if(!tabEntry) return WTE_NULL;
 
-    Walker * last_walker = tabEntry->walkers[tabEntry->curr_in--];
+    Walker * last_walker = tabEntry->walkers[--tabEntry->curr_in];
 
     tabEntry->walkers[walker_arr_index]=last_walker; //replaces walker at desired index
 
@@ -124,8 +124,12 @@ uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr
 
 void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
     /* */
+    if(!tabEntry) {printf("null tab in pwe\n"); return;}
+
     for(uint32_t i=0; i<tabEntry->curr_in ; i++){
-        fprintf(stream, "%u\n",  tabEntry->walkers[i]->id);
+        if(i!=tabEntry->curr_in-1) 
+            fprintf(stream, "%u:",  tabEntry->walkers[i]->id);
+        else fprintf(stream, "%u",  tabEntry->walkers[i]->id);
     }
     fprintf(stream, "\n");
 }//not tested 

@@ -25,14 +25,14 @@ void freeGtEntry( GraphTableEntry * gentry){
 }//tested; ok
 
 
-static uint8_t initnLineArr( nLineArray * lineArr, uint32_t arrline_size){
+static uint8_t initnLineArr( LineArray * lineArr, uint32_t arrline_size){
     /*
     initialises an already allocated lineArr
     */
     if(!lineArr) return GT_NULL;
 
     lineArr->array=NULL; 
-    lineArr->array=(nLine*) GROW_ARRAY(nLine, lineArr->array, 0, arrline_size);
+    lineArr->array=(Line*) GROW_ARRAY(Line, lineArr->array, 0, arrline_size);
 
     if(!lineArr->array) return GT_MALLOC;
 
@@ -42,7 +42,7 @@ static uint8_t initnLineArr( nLineArray * lineArr, uint32_t arrline_size){
     return GT_OK;
 }// tested ok
 
-static void freeLineArr( nLineArray * lineArr){
+static void freeLineArr( LineArray * lineArr){
     /*
     frees the content of a lineArray
     warning : doesn't free the line array itself
@@ -72,7 +72,7 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
         if(failure) return failure;
     }
 
-    gt->arrLine=malloc(sizeof(nLineArray));
+    gt->arrLine=malloc(sizeof(LineArray));
     if(!gt->arrLine) return GT_MALLOC;
 
     uint8_t failure= initnLineArr(gt->arrLine, arrline_size);
@@ -101,7 +101,7 @@ void freeGraphTab( GraphTable * gt){
 
 
 static uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighboor_num, \
-                            nLine*  first_neighboor_ref){
+                            Line*  first_neighboor_ref){
     /*
     doesn't if node already set to smtg  ; sets the ref of first elem , and neighboor num 
     of a node at index given
@@ -132,7 +132,7 @@ static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
     if(node_index> gt->table_size) return GT_INDEX;
     if(gt->arrLine->cur_in==gt->arrLine->size) return GT_ARFULL;
 
-    nLineArray* arrline = gt->arrLine;
+    LineArray* arrline = gt->arrLine;
 
     arrline->array[arrline->cur_in].node_index=node_index; 
     arrline->array[arrline->cur_in].flux=flux;
@@ -346,7 +346,7 @@ void printEntriesGT( GraphTable * gtable, FILE * stream){
     prints the table entries of a gtable; usefull for trace 
     */
     for(uint32_t i=0; i<gtable->table_size; i++){
-        fprintf(stream, "%u:", i);
+        fprintf(stream, "%u,", i);
         printWalkerEntry(&gtable->entries[i].walker_entry, stream);
     }
 }//tested ; seems ok

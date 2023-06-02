@@ -1,7 +1,13 @@
 The CSV format used to write / read graphs will be as follows :
 
-the fields are separated by a comma. Inside the line field , the lines are 
-separated by a colon. 
+the first line of the csv contains the number of nodes / lines in the graph
 
+the next lines represent the adjacency lists of the nodes 
+
+the fields are separated by a comma. Inside the line field , 
+the lines are separated by a colon. 
 
 node_index,number_of_lines,line1:flux1;line2:flux2...lineN:fluxN
+
+this representation allows to store a graph with custom flux (usefull to
+dump a trace from a certain generation)  

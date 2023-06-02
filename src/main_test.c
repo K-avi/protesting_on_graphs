@@ -3,6 +3,7 @@
 #include "memory.h"
 #include "walker.h"
 #include "movement.h"
+#include <stdio.h>
 
 
 
@@ -107,32 +108,38 @@ int main(){
     GraphTable gt1; 
     
     uint8_t failure = loadGraphTab( &gt1, "test_graph/gt_test0.csv", DEFAULT_CAPA_WTE);
-
     if(failure) printf("failure code : %u\n", failure);
-    printGraphTab(&gt1, stdout);
+   
+   // printGraphTab(&gt1, stdout);
 
     WalkerArray warray; 
 
-    initWalkerArray(&warray, 10);
+    initWalkerArray(&warray, 30);
 
-    warray.array[0].id=0;
-    warray.array[1].id=1;
-    warray.array[2].id=2;
-
-
-    addEntryGT(&gt1, 1, &warray.array[1] );
-    addEntryGT(&gt1, 4, &warray.array[0] );
-    addEntryGT(&gt1, 2, &warray.array[2] );
+    initPos(&gt1, &warray);
 
     printEntriesGT(&gt1, stdout);
 
-    uint8_t test_fail=  addEntryGT(&gt1, 15, &warray.array[2] );
-    if(test_fail) printf("test_fail code : %u\n", test_fail);
+   // uint8_t test_fail=  addEntryGT(&gt1, 15, &warray.array[2] );
+    //if(test_fail) printf("test_fail code : %u\n", test_fail);
 
-    uint8_t rmfail = removeEntryGT(&gt1, 1, 1);
-    if(rmfail) printf("rmfail code : %u\n", rmfail);
+   // uint8_t rmfail = removeEntryGT(&gt1, 1, gt1.entries[1].walker_entry.walkers[0]->id);
+//    if(rmfail) printf("rmfail code : %u\n", rmfail);
+
+   // printf("%p",  gt1.entries[0].walker_entry.walkers[0]);
+
+    removeEntryGT(&gt1, 0 , gt1.entries[0].walker_entry.walkers[0]->id);
 
 
+    //printf("%p",  gt1.entries[0].walker_entry.walkers[0]);
+     printEntriesGT(&gt1, stdout);
+
+    //printEntriesGT(&gt1, stdout);
+
+
+    moveEntry(&gt1, gt1.entries[1].walker_entry.walkers[0], 1, 0);
+
+    printf("\n-------------------\n");
     printEntriesGT(&gt1, stdout);
 
     freeWalkerArray(&warray);

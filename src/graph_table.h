@@ -9,24 +9,24 @@
 
 typedef struct s_graph_table_entry GraphTableEntry;
 
-typedef struct ns_line{ //prototype for new line struct 
+typedef struct s_line{ //prototype for new line struct 
     GraphTableEntry * tabRef; //index of b in the line (a,b) as pointer cuz faster to dereference
     uint32_t node_index; //index of b in the line (a,b) as index cuz faster to print
     int32_t flux;
-}nLine; 
+}Line; 
 
-typedef struct ns_line_array{//STATIC ARRAY 
+typedef struct s_line_array{//STATIC ARRAY 
     uint32_t size; 
     uint32_t cur_in;
-    nLine * array ;
+    Line * array ;
 //hollup this fella could be dynamic actually it's not very relevant 
 //I'll see which one is more convenient
-}nLineArray;
+}LineArray;
 
 struct s_graph_table_entry{
 
     WalkerTableEntry walker_entry ; //maybe pass em by reference 
-    nLine * first_neighboor_ref;
+    Line * first_neighboor_ref;
     uint32_t neighboor_num;
 
 };
@@ -36,7 +36,7 @@ typedef struct s_graph_table{ //table indexed by key of node (it's an int)
     uint32_t table_size ;
     
     GraphTableEntry * entries;
-    nLineArray*  arrLine;
+    LineArray*  arrLine;
 
 }GraphTable ;
 

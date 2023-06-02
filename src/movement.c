@@ -20,7 +20,7 @@ uint8_t initPos(GraphTable * gtable, WalkerArray *walkerArr){
     }
 
     return MV_OK;
-}//not tested 
+}// tested  ; ok
 
 uint8_t moveEntry(GraphTable * gtable, Walker* wkref,uint32_t node_from , uint32_t node_to){
     /*
@@ -41,7 +41,7 @@ uint8_t moveEntry(GraphTable * gtable, Walker* wkref,uint32_t node_from , uint32
     if(failure) return failure;
 
     return MV_OK;
-}//not tested should make variant of fn where I pass node_to by ref of the entry
+}//tested; ok should make variant of fn where I pass node_to by ref of the entry
 
 uint8_t chooseRandDest( GraphTable * gtable , uint32_t node_from, uint32_t * index_node_to){
     /*

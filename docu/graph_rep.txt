@@ -1,8 +1,0 @@
-a graph is represented by a simple implementation of an adjacency list.
-
-The idea of it is that one array stores the nodes of the graph , the degree of said nodes and the index (or reference I'm not sure 
-yet) of their first neighboor in an array.
-In a second array we store, in order every nodes b in a line (a, b ). A way to see it is that we store the adjacency 
-lists directly one after the other in an array.
-
-  

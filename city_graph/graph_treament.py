@@ -33,8 +33,8 @@ def discretise(Graph, step):
 
 def makeCSV(Graph, path):
     """
-    build the string corresponding to the custom csv rep 
-    of a graph and then dumps it in the file stored at "path"
+    writes the custom csv corresponding to the graph passed
+    as argument in the file at path
     """ 
     with open (path, "w") as file: 
      
@@ -43,12 +43,32 @@ def makeCSV(Graph, path):
             file.write(f'{i},{Graph.degree(i)},{":0;".join( str(i) for i in Graph.neighbors(i))+":0"}\n')
     file.close
 
+def loadCSV(path):
+    """
+    creates a networx graph from the custom csv stored at path
+    should prolly use a real csv loader but this function is somewhat 
+    trivial so it doesn't really mater I guess
+    """
+    ret_graph = nx.Graph()
+    
+    with open (path, "r") as file: 
+        next(file)
+        for line in file:
+            node_from=line.split(",")[0]
+            nodes_to=line.split(",")[2].split(";")
+            for i in nodes_to:  
+                node_to = i.split(":")[0]
+                ret_graph.add_edge(int(node_from), int(node_to))         
+    file.close
+    #ret_graph= nx.convert_node_labels_to_integers(ret_graph,ordering='default', label_attribute=None)
+    return ret_graph
+
 
 def main():
     """
     creates a MG from the args passed; turns it into a normal directed graph 
     """
-
+    """
     parser = arg.ArgumentParser(prog="graph_parser",description="script retrieving a graph from \
         osm and treating it for use with the graph_walker program")
     parser.add_argument('lattitude',metavar='latt',type=float,nargs=1,help="floating point number corresponding \
@@ -74,9 +94,15 @@ def main():
     DGG= discretise( GG, step) # let's go     
     #nx.draw(GG)
     #nx.draw(DGG)
+    
     makeCSV(DGG, path) 
+    """
+    t=loadCSV("paris_test.csv")
+    makeCSV(t, "paris_test_cp.csv")
     
     return 0
+
+   
    
 
 

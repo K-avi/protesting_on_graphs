@@ -1,10 +1,5 @@
 #include "movement.h"
 #include "common.h"
-#include "graph_table.h"
-#include "tactics.h"
-#include "walker.h"
-#include <stdint.h>
-
 
 uint8_t initPos(GraphTable * gtable, WalkerArray *walkerArr){
     /*
@@ -30,8 +25,7 @@ uint8_t moveEntry(GraphTable * gtable, Walker* wkref,uint32_t node_from , uint32
     to do so , deletes the walker ref from the walker table stored at index node_from of the table 
     and adds it to the node_to walker table
 
-    doesn't report wkref== null
-    
+    doesn't report wkref== null 
     */  
     if(!gtable) return GT_NULL;
     if(!wkref) return WKR_NULL;
@@ -56,10 +50,9 @@ uint8_t moveEntryVar(GraphTable * gtable, Walker* wkref,uint32_t node_from , uin
     if(failure) return failure;
 
     return MV_OK;
-}
+}//do NOT use that
 
-
-
+//crap 
 uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
     /*
     the main movement function ; takes a fully intialised gtable and iterates
@@ -72,7 +65,6 @@ uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
     O( (a0+...+aN)*n*t) where a0...aN is the number of walkers at each entry
     */
     if(!gtable) return GT_NULL;
-
     
     for(uint32_t i=0; i<gtable->table_size;i++){
         
@@ -84,23 +76,24 @@ uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
                 gtable->entries->walker_entry.walkers[j]->curgen++;
 
                 //wrong bc the walkers are moved around in the array when u move em im stupid ffs 
-                uint32_t node_to;
-                uint8_t failure = chooseNode(tactics, gtable, i, &node_to);
+               
+                Line line_to;
+                uint8_t failure = chooseNodeVar(tactics, gtable, i, &line_to);
                 if(failure) return failure;
-
+            //this still doesn't work though       
                 //updating flux should happen when choosing a node or I should return the line w the node 
                 //to 
-                failure =moveEntry(gtable, gtable->entries[i].walker_entry.walkers[j] , i , node_to);
+                failure =addWalkerEntry(&line_to.tabRef->walker_entry, gtable->entries[i].walker_entry.walkers[j]);
                 if(failure) return failure;
             }
-
         }
     }
     gtable->curgen++;
-
     return MV_OK;
 }//doesnt update flux atm 
 //far from finished 
+//actually awful
+//damnit
 /*
 needs to : 
 

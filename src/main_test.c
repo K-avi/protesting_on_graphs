@@ -1,8 +1,10 @@
 #include "common.h"
 #include "graph_table.h"
 #include "memory.h"
+#include "tactics.h"
 #include "walker.h"
 #include "movement.h"
+
 #include <stdio.h>
 
 
@@ -105,9 +107,10 @@ int main(){
     /*
     tests 02/06
     */
+    /*
     GraphTable gt1; 
     
-    uint8_t failure = loadGraphTab( &gt1, "test_graph/gt_test0.csv", DEFAULT_CAPA_WTE);
+    uint8_t failure = loadGraphTab( &gt1, "test_graph/gt_test0.csv", DEFAULT_CAPA_WTE, 0);
     if(failure) printf("failure code : %u\n", failure);
    
    // printGraphTab(&gt1, stdout);
@@ -144,7 +147,24 @@ int main(){
 
     freeWalkerArray(&warray);
     freeGraphTab(&gt1);
-   
+
+
+    Tactics t ; 
+
+    initTactics(&t, 5);
+
+    addRule(&t, 1, &ruleRandVar);
+
+    freeTactics(&t);
+*/
+    GraphTable gtParis; 
+
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv", 200, 0);
+    if(failure) printf("failure code : %u\n", failure);
+
+  //printGraphTab(&gtParis, stdout);
+
+    freeGraphTab(&gtParis);
 
     return 0;
 }

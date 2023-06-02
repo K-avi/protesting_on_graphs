@@ -1,6 +1,7 @@
 #include "graph_table.h"
 #include "memory.h"
 #include <stdint.h>
+#include <stdio.h>
 
 uint8_t initGtEntry( GraphTableEntry * gentry , int32_t we_size){
     /*
@@ -131,7 +132,7 @@ static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux_cu
     if(!gt) return GT_NULL;
     if(!gt->arrLine) return GT_NULL;
     if(node_index> gt->table_size) return GT_INDEX;
-    if(gt->arrLine->cur_in==gt->arrLine->size) return GT_ARFULL;
+    if(gt->arrLine->cur_in==gt->arrLine->size){ fprintf(stderr, "arrfull at node %u\n", node_index); return GT_ARFULL;}
 
     LineArray* arrline = gt->arrLine;
 
@@ -178,7 +179,7 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
 }// tested; seems ok
 
 
-static inline bool peek(const char * str, char expected){
+static  bool peek(const char * str, char expected){
     return *str==expected;
 }
 
@@ -212,12 +213,12 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t cur
     char * end1,*cur1=line;
     uint32_t  table_size = (uint32_t) strtol(cur1, &end1, 10);
     if(peek(end1, ',') && cur1!=end1) cur1=(++end1);
-    else{ fclose(f); return GT_PARSE; }
+    else{ fclose(f); printf("parse err0\n"); return GT_PARSE; }
     
     uint32_t arrline_size = (uint32_t) strtol(cur1, &end1, 10);
    
     if(cur1!=end1) cur1=(++end1);
-    else{fclose(f); return GT_PARSE;}
+    else{fclose(f); printf("parse err1\n");return GT_PARSE;}
 
     //initialises graph with values consumed on the first line
     uint8_t failure= initGraphTab(gt, arrline_size,  table_size, we_size, curgen);
@@ -225,23 +226,19 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t cur
 
     uint32_t cpt=0; 
     //keep track of nblines consumed ; report error if nbline consumed higher than counter
-
+    
     while(fgets(line, 256, f) && cpt<table_size){
-        
-        
         char* end, *cur=line;
         if(emptyLine(cur)) continue; // ignores empty lines
-
-
         cpt++; 
 
         uint32_t node_index = (uint32_t) strtol(cur, &end, 10); //retrieves index
         if(peek(end, ',') && cur!=end) cur=(++end);
-        else{return GT_PARSE;}
+        else{  fclose(f); printf("parse err2\n");return GT_PARSE;}
 
         uint32_t neighboor_num = (uint32_t) strtol(cur, &end, 10); //retrieves neighboor num
         if(peek(end, ',') && cur!=end) cur=(++end);
-        else {  return GT_PARSE;}
+        else {  fclose(f); printf("parse err3\n");return GT_PARSE;}
 
         //appends node to the node section
         uint8_t errflag= appNodeGt(gt, node_index, neighboor_num, &(gt->arrLine->array[gt->arrLine->cur_in]));
@@ -252,10 +249,13 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t cur
             /*
             adds the lines / flux
             */
+          
             uint32_t new_neighboor= (uint32_t) strtol(cur, &end, 10);
-            if(peek(end, ':') && cur!=end) cur=(++end);
+           
+            if(peek(end, ':') && cur!=end) cur=(++end);    
             else {
-              
+                fclose(f);
+               
                 return GT_PARSE;
             }
 
@@ -263,16 +263,23 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t cur
             if(i!=neighboor_num-1){
                 if(peek(end, ';') && cur!=end ) cur=(++end);
                 else {
-                  
+                    fclose(f);
+                    printf("parse err5\n");
                     return GT_PARSE;
                 }
             }else{
-                if( cur==end) return GT_PARSE; 
+                if( cur==end){
+                    fclose(f);
+                    printf("parse err6\n");
+                     return GT_PARSE; 
+                }
             }
 
             uint8_t errflag_in = appLineGt(gt, new_neighboor, flux, flux);
             if(errflag_in ) return errflag_in;
+            
         }
+        memset(line, 0, 256);
     }  
     fclose(f);
     return GT_OK;

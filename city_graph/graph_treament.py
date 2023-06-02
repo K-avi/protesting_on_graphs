@@ -1,8 +1,10 @@
+#!/bin/python3.10
 #this is the file doing to the retrieval/ treatment of city graphs using OSMNX 
 import osmnx as ox
 import networkx as nx
 import argparse as arg
 import numpy as np
+import matplotlib.pyplot as plt
 
 def discretise(Graph, step): 
     """
@@ -17,17 +19,16 @@ def discretise(Graph, step):
     for lines in Graph.edges(data="length"): 
         (a,b,length)=lines
         if(length > step ): 
-            
+        
             size= int(length/step)
-         
             new_graph= nx.Graph()
-            nx.add_path(new_graph, [a]+ [str(i) for i in range(0,size) ] +[b])
+            nx.add_path(new_graph, [a]+ [str(i)+str(a)+str(b) for i in range(0,size) ] +[b])
             
             ret_graph = nx.compose(ret_graph ,new_graph)      
         else : 
             ret_graph.add_edge(a, b)
     
-    nx.convert_node_labels_to_integers(ret_graph)
+    ret_graph= nx.convert_node_labels_to_integers(ret_graph,ordering='default', label_attribute=None)
     return ret_graph
 
 def makeCSV(Graph, path):
@@ -35,7 +36,12 @@ def makeCSV(Graph, path):
     build the string corresponding to the custom csv rep 
     of a graph and then dumps it in the file stored at "path"
     """ 
-    print("bonjour, je ne suis pas un csv")
+    with open (path, "w") as file: 
+     
+        file.write(f"{Graph.number_of_nodes()},{Graph.number_of_edges()*2}\n") #2 times nb of edges cuz need (a,b) and (b,a)
+        for i in Graph.nodes:
+            file.write(f'{i},{Graph.degree(i)},{":0;".join( str(i) for i in Graph.neighbors(i))+":0"}\n')
+    file.close
 
 
 def main():
@@ -62,19 +68,17 @@ def main():
     center= (latt,long)
 
     MG= ox.graph.graph_from_point( center_point=center, dist=rad, retain_all=False) #retrieves multigraph
-    dict(MG.degree(weight='weight'))
+    dict(MG.degree(weight='weight')) 
     
-    
-    #print(MG.edges(data="length"))
     GG= nx.Graph(MG) #turns it into a normal graph 
+    DGG= discretise( GG, step) # let's go     
+    #nx.draw(GG)
+    #nx.draw(DGG)
+    makeCSV(DGG, path) 
     
-    print(GG)
-    
-    DGG= discretise( GG, step) # :(
-        
-    print(DGG)
-   # makeCSV(GG, path) 
-    
+    return 0
+   
+
 
 if __name__=='__main__' :
     main()

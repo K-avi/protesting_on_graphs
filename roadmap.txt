@@ -62,3 +62,9 @@ change format to retrieve curgen info of the simul
 
 the rules should actually prolly return a line cuz it allows to update flux information fast 
 so it's likely better to work w entry references n stuff in the code 
+
+hollup is the flux the number of ppl going FROM a to b 
+or the number of ppl that went in n out of a node a 
+uh oh
+
+./graph_treament.py 48.866 2.33 1000 10 /tmp/tmp

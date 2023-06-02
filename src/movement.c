@@ -1,6 +1,7 @@
 #include "movement.h"
 #include "common.h"
 #include "graph_table.h"
+#include "tactics.h"
 #include "walker.h"
 #include <stdint.h>
 
@@ -33,6 +34,7 @@ uint8_t moveEntry(GraphTable * gtable, Walker* wkref,uint32_t node_from , uint32
     
     */  
     if(!gtable) return GT_NULL;
+    if(!wkref) return WKR_NULL;
 
     uint8_t failure= removeEntryGT(gtable, node_from, wkref->id);
     if (failure) return failure;
@@ -43,25 +45,20 @@ uint8_t moveEntry(GraphTable * gtable, Walker* wkref,uint32_t node_from , uint32
     return MV_OK;
 }//tested; ok should make variant of fn where I pass node_to by ref of the entry
 
-uint8_t chooseRandDest( GraphTable * gtable , uint32_t node_from, uint32_t * index_node_to){
+
+uint8_t moveEntryVar(GraphTable * gtable, Walker* wkref,uint32_t node_from , uint32_t node_to){
     /*
-    chooses a random neighboor node at entry node from in a gt;
-    
-    WARNING : in order to repport errors the node chosen is
-    returned by reference in the index_node_to argument
-    O(1)
     */
     if(!gtable) return GT_NULL;
-    if(!index_node_to) return NDREF_NULL;
-    if(node_from>gtable->table_size) return GT_SIZE;
+    if(!wkref) return WKR_NULL;
 
-    if(gtable->entries[node_from].neighboor_num==0) return MV_NONEIGHBOORS;
-    *index_node_to=(gtable->entries[node_from].first_neighboor_ref+(rand()%gtable->entries[node_from].neighboor_num))->node_index;
+    uint8_t failure= addEntryGT(gtable, node_to, wkref);
+    if(failure) return failure;
 
     return MV_OK;
-}//not tested 
-//should make equivalent of the func where I just return the ref 
-//this is clearly a rule fn why the hell is it there 
+}
+
+
 
 uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
     /*
@@ -76,5 +73,39 @@ uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
     */
     if(!gtable) return GT_NULL;
 
+    
+    for(uint32_t i=0; i<gtable->table_size;i++){
+        
+        for(uint32_t j=0; j<gtable->entries[i].walker_entry.curr_in; j++){
+            
+            //moves check that the generation matches 
+            if(gtable->entries->walker_entry.walkers[j]->curgen==gtable->curgen){
+
+                gtable->entries->walker_entry.walkers[j]->curgen++;
+
+                //wrong bc the walkers are moved around in the array when u move em im stupid ffs 
+                uint32_t node_to;
+                uint8_t failure = chooseNode(tactics, gtable, i, &node_to);
+                if(failure) return failure;
+
+                //updating flux should happen when choosing a node or I should return the line w the node 
+                //to 
+                failure =moveEntry(gtable, gtable->entries[i].walker_entry.walkers[j] , i , node_to);
+                if(failure) return failure;
+            }
+
+        }
+    }
+    gtable->curgen++;
+
     return MV_OK;
-}//not done
+}//doesnt update flux atm 
+//far from finished 
+/*
+needs to : 
+
+-update flux 
+-update gen of walker 
+-update gen of nodes or smtg
+*/
+

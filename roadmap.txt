@@ -57,3 +57,8 @@ make a choice for the movement of walkers in the table
   -> append by ref of entry (know which index) 
   -> append by index of entry  (use the index)
 I'll implement both and see which one is the best 
+
+change format to retrieve curgen info of the simul
+
+the rules should actually prolly return a line cuz it allows to update flux information fast 
+so it's likely better to work w entry references n stuff in the code 

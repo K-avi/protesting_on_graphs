@@ -9,9 +9,11 @@ typedef enum {
     GT_PARSE, GT_NOWRITE , GT_OPENFAIL, ERRFLAG_NOFILE,  GE_NULL, GE_MALLOC, GE_REALLOC, 
     GT_ARFULL, T_NULL, T_REALLOC, WA_NULL, WA_ALLOC,  WTE_NULL, WTE_REALLOC, WTE_IN, 
     WT_NULL, WT_REALLOC, WT_INDEX_TOO_BIG, WT_NOT_FOUND, GT_SIZE, GTE_NULL, NDREF_NULL, 
-    MV_NONEIGHBOORS,
+    MV_NONEIGHBOORS, WKR_NULL, LINEREF_NULL,
 }ErrFlag;
 
+//ndref stands for node ref 
+//wkr stands for walker ref
 //fg just stands for flag
 #define GT_OK FG_OK //gt stands for graph table
 #define ERRFLAG_OK FG_OK //errglag are the global/ generic flags for 

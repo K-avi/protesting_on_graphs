@@ -1,5 +1,6 @@
 #include "graph_table.h"
 #include "memory.h"
+#include <stdint.h>
 
 uint8_t initGtEntry( GraphTableEntry * gentry , int32_t we_size){
     /*
@@ -51,7 +52,7 @@ static void freeLineArr( LineArray * lineArr){
     if(lineArr->array) free(lineArr->array);
 } // tested ok
 
-uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size ){
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size, uint32_t curgen ){
     /*
     initialises a non null graph table ; sets it's entries to default values and initialises 
     it's walker entries
@@ -59,7 +60,7 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     if(!gt) return GT_NULL;
 
     gt->table_size= table_size; 
-    
+    gt->curgen=curgen;
     gt->entries=NULL;
     gt->entries=GROW_ARRAY(GraphTableEntry, gt->entries, 0, table_size );
 
@@ -187,7 +188,7 @@ static bool emptyLine( char * str){
     return (*str=='\0' || *str=='\n');
 }
 
-uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
+uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t curgen){
     /*
     takes a non initialised ; non null , empty gt and loads a graph stored at path into it
     also pass walk table entry size parameter cuz it's better looking than to init w a global var
@@ -219,7 +220,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
     else{fclose(f); return GT_PARSE;}
 
     //initialises graph with values consumed on the first line
-    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, we_size);
+    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, we_size, curgen);
     if(failure) { fclose(f); return failure;}
 
     uint32_t cpt=0; 
@@ -343,6 +344,7 @@ uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walke
     return succes;
  
 }//tested; seems ok
+//didnt check for removal of last element actually 
 
 
 void printEntriesGT( GraphTable * gtable, FILE * stream){

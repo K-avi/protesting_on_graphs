@@ -11,8 +11,7 @@ def discretise(Graph, step):
     i.e : creates new nodes when the distance between the nodes a,b in a line 
     is bigger than step  
     returns new graph
-    """
-    
+    """ 
     ret_graph=nx.Graph()
     
     for lines in Graph.edges(data="length"): 
@@ -21,19 +20,10 @@ def discretise(Graph, step):
             
             size= int(length/step)
          
-            #makes newgraph from adj mat 
-            """mat = np.eye(N=size, k=1, dtype=int)
-            sym_mat= mat + mat.T
-            G=nx.from_numpy_array(sym_mat) 
+            new_graph= nx.Graph()
+            nx.add_path(new_graph, [a]+ [str(i) for i in range(0,size) ] +[b])
             
-            mapping = dict()
-            G = nx.relabel_nodes(G, mapping, copy=False)
-            
-            #RetGraph.add_edge(a, G.)
-            print(G)"""
-            
-            nx.add_path(RetGraph, a+[]+b )
-            
+            ret_graph = nx.compose(ret_graph ,new_graph)      
         else : 
             ret_graph.add_edge(a, b)
     
@@ -78,7 +68,11 @@ def main():
     #print(MG.edges(data="length"))
     GG= nx.Graph(MG) #turns it into a normal graph 
     
+    print(GG)
+    
     DGG= discretise( GG, step) # :(
+        
+    print(DGG)
    # makeCSV(GG, path) 
     
 

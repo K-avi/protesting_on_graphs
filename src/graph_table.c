@@ -120,7 +120,7 @@ static uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighb
 }//tested ; ok
 
 
-static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
+static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux_cur ,int32_t flux_next ){
     /*
     appends ONE line to the line tab of a graph table ;
     checks for valid node 
@@ -135,7 +135,8 @@ static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux ){
     LineArray* arrline = gt->arrLine;
 
     arrline->array[arrline->cur_in].node_index=node_index; 
-    arrline->array[arrline->cur_in].flux=flux;
+    arrline->array[arrline->cur_in].flux_cur=flux_cur;
+    arrline->array[arrline->cur_in].flux_next=flux_next;
     arrline->array[arrline->cur_in].tabRef=&(gt->entries[node_index]);
 
     arrline->cur_in++;
@@ -164,10 +165,10 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
             if(gt->entries->first_neighboor_ref){
                 if(j!=gt->entries[i].neighboor_num-1) 
                     fprintf(stream, "%u:%d;", (gt->entries[i].first_neighboor_ref+j)->node_index,\
-                         (gt->entries[i].first_neighboor_ref)->flux );
+                         (gt->entries[i].first_neighboor_ref)->flux_cur );
                 else
                     fprintf(stream, "%u:%d", (gt->entries[i].first_neighboor_ref+j)->node_index, \
-                        (gt->entries[i].first_neighboor_ref+j)->flux);  
+                        (gt->entries[i].first_neighboor_ref+j)->flux_cur);  
             }
         }
         fprintf(stream, "\n");
@@ -268,13 +269,16 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size){
                 if( cur==end) return GT_PARSE; 
             }
 
-            uint8_t errflag_in = appLineGt(gt, new_neighboor, flux);
+            uint8_t errflag_in = appLineGt(gt, new_neighboor, flux, flux);
             if(errflag_in ) return errflag_in;
         }
     }  
     fclose(f);
     return GT_OK;
 }//tested; seems ok ; ugly 
+
+//WARNING : initialises both flux_cur and flux_next to the flux value read; it might be a problem 
+//if the fn is used wrong ; I might change format to path 2 flux values
 
 
 uint8_t writeGraphTab(GraphTable * gt, char *path ){

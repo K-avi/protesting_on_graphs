@@ -67,8 +67,9 @@ def loadCSV(path):
 def main():
     """
     creates a MG from the args passed; turns it into a normal directed graph 
+    and writes it into the file passed as argument
     """
-    """
+    
     parser = arg.ArgumentParser(prog="graph_parser",description="script retrieving a graph from \
         osm and treating it for use with the graph_walker program")
     parser.add_argument('lattitude',metavar='latt',type=float,nargs=1,help="floating point number corresponding \
@@ -92,18 +93,9 @@ def main():
     
     GG= nx.Graph(MG) #turns it into a normal graph 
     DGG= discretise( GG, step) # let's go     
-    #nx.draw(GG)
-    #nx.draw(DGG)
-    
     makeCSV(DGG, path) 
-    """
-    t=loadCSV("paris_test.csv")
-    makeCSV(t, "paris_test_cp.csv")
-    
+ 
     return 0
-
-   
-   
 
 
 if __name__=='__main__' :

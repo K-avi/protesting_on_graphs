@@ -53,8 +53,8 @@ uint8_t writeGraphTab( GraphTable * gt,  char *path );
 
 uint8_t printGraphTab( GraphTable * gt, FILE * stream);
 
-uint8_t addEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ); 
-uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walker_id);
+uint8_t pushEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ); 
+uint8_t popEntryGT( GraphTable * gtable, uint32_t index_entry,  Walker ** wkref_ret); //might be useless 
 void printEntriesGT( GraphTable * gtable, FILE * stream);
 
 

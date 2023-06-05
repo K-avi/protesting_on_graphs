@@ -1,4 +1,5 @@
-redesign of code structure count : 1 (hopefully it won't get higher)
+redesign of code structure count : 2 (does completely rewritting the walker entry structure counts? 
+I think it does.)
 
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
   
@@ -34,20 +35,14 @@ done :
 
 
 
-holy shit I know how to make the movement related stuff ; I should have two stacks to store walkers 
-in the walker table ; 
-
-one stack is the stack at the beginning of a generation and is where the walkers currently are 
-and the second one will be the "destination" of the walkers after the first iteration . 
-
-this means that when i start a new simulation the current stack become the one of the next gen and 
-the one of the next gen gets flushed 
-
-when a walker moves from a node it goes in the stack for the next gen 
-this means that I have insertion and deletion of a walker in O(1) and I maintain the search of 
-it given a key in O(a) where a is the number of walkers in the stack
-
 pending :  
+
+    - test the new wte structure 
+    - test the updated graph_table functions 
+
+    - finish implem of new WTE : 
+        - fix / finish movement implem 
+        
 
     - figure out the way to implement movement : 
         - add iteration field to line arr and walkers; if don't match don't take into account 

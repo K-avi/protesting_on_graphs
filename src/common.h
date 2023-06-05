@@ -9,7 +9,7 @@ typedef enum {
     GT_PARSE, GT_NOWRITE , GT_OPENFAIL, ERRFLAG_NOFILE,  GE_NULL, GE_MALLOC, GE_REALLOC, 
     GT_ARFULL, T_NULL, T_REALLOC, WA_NULL, WA_ALLOC,  WTE_NULL, WTE_REALLOC, WTE_IN, 
     WT_NULL, WT_REALLOC, WT_INDEX_TOO_BIG, WT_NOT_FOUND, GT_SIZE, GTE_NULL, NDREF_NULL, 
-    MV_NONEIGHBOORS, WKR_NULL, LINEREF_NULL,
+    MV_NONEIGHBOORS, WKR_NULL, LINEREF_NULL, WRS_NULL, WRS_MALLOC, WRS_REALLOC, WRS_EMPTYSTACK
 }ErrFlag;
 
 //ndref stands for node ref 
@@ -23,6 +23,7 @@ typedef enum {
 #define WTE_OK FG_OK //wte stands for walker table entry 
 #define WT_OK FG_OK //wt stands for walker table (deprecated)
 #define GE_OK FG_OK //ge stands for graph table entry 
+#define WRS_OK FG_OK//wrf stands for walker ref stack
 
 #include <stdlib.h>
 #include <stdio.h>

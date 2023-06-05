@@ -1,5 +1,6 @@
 #include "graph_table.h"
 #include "memory.h"
+#include "walker.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -308,7 +309,7 @@ uint8_t writeGraphTab(GraphTable * gt, char *path ){
 
 ////
 
-uint8_t addEntryGtVar ( GraphTableEntry * gtentry, Walker* walker){
+uint8_t pushEntryGtVar ( GraphTableEntry * gtentry, Walker* walker){
     /*
     variant of the function where the walker is added from the entry directly 
 
@@ -316,11 +317,11 @@ uint8_t addEntryGtVar ( GraphTableEntry * gtentry, Walker* walker){
     */
     if(!gtentry) return GTE_NULL;
 
-    uint8_t success= addWalkerEntry(&gtentry->walker_entry,walker);
+    uint8_t success= push_wte_nextstack(&gtentry->walker_entry,walker);
     return success;
 }//not tested 
 
-uint8_t addEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ){
+uint8_t pushEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ){
     /*
     adds a walker entry in a walk table entry at index passed 
     O(1)
@@ -328,29 +329,24 @@ uint8_t addEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_re
     if(!gtable) return GT_NULL;
     if(index_entry> gtable->table_size) return GT_SIZE;
 
-    uint8_t failure = addWalkerEntry( &gtable->entries[index_entry].walker_entry , walker_ref);
+    uint8_t failure = push_wte_nextstack( &gtable->entries[index_entry].walker_entry , walker_ref);
     if(failure) return failure;
 
     return GT_OK;
-}//tested ; seems ok
+}//new version; not tested 
 
-uint8_t removeEntryGT( GraphTable * gtable, uint32_t index_entry, uint32_t walker_id){
+uint8_t popEntryGT( GraphTable * gtable, uint32_t index_entry,  Walker ** wkref_ret){
     /*
-    "removes" the walker of id given as arg from a gt by swapping it 
-    w the last element of the walker array and decrementing the nb of walkers in the array
-
-    O(a) a is the number of elements in a WalkerEntry (small)
+    pops a walker from the walkertabentry at index_entry
+    returns the wkref with the wkref_ret arg (maybe useless i dunno)
+    O(1)
     */
     if(!gtable) return GT_NULL;
-    if(index_entry> gtable->table_size) return GT_SIZE;
+    if(index_entry> gtable->table_size) return GT_SIZE; 
+    
+    return pop_wte_curstack(&gtable->entries[index_entry].walker_entry,wkref_ret);
 
-    int64_t deletion_index=  getWalkerIndex( &gtable->entries[index_entry].walker_entry, walker_id);
-    if(deletion_index==-1) return WT_NOT_FOUND;
-
-    uint8_t succes= removeWalkerFromEntry(&gtable->entries[index_entry].walker_entry,deletion_index);
-    return succes;
- 
-}//tested; seems ok
+}//new version; not tested 
 //didnt check for removal of last element actually 
 
 

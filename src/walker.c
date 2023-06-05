@@ -1,4 +1,5 @@
 #include "walker.h"
+#include "common.h"
 #include "memory.h"
 
 #include <stdint.h>
@@ -37,99 +38,135 @@ void freeWalkerArray(WalkerArray * wArray){
 
 /* TABLE ENTRY MANIPULATION : */
 
-uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size ){
+static uint8_t initWalkerRefStack ( WalkerRefStack * wrs , uint32_t capa){
+    /*
+    initialises a non null, empty wrs
+    */
+    if(!wrs) return WRS_NULL;
+
+    wrs->walker_stack=NULL;
+    wrs->walker_stack=(Walker**) GROW_ARRAY(Walker*, wrs->walker_stack, 0, capa);
+    if(!wrs->walker_stack) return WRS_MALLOC;
+
+    wrs->stack_in=0;
+    wrs->stack_capa=capa;
+
+    return WRS_OK;
+}//not tested; prolly ok
+
+uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t capa ){
     /*
     initialises a non null , empty tabEntry ; 
     will cause memleak if used on already allocated tabEntry 
     */
     if(!tabEntry) return WTE_NULL;
 
-    tabEntry->capa= size;
-    tabEntry->curr_in=0;
-    
-    tabEntry->walkers=NULL;
-    tabEntry->walkers= (Walker**) GROW_ARRAY(Walker*, tabEntry->walkers, 0, size);
+    uint8_t failure=initWalkerRefStack(&tabEntry->cur_stack, capa);
+    if(failure) return failure;
 
-    if(!tabEntry->walkers){
-        return WTE_REALLOC;
-    }
-    return WTE_OK;
-}// tested;  ok
+    failure = initWalkerRefStack(&tabEntry->next_stack, capa);
+   
+    return failure;
+}// not tested; prolly ok  ok
 
 void freeWalkerEntry(WalkerTableEntry * tabEntry){
     /*frees the content of a walker entry; doesn't free tabEntry */
     if(!tabEntry) return;
-    if(tabEntry->walkers) free(tabEntry->walkers);
+    if(tabEntry->next_stack.walker_stack) free(tabEntry->next_stack.walker_stack);
+    if(tabEntry->cur_stack.walker_stack) free(tabEntry->cur_stack.walker_stack);
+}// not tested;  prolly ok 
 
-}// tested; ok 
 
-uint8_t addWalkerEntry( WalkerTableEntry * tabEntry, Walker * walker_ref){
+
+static uint8_t push_wkref_stack(WalkerRefStack * wrs, Walker * wkref ){
     /*
-    addss the reference to a walker in an WalkerTableEntry 
+    stack push function on a wrs; checks for realloc
+    */
+    if(!wrs) return WRS_NULL;
+    if(wrs->stack_in==wrs->stack_capa-1){
+        uint32_t oldCapa= wrs->stack_capa;
+        wrs->stack_capa= GROW_CAPACITY(wrs->stack_capa);
+        wrs->walker_stack= (Walker**)GROW_ARRAY(Walker*, wrs->walker_stack, oldCapa, wrs->stack_capa);
+        if(!wrs->walker_stack) return WRS_REALLOC;
+    }
+    wrs->walker_stack[wrs->stack_in]= wkref;
+    wrs->stack_in++;
 
+    return WRS_OK;
+}//not tested
+
+static uint8_t pop_wkref_stack( WalkerRefStack *wrs, Walker ** wkref_ret){
+    /*
+    stack pop function on a wrs returns value by reference to check for failure
+    */
+    if(!wrs) return WRS_NULL;
+    if(wrs->stack_in==0){
+        *wkref_ret=NULL;
+        return WRS_EMPTYSTACK;
+    }
+    wrs->stack_in--;
+    *wkref_ret= wrs->walker_stack[wrs->stack_in];
+
+    return WRS_OK;
+}//not tested  
+
+uint8_t push_wte_nextstack( WalkerTableEntry * tabEntry, Walker * walker_ref){
+    /*
+    addss the reference to a walker in the next_stack of  WalkerTableEntry 
     O(1)
     */
     if(!tabEntry) return WTE_NULL;
-
-    if(tabEntry->capa==tabEntry->curr_in-1){
-        uint32_t oldCapa= tabEntry->capa;
-        tabEntry->capa=GROW_CAPACITY(tabEntry->capa);
-        tabEntry->walkers=(Walker**) GROW_ARRAY(Walker*, tabEntry->walkers,oldCapa , tabEntry->capa);
-
-        if(!tabEntry->walkers) return WTE_REALLOC;      
-    }
-
-    tabEntry->walkers[tabEntry->curr_in]=walker_ref;
-    tabEntry->curr_in++;
-
-    return WTE_OK ;
+    return push_wkref_stack(&tabEntry->next_stack, walker_ref); ;
 }//doesnt check for presence ?
 //dunno if it should atm
 //not tested 
 
 
-int64_t getWalkerIndex ( WalkerTableEntry * tabEntry , uint32_t walker_id){
+int64_t getWalkerCurStack ( WalkerTableEntry * tabEntry , uint32_t walker_id){
     /*
-    simple existence test for walker in an entry; returns index of walker in table; 
-    -1 on failure 
-
+    checks for the existence of a walker of id passed inside of the CUR_STACK of 
+    a tabEntry 
     O(a) a is the number of walkers in a WalkerEntry (small)
     */
     if(!tabEntry) return -1;
 
-    for(uint32_t i=0; i <tabEntry->curr_in; i++){
-        if(tabEntry->walkers[i]->id==walker_id) return i;
+    for(uint32_t i=0; i <tabEntry->cur_stack.stack_in; i++){
+        if(tabEntry->cur_stack.walker_stack[i]->id==walker_id) return i;
     }
 
     return -1;
-}//not tested 
+}//not tested maybe useless
 
 
-uint8_t removeWalkerFromEntry( WalkerTableEntry * tabEntry , uint32_t walker_arr_index ){
+uint8_t pop_wte_curstack( WalkerTableEntry * tabEntry , Walker ** wkref_ret){
     /*
-    "removes" a walker from an entry array by putting the walker at the last index in it's place 
-    and diminishing the number of walkers currently in the array
-
+    pops a walker from curstack and returns it in the wkref_ret arg
     O(1)
     */
     if(!tabEntry) return WTE_NULL;
+    uint8_t failure= pop_wkref_stack(&tabEntry->cur_stack, wkref_ret);
 
-    Walker * last_walker = tabEntry->walkers[--tabEntry->curr_in];
-
-    tabEntry->walkers[walker_arr_index]=last_walker; //replaces walker at desired index
-
-    return WTE_OK;
+    return failure;
 }//not tested 
-//should move around references to walkers if they get any more complex
+
+
+static void printWrs(WalkerRefStack * wrs , FILE * stream){
+    /*prints the content of a wrs to stream*/
+    if(!wrs){ fprintf(stream, "null stack in wrs\n"); return;}
+
+    for(uint32_t i=0; i<wrs->stack_in; i++){
+        fprintf(stream, "%u ", wrs->walker_stack[i]->id);
+    }
+}//not tested 
 
 void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
-    /* */
+    /*pops the two stacks of a tabentry */
     if(!tabEntry) {printf("null tab in pwe\n"); return;}
 
-    for(uint32_t i=0; i<tabEntry->curr_in ; i++){
-        if(i!=tabEntry->curr_in-1) 
-            fprintf(stream, "%u:",  tabEntry->walkers[i]->id);
-        else fprintf(stream, "%u",  tabEntry->walkers[i]->id);
-    }
+
+    fprintf(stream,"current stack:\n");
+    printWrs(&tabEntry->cur_stack, stream);
+    fprintf(stream,"next stack:\n");
+    printWrs(&tabEntry->next_stack, stream);
     fprintf(stream, "\n");
 }//not tested 

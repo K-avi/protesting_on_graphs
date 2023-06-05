@@ -69,7 +69,7 @@ uint8_t ruleRand( GraphTable * gtable , uint32_t node_from, uint32_t * index_nod
 
     if(gtable->entries[node_from].neighboor_num==0) return MV_NONEIGHBOORS;
     *index_node_to=(gtable->entries[node_from].first_neighboor_ref+(rand()%gtable->entries[node_from].neighboor_num))->node_index;
-
+printf("node to chosen %u\n", *index_node_to);
     return MV_OK;
 }//not tested 
 //should make equivalent of the func where I just return the ref 
@@ -127,7 +127,10 @@ uint8_t ruleRandVar( GraphTable * gtable , uint32_t node_from, Line * line_ref){
     if(node_from>gtable->table_size) return GT_SIZE;
 
     if(gtable->entries[node_from].neighboor_num==0) return MV_NONEIGHBOORS;
+
+    printf("first nb %u\n", gtable->entries[node_from].first_neighboor_ref->node_index);
     *line_ref= *(gtable->entries[node_from].first_neighboor_ref+(rand()%gtable->entries[node_from].neighboor_num));
+    printf("line to chosen %u\n", line_ref->node_index);
     return MV_OK;
 }//not tested 
 //should make equivalent of the func where I just return the ref 

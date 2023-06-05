@@ -16,6 +16,7 @@ typedef struct s_line{ //prototype for new line struct
     int32_t flux_next;  //this is the flux that will be calculated during the simulation iteration 
                         //and swapped with flux_cur at the start of the next iteration 
 }Line; 
+//add a first time seen field to check if flux next n 
 
 typedef struct s_line_array{//STATIC ARRAY 
     uint32_t size; 
@@ -55,6 +56,8 @@ uint8_t printGraphTab( GraphTable * gt, FILE * stream);
 
 uint8_t pushEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ); 
 uint8_t popEntryGT( GraphTable * gtable, uint32_t index_entry,  Walker ** wkref_ret); //might be useless 
+uint8_t pushEntryGte ( GraphTableEntry * gtentry, Walker* walker);
+
 void printEntriesGT( GraphTable * gtable, FILE * stream);
 
 

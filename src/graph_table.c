@@ -309,15 +309,15 @@ uint8_t writeGraphTab(GraphTable * gt, char *path ){
 
 ////
 
-uint8_t pushEntryGtVar ( GraphTableEntry * gtentry, Walker* walker){
+uint8_t pushEntryGte ( GraphTableEntry * gtentry, Walker* walker){
     /*
     variant of the function where the walker is added from the entry directly 
 
     O(1) 
     */
     if(!gtentry) return GTE_NULL;
-
     uint8_t success= push_wte_nextstack(&gtentry->walker_entry,walker);
+    
     return success;
 }//not tested 
 
@@ -328,12 +328,12 @@ uint8_t pushEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_r
     */
     if(!gtable) return GT_NULL;
     if(index_entry> gtable->table_size) return GT_SIZE;
-
+    
     uint8_t failure = push_wte_nextstack( &gtable->entries[index_entry].walker_entry , walker_ref);
     if(failure) return failure;
 
     return GT_OK;
-}//new version; not tested 
+}//new version; tested 
 
 uint8_t popEntryGT( GraphTable * gtable, uint32_t index_entry,  Walker ** wkref_ret){
     /*
@@ -343,7 +343,7 @@ uint8_t popEntryGT( GraphTable * gtable, uint32_t index_entry,  Walker ** wkref_
     */
     if(!gtable) return GT_NULL;
     if(index_entry> gtable->table_size) return GT_SIZE; 
-    
+
     return pop_wte_curstack(&gtable->entries[index_entry].walker_entry,wkref_ret);
 
 }//new version; not tested 
@@ -355,7 +355,7 @@ void printEntriesGT( GraphTable * gtable, FILE * stream){
     prints the table entries of a gtable; usefull for trace 
     */
     for(uint32_t i=0; i<gtable->table_size; i++){
-        fprintf(stream, "%u,", i);
+        fprintf(stream, "entry %u\n", i);
         printWalkerEntry(&gtable->entries[i].walker_entry, stream);
     }
 }//tested ; seems ok

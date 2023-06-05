@@ -60,7 +60,7 @@ uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t capa ){
     will cause memleak if used on already allocated tabEntry 
     */
     if(!tabEntry) return WTE_NULL;
-
+    tabEntry->nb_walker_cur=0;
     uint8_t failure=initWalkerRefStack(&tabEntry->cur_stack, capa);
     if(failure) return failure;
 
@@ -100,6 +100,7 @@ static uint8_t pop_wkref_stack( WalkerRefStack *wrs, Walker ** wkref_ret){
     stack pop function on a wrs returns value by reference to check for failure
     */
     if(!wrs) return WRS_NULL;
+    printf("in popref wstack %u \n", wrs->stack_in);
     if(wrs->stack_in==0){
         *wkref_ret=NULL;
         return WRS_EMPTYSTACK;
@@ -155,7 +156,7 @@ static void printWrs(WalkerRefStack * wrs , FILE * stream){
     if(!wrs){ fprintf(stream, "null stack in wrs\n"); return;}
 
     for(uint32_t i=0; i<wrs->stack_in; i++){
-        fprintf(stream, "%u ", wrs->walker_stack[i]->id);
+        fprintf(stream, "%u,", wrs->walker_stack[i]->id);
     }
 }//not tested 
 
@@ -164,9 +165,9 @@ void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
     if(!tabEntry) {printf("null tab in pwe\n"); return;}
 
 
-    fprintf(stream,"current stack:\n");
+    fprintf(stream,"\ncurrent stack:");
     printWrs(&tabEntry->cur_stack, stream);
-    fprintf(stream,"next stack:\n");
+    fprintf(stream,"\nnext stack:");
     printWrs(&tabEntry->next_stack, stream);
     fprintf(stream, "\n");
 }//not tested 

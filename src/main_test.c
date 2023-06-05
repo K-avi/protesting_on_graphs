@@ -157,14 +157,40 @@ int main(){
 
     freeTactics(&t);
 */
+    
+    
+    Tactics trand; 
+    initTactics(&trand, 5);
+    addRule(&trand, 1.0, &ruleRandVar);
+
+    WalkerArray warray; 
+    initWalkerArray(&warray, 30);
+
     GraphTable gtParis; 
-
-    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv", 20, 0);
+    uint8_t failure = loadGraphTab(&gtParis, "test_graph/gt_test1.csv", 10, 0);
     if(failure) printf("failure code : %u\n", failure);
+   
+   
+  printf("gtable size : %u\n", gtParis.table_size);
+    initPos(&gtParis, &warray);
+    //printGraphTab(&gtParis, stdout);
 
-  //printGraphTab(&gtParis, stdout);
+    printEntriesGT(&gtParis, stdout);
+
+    failure= prepareIteration(&gtParis, &warray);
+    if(failure) printf("failure prep %u\n",failure);
+    printf("\n----------------------\n");
+    printEntriesGT(&gtParis, stdout);
+
+
+    iterateGen(&gtParis, &trand);
+    if(failure) printf("failure iter %u\n",failure);
+    printf("\n----------------------\n");
+    printEntriesGT(&gtParis, stdout);
 
     freeGraphTab(&gtParis);
+    freeWalkerArray(&warray);
+    freeTactics(&trand);
 
     return 0;
 }

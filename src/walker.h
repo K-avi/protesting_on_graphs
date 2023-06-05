@@ -2,6 +2,7 @@
 #define WALKER_H 
 
 #include "common.h"
+
 #include <stdint.h>
 #include <stdio.h>
 
@@ -31,7 +32,8 @@ typedef struct s_wkref_stack{
 
 
 typedef struct s_walker_table_entry{
-    
+    uint32_t nb_walker_cur ; //keep track of the nb of the walkers in the cur_stack 
+    //before emptying it; useful to make rules and so on
     WalkerRefStack cur_stack;
     WalkerRefStack next_stack;
  

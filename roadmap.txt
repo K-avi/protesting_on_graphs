@@ -33,12 +33,17 @@ done :
       write custom CSVs ) nb : the loadCSV function doesn't care for flux atm but it will at some
       point 
 
+    - test the new wte structure 
+    - test the updated graph_table functions 
+fuck.
+
+MAKE IT SO I CAN DIFFERENTIATE : STATE OF STACK / FLUX AT THE END OF T AND DURING T+1 
+cuz it's gonna be a beeeg issue otherwise
 
 
 pending :  
 
-    - test the new wte structure 
-    - test the updated graph_table functions 
+    
 
     - finish implem of new WTE : 
         - fix / finish movement implem 

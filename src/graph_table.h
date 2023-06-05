@@ -30,7 +30,6 @@ struct s_graph_table_entry{
     WalkerTableEntry walker_entry ; //maybe pass em by reference 
     Line * first_neighboor_ref;
     uint32_t neighboor_num;
-
 };
 
 

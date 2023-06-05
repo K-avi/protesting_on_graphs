@@ -28,6 +28,10 @@ done :
 
     - implemented some of the movement ; tested it 
 
+    - finished the python script ( written the discretisation function and functions to read / 
+      write custom CSVs ) nb : the loadCSV function doesn't care for flux atm but it will at some
+      point 
+
 
 
 holy shit I know how to make the movement related stuff ; I should have two stacks to store walkers 
@@ -50,13 +54,6 @@ pending :
         - add curflux / netflux field to line arr , at the start of iteration set curflux to nextflux 
           and reset nextflux 
 
-    - make the pyhton script to retrieve / format / write real graphs from the real world
-      (god have mercy on me) 
-
-        - do a function to handle the whole discretisation of the graph w a custom step 
-          (scary part)
-        - then do a function to dump it in the custom csv format (less scary but prolly hard part)
-
     - once all of this is done I can actually start to simulate stuff 
 
     - write propper error reporting 
@@ -65,7 +62,13 @@ pending :
 
     - maybe make a "misc" file w the memory + error functions in it 
 
+    - load flux into the CSV function 
+
     - if I have the time use custom malloc 
+
+    - write some actual data analysis functions on the graphs in C (if I have time )
+
+    
 
 make a choice for the movement of walkers in the table 
   -> append by ref of entry (know which index) 

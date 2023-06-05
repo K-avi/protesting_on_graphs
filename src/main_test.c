@@ -159,7 +159,7 @@ int main(){
 */
     GraphTable gtParis; 
 
-    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv", 200, 0);
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv", 20, 0);
     if(failure) printf("failure code : %u\n", failure);
 
   //printGraphTab(&gtParis, stdout);

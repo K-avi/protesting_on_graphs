@@ -35,25 +35,20 @@ done :
 
     - test the new wte structure 
     - test the updated graph_table functions 
+
+    - movement mostly done ; problem with the update of flux for some 
+      fucking reason
 fuck.
-
-MAKE IT SO I CAN DIFFERENTIATE : STATE OF STACK / FLUX AT THE END OF T AND DURING T+1 
-cuz it's gonna be a beeeg issue otherwise
-
 
 pending :  
 
     
 
-    - finish implem of new WTE : 
-        - fix / finish movement implem 
+    -fix the fucking flux
         
 
-    - figure out the way to implement movement : 
-        - add iteration field to line arr and walkers; if don't match don't take into account 
-        - add curflux / netflux field to line arr , at the start of iteration set curflux to nextflux 
-          and reset nextflux 
-
+    - write the tactics stuff 
+    
     - once all of this is done I can actually start to simulate stuff 
 
     - write propper error reporting 

@@ -2,6 +2,7 @@
 #include "common.h"
 #include "memory.h"
 
+#include <bits/types/FILE.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -35,6 +36,16 @@ void freeWalkerArray(WalkerArray * wArray){
     free(wArray->array);
 }//ok
 
+void printWarray(WalkerArray *wArray, FILE * stream){
+    /*
+    */
+    if(!wArray) {fprintf(stream,"warray is null\n"); return;}
+
+    for(uint32_t i=0 ; i<wArray->size; i++){
+        fprintf(stream,"%u:%u\n", wArray->array[i].id , wArray->array[i].curgen);
+    }
+}
+
 
 /* TABLE ENTRY MANIPULATION : */
 
@@ -52,7 +63,7 @@ static uint8_t initWalkerRefStack ( WalkerRefStack * wrs , uint32_t capa){
     wrs->stack_capa=capa;
 
     return WRS_OK;
-}//not tested; prolly ok
+}//tested;  ok
 
 uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t capa ){
     /*
@@ -65,16 +76,19 @@ uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t capa ){
     if(failure) return failure;
 
     failure = initWalkerRefStack(&tabEntry->next_stack, capa);
-   
     return failure;
-}// not tested; prolly ok  ok
+
+    
+   
+}//  tested; prolly ok  ok
 
 void freeWalkerEntry(WalkerTableEntry * tabEntry){
     /*frees the content of a walker entry; doesn't free tabEntry */
     if(!tabEntry) return;
     if(tabEntry->next_stack.walker_stack) free(tabEntry->next_stack.walker_stack);
     if(tabEntry->cur_stack.walker_stack) free(tabEntry->cur_stack.walker_stack);
-}// not tested;  prolly ok 
+    
+}//  tested;  ok 
 
 
 
@@ -93,14 +107,14 @@ static uint8_t push_wkref_stack(WalkerRefStack * wrs, Walker * wkref ){
     wrs->stack_in++;
 
     return WRS_OK;
-}//not tested
+}// tested; ok
 
 static uint8_t pop_wkref_stack( WalkerRefStack *wrs, Walker ** wkref_ret){
     /*
     stack pop function on a wrs returns value by reference to check for failure
     */
     if(!wrs) return WRS_NULL;
-    printf("in popref wstack %u \n", wrs->stack_in);
+ 
     if(wrs->stack_in==0){
         *wkref_ret=NULL;
         return WRS_EMPTYSTACK;
@@ -109,7 +123,7 @@ static uint8_t pop_wkref_stack( WalkerRefStack *wrs, Walker ** wkref_ret){
     *wkref_ret= wrs->walker_stack[wrs->stack_in];
 
     return WRS_OK;
-}//not tested  
+}//tested  ok
 
 uint8_t push_wte_nextstack( WalkerTableEntry * tabEntry, Walker * walker_ref){
     /*
@@ -120,7 +134,7 @@ uint8_t push_wte_nextstack( WalkerTableEntry * tabEntry, Walker * walker_ref){
     return push_wkref_stack(&tabEntry->next_stack, walker_ref); ;
 }//doesnt check for presence ?
 //dunno if it should atm
-//not tested 
+// tested ok
 
 
 int64_t getWalkerCurStack ( WalkerTableEntry * tabEntry , uint32_t walker_id){
@@ -148,7 +162,7 @@ uint8_t pop_wte_curstack( WalkerTableEntry * tabEntry , Walker ** wkref_ret){
     uint8_t failure= pop_wkref_stack(&tabEntry->cur_stack, wkref_ret);
 
     return failure;
-}//not tested 
+}//tested ok
 
 
 static void printWrs(WalkerRefStack * wrs , FILE * stream){
@@ -158,7 +172,7 @@ static void printWrs(WalkerRefStack * wrs , FILE * stream){
     for(uint32_t i=0; i<wrs->stack_in; i++){
         fprintf(stream, "%u,", wrs->walker_stack[i]->id);
     }
-}//not tested 
+}// tested ok
 
 void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
     /*pops the two stacks of a tabentry */
@@ -170,4 +184,4 @@ void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream){
     fprintf(stream,"\nnext stack:");
     printWrs(&tabEntry->next_stack, stream);
     fprintf(stream, "\n");
-}//not tested 
+}// tested ok

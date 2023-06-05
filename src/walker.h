@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+#include <bits/types/FILE.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -36,6 +37,7 @@ typedef struct s_walker_table_entry{
     //before emptying it; useful to make rules and so on
     WalkerRefStack cur_stack;
     WalkerRefStack next_stack;
+
  
 }WalkerTableEntry ; //deletion w swap ????
 //confused as to how to update this
@@ -44,6 +46,7 @@ typedef struct s_walker_table_entry{
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size);
 void freeWalkerArray(WalkerArray * wArray);
 
+void printWarray(WalkerArray *wArray, FILE * stream);
 uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size );
 void freeWalkerEntry(WalkerTableEntry * tabEntry);
 

@@ -5,6 +5,7 @@
 #include "walker.h"
 #include "movement.h"
 
+#include <bits/types/FILE.h>
 #include <stdio.h>
 
 
@@ -156,41 +157,113 @@ int main(){
     addRule(&t, 1, &ruleRandVar);
 
     freeTactics(&t);
-*/
-    
-    
-    Tactics trand; 
+    */
+
+/* //test 05/06
+  
+     Tactics trand; 
     initTactics(&trand, 5);
     addRule(&trand, 1.0, &ruleRandVar);
 
     WalkerArray warray; 
-    initWalkerArray(&warray, 30);
+    initWalkerArray(&warray, 100);
 
     GraphTable gtParis; 
     uint8_t failure = loadGraphTab(&gtParis, "test_graph/gt_test1.csv", 10, 0);
-    if(failure) printf("failure code : %u\n", failure);
-   
-   
-  printf("gtable size : %u\n", gtParis.table_size);
-    initPos(&gtParis, &warray);
-    //printGraphTab(&gtParis, stdout);
+    if(failure) printf("failure code : %u\n", failure);  
+  
+    initPos(&gtParis, &warray);  
 
-    printEntriesGT(&gtParis, stdout);
+   iterate_ntimes(&gtParis, &trand, &warray , 1000);
+    
+   // iterate_ntimesVAR1(&gtParis, &trand, 1000);
+  printGraphTab(&gtParis, stdout);
+  printEntriesGT(&gtParis, stdout);
 
-    failure= prepareIteration(&gtParis, &warray);
-    if(failure) printf("failure prep %u\n",failure);
-    printf("\n----------------------\n");
-    printEntriesGT(&gtParis, stdout);
-
-
-    iterateGen(&gtParis, &trand);
-    if(failure) printf("failure iter %u\n",failure);
-    printf("\n----------------------\n");
-    printEntriesGT(&gtParis, stdout);
+  printWarray(&warray);
 
     freeGraphTab(&gtParis);
     freeWalkerArray(&warray);
     freeTactics(&trand);
 
+
+
+
+    Tactics trand; 
+    initTactics(&trand, 5);
+    addRule(&trand, 1.0, &ruleRandVar);
+
+    WalkerArray warray; 
+    initWalkerArray(&warray, 30000);
+
+    GraphTable gtParis; 
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv", 10, 0);
+    if(failure) printf("failure code : %u\n", failure);  
+  
+    initPos(&gtParis, &warray);  
+    failure= prepareIterationVAR1(&gtParis, &warray);
+    if(failure) printf("failure prep %u\n",failure);
+
+    iterateGenVAR1(&gtParis, &trand);
+    if(failure) printf("failure iter %u\n",failure);
+
+    freeGraphTab(&gtParis);
+    freeWalkerArray(&warray);
+    freeTactics(&trand);
+  */
+
+    FILE * f0= fopen("traces/traceBASe", "w");
+    Tactics trand; 
+    initTactics(&trand, 5);
+    addRule(&trand, 1.0, &ruleRandVar);
+
+    WalkerArray warray; 
+    initWalkerArray(&warray, 100);
+
+    GraphTable gtitBase; 
+    uint8_t failure = loadGraphTab(&gtitBase, "test_graph/gt_test1.csv", 10, 0);
+    if(failure) printf("failure code : %u\n", failure);  
+  
+    initPos(&gtitBase, &warray);  
+
+    iterate_ntimes(&gtitBase, &trand, &warray , 1000);
+    
+   printGraphTab(&gtitBase, f0);
+  printEntriesGT(&gtitBase, f0);
+  printLineArr(gtitBase.arrLine, f0);
+  printWarray(&warray, f0);
+
+  FILE* f1 = fopen("traces/traceGVAR1","w");
+    WalkerArray wt2;
+    initWalkerArray(&wt2, 100);
+
+    GraphTable gtitvar1;
+
+
+     failure = loadGraphTab(&gtitvar1, "test_graph/gt_test1.csv", 10, 0);
+    if(failure) printf("failure code : %u\n", failure);  
+  
+    initPos(&gtitvar1, &wt2);  
+
+    iterate_ntimesVAR1(&gtitvar1, &trand, 1000);
+
+//printf("%d %d\n", gtitvar1.arrLine->array[0].flux_cur , gtitvar1.arrLine->array[0].flux_next);
+    
+  
+   printGraphTab(&gtitvar1, f1);
+   printEntriesGT(&gtitvar1, f1);
+ 
+  printWarray(&wt2, f1);
+    printf("linearr pitaing %u\n" , gtitvar1.arrLine->cur_in);
+  printLineArr(gtitvar1.arrLine, f1);
+
+    freeGraphTab(&gtitBase);
+    freeWalkerArray(&warray);
+
+fclose(f0);
+fclose(f1);
+  freeGraphTab(&gtitvar1);
+    freeWalkerArray(&wt2);
+    freeTactics(&trand);
     return 0;
 }

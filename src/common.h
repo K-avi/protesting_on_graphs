@@ -24,6 +24,7 @@ typedef enum {
 #define WT_OK FG_OK //wt stands for walker table (deprecated)
 #define GE_OK FG_OK //ge stands for graph table entry 
 #define WRS_OK FG_OK//wrf stands for walker ref stack
+#define IT_OK FG_OK //it stands for iteration 
 
 #include <stdlib.h>
 #include <stdio.h>

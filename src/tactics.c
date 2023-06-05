@@ -54,15 +54,15 @@ uint8_t addRule( Tactics * t , double rule_coeff,  uint8_t (*rule_fun)( GraphTab
     return T_OK;
 }//not tested 
 
-
+/*
 uint8_t ruleRand( GraphTable * gtable , uint32_t node_from, uint32_t * index_node_to){
-    /*
+    
     chooses a random neighboor node at entry node from in a gt;
     
     WARNING : in order to repport errors the node chosen is
     returned by reference in the index_node_to argument
     O(1)
-    */
+    
     if(!gtable) return GT_NULL;
     if(!index_node_to) return NDREF_NULL;
     if(node_from>gtable->table_size) return GT_SIZE;
@@ -76,13 +76,13 @@ printf("node to chosen %u\n", *index_node_to);
 //this is clearly a rule fn why the hell is it there 
 
 uint8_t ruleMost( GraphTable * gtable, uint32_t node_from, uint32_t * index_node_to){
-    /*
+    
     chooses a random neighboor node at entry node from in a gt;
     
     WARNING : in order to repport errors the node chosen is
     returned by reference in the index_node_to argument
     O(1)
-    */
+    
     if(!gtable) return GT_NULL;
     if(!index_node_to) return NDREF_NULL;
     if(node_from>gtable->table_size) return GT_SIZE;
@@ -95,7 +95,7 @@ uint8_t ruleMost( GraphTable * gtable, uint32_t node_from, uint32_t * index_node
 
     return MV_OK;
 }//not tested 
-
+*/
 /*
 uint8_t chooseNode( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t *index_node_to){
     
@@ -128,9 +128,9 @@ uint8_t ruleRandVar( GraphTable * gtable , uint32_t node_from, Line * line_ref){
 
     if(gtable->entries[node_from].neighboor_num==0) return MV_NONEIGHBOORS;
 
-    printf("first nb %u\n", gtable->entries[node_from].first_neighboor_ref->node_index);
     *line_ref= *(gtable->entries[node_from].first_neighboor_ref+(rand()%gtable->entries[node_from].neighboor_num));
-    printf("line to chosen %u\n", line_ref->node_index);
+    line_ref->flux_next++;
+
     return MV_OK;
 }//not tested 
 //should make equivalent of the func where I just return the ref 
@@ -150,7 +150,8 @@ uint8_t ruleMostVar( GraphTable * gtable, uint32_t node_from, Line * line_ref){
     
     int32_t flux_max= INT32_MIN;
     for(uint32_t i=0; i<gtable->entries[node_from].neighboor_num;i++){
-        if( (gtable->entries[node_from].first_neighboor_ref+i)->flux_cur > flux_max  )
+        if( (gtable->entries[node_from].first_neighboor_ref+i)->flux_next > flux_max  )
+        (gtable->entries[node_from].first_neighboor_ref+i)->flux_next++;
          *line_ref= *(gtable->entries[node_from].first_neighboor_ref+i);
          
     }
@@ -168,7 +169,8 @@ uint8_t chooseNodeVar( Tactics * t, GraphTable* gtable, uint32_t node_from, Line
     uint8_t failure= t->rule_arr[0].rule_fun(gtable, node_from, line_ref);
     if(failure) return failure;
 
-    line_ref->flux_next++;
+  
+    printf("from choose flux %d id %u\n", line_ref->flux_next, line_ref->node_index);
     return MV_OK;
 }//placeholder ;only relies on first rule of tactic 
 //not tested at ALL

@@ -1,6 +1,7 @@
 #include "graph_table.h"
 #include "memory.h"
 #include "walker.h"
+#include <bits/types/FILE.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -53,6 +54,15 @@ static void freeLineArr( LineArray * lineArr){
     if(!lineArr) return;
     if(lineArr->array) free(lineArr->array);
 } // tested ok
+
+void printLineArr( LineArray * lineArr, FILE * stream){
+    /**/
+    if(!lineArr){ fprintf(stream," line arr is null\n"); return;}
+    
+    for(unsigned i=0; i<lineArr->cur_in;i++){
+        fprintf(stream,"line,%u:%d:%d\n", lineArr->array[i].node_index, lineArr->array[i].flux_cur, lineArr->array[i].flux_next);
+    }
+}
 
 uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size, uint32_t curgen ){
     /*

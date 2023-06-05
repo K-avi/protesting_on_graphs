@@ -109,6 +109,7 @@ uint8_t prepareIteration( GraphTable * gtable, WalkerArray * warray){
 
     for(uint32_t i=0 ; i<gtable->arrLine->cur_in;i++){
         gtable->arrLine->array[i].flux_cur=gtable->arrLine->array[i].flux_next;
+      //  printf("flux cur %d flux next %d i %u\n ",gtable->arrLine->array[i].flux_cur, gtable->arrLine->array[i].flux_next, i );
     }
 
     for(uint32_t i=0; i<warray->size; i++){
@@ -125,14 +126,15 @@ uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
     the main movement function ; takes a fully intialised gtable and iterates
     1 generation on it the function is in ~O(n*t) where n is the number of 
     walkers and t the time needed to calculate the tactic (select a node) for 1 walker 
+    O(n) n is the number of walkers
     */
     if(!gtable) return GT_NULL;
     
     for(uint32_t i=0; i<gtable->table_size;i++){
-       printf("here i goes %u\nima loop %u\n", i,gtable->entries[i].walker_entry.cur_stack.stack_in); 
+      // printf("here i goes %u\nima loop %u\n", i,gtable->entries[i].walker_entry.cur_stack.stack_in); 
         for(uint32_t j=0; j<gtable->entries[i].walker_entry.nb_walker_cur; j++){
             
-            printf("yippe n°%u\n", j);
+          //  printf("yippe n°%u\n", j);
             
             Walker * wkref;
           
@@ -145,25 +147,112 @@ uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
             failure= chooseNodeVar(tactics, gtable, i, &line_chosen);
             if(failure) {printf("oh hellhell no %u\n", failure); return failure;}
 
-            printf("line chosen :%u\n", line_chosen.node_index);
+            //printf("line chosen :%u\n", line_chosen.node_index);
+          
+           // line_chosen.flux_next++;
+         //   printf("linechosen flux next %u %d\n", line_chosen.node_index, line_chosen.flux_next);
+           // printf("oh yeah it's pushin time\n");
+            pushEntryGte(line_chosen.tabRef, wkref);
+        }
+       
+    }
+   // gtable->curgen++;
+    return MV_OK;
+}//tested seems ok;  this version will have to run w prepareIteration() 
+/*
+the problem is that combining this w prepareIt will have a total runtime of 
+O(2n+b+c) where n is nb of walkers, b nb of lines, c nb of nodes 
+*/
 
-            line_chosen.flux_next++;
-            printf("oh yeah it's pushin time\n");
+
+uint8_t prepareIterationVAR1( GraphTable * gtable){
+    /*
+    gets the table ready for the next iteration ; my goal is to not use this function 
+    and find a way to do it on the fly in iterate gen 
+    O(a+b) , a number of nodes ,b number of lines 
+    */
+    if(!gtable) return GT_NULL;
+   
+    for(uint32_t i=0; i<gtable->table_size;i++){ 
+     //   printf("swappyti swap %u %p %p\n", i,gtable->entries->walker_entry.cur_stack.walker_stack ,  gtable->entries->walker_entry.next_stack.walker_stack ); 
+        swapStacks(&gtable->entries[i].walker_entry);
+        //printf("swap swappity %p %p\n", gtable->entries->walker_entry.cur_stack.walker_stack ,  gtable->entries->walker_entry.next_stack.walker_stack );
+    }
+
+    for(uint32_t i=0 ; i<gtable->arrLine->cur_in;i++){
+        gtable->arrLine->array[i].flux_cur=gtable->arrLine->array[i].flux_next;
+        gtable->arrLine->array[i].flux_next=0;
+    }
+    return GT_OK;        
+}
+
+uint8_t iterateGenVAR1(GraphTable * gtable, Tactics* tactics){
+    /*
+    the main movement function ; takes a fully intialised gtable and iterates
+    1 generation on it the function is in ~O(n*t) where n is the number of 
+    walkers and t the time needed to calculate the tactic (select a node) for 1 walker 
+    O(w) w is the number of walkers
+    */
+    if(!gtable) return GT_NULL;
+    
+    for(uint32_t i=0; i<gtable->table_size;i++){
+      // printf("here i goes %u\nima loop %u\n", i,gtable->entries[i].walker_entry.cur_stack.stack_in); 
+        for(uint32_t j=0; j<gtable->entries[i].walker_entry.nb_walker_cur; j++){
+            
+          //  printf("yippe n°%u\n", j);
+            
+            Walker * wkref;
+           
+            uint8_t failure = popEntryGT(gtable, i, &wkref);
+            if(failure){printf("oh hell no, %u %u %u %u \n", failure,i, j, gtable->entries[i].walker_entry.cur_stack.stack_in); return failure;}
+
+            wkref->curgen++; //updates gen of walker 
+            
+            Line line_chosen;
+            failure= chooseNodeVar(tactics, gtable, i, &line_chosen);
+            if(failure) {printf("oh hellhell no %u\n", failure); return failure;}
+
+            printf("line chosen :%u %d\n", line_chosen.node_index, line_chosen.flux_cur);
+
+            
+           // printf("oh yeah it's pushin time\n");
             pushEntryGte(line_chosen.tabRef, wkref);
         }
        
     }
     gtable->curgen++;
     return MV_OK;
-}//doesnt update flux atm 
-//far from finished 
-//actually awful
-//damnit
+}//tested seems ok;  this version will have to run w prepareIteration() 
 /*
-needs to : 
+I swear to god I'll make this fool faster it ain't gonna beat me like a punk 
+total comp of iterate + prepare : 
 
--update flux 
--update gen of walker 
--update gen of nodes or smtg
+O(w+n+l) w num of walkers, n number of nodes , l number of lines
 */
 
+
+uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, WalkerArray * warray, uint32_t iter_num){
+    /**/
+
+    for(unsigned i=0; i<iter_num; i++){
+        uint8_t failure = prepareIteration(gtable,warray );
+        if(failure) return failure;
+
+        failure= iterateGen(gtable, tactics);
+        if(failure) return failure;
+    }
+    return IT_OK;
+}
+
+uint8_t iterate_ntimesVAR1( GraphTable * gtable, Tactics * tactics, uint32_t iter_num){
+    /**/
+
+    for(unsigned i=0; i<iter_num; i++){
+        uint8_t failure = prepareIterationVAR1(gtable );
+        if(failure) return failure;
+
+        failure= iterateGenVAR1(gtable, tactics);
+        if(failure) return failure;
+    }
+    return IT_OK;
+}

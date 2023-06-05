@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "walker.h"
+#include <bits/types/FILE.h>
 #include <stdint.h>
 
 typedef struct s_graph_table_entry GraphTableEntry;
@@ -60,6 +61,7 @@ uint8_t pushEntryGte ( GraphTableEntry * gtentry, Walker* walker);
 
 void printEntriesGT( GraphTable * gtable, FILE * stream);
 
+void printLineArr( LineArray * lineArr, FILE * stream);
 
 #ifdef debug_mode 
 // uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighboor_num, 

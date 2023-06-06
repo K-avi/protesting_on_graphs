@@ -211,7 +211,7 @@ int main(){
     freeWalkerArray(&warray);
     freeTactics(&trand);
   */
-
+/*
     FILE * f0= fopen("traces/traceBASe", "w");
     Tactics trand; 
     initTactics(&trand, 5);
@@ -265,5 +265,26 @@ fclose(f1);
   freeGraphTab(&gtitvar1);
     freeWalkerArray(&wt2);
     freeTactics(&trand);
+    */
+
+
+     Tactics trand; 
+    initTactics(&trand, 5);
+    addRule(&trand, 1.0, &ruleRandVar);
+
+    WalkerArray warray; 
+    initWalkerArray(&warray, 300000);
+
+    GraphTable gtParis; 
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv", 10, 0);
+    if(failure) printf("failure code : %u\n", failure);  
+  
+    initPos(&gtParis, &warray);  
+
+   iterate_ntimes(&gtParis, &trand, &warray , 1000);
+
+   freeTactics(&trand);
+   freeWalkerArray(&warray);
+   freeGraphTab(&gtParis);
     return 0;
 }

@@ -170,7 +170,7 @@ uint8_t chooseNodeVar( Tactics * t, GraphTable* gtable, uint32_t node_from, Line
     if(failure) return failure;
 
   
-    printf("from choose flux %d id %u\n", line_ref->flux_next, line_ref->node_index);
+    //printf("from choose flux %d id %u\n", line_ref->flux_next, line_ref->node_index);
     return MV_OK;
 }//placeholder ;only relies on first rule of tactic 
 //not tested at ALL

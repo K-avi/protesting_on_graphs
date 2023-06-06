@@ -3,4 +3,4 @@ test
 walking_on_graph 
 cache
 traces
-paris_full_graph.csv
+*.csv

@@ -26,10 +26,8 @@ typedef struct s_walker{
 }Walker;
 
 typedef struct s_warray{
-    
     uint32_t size; 
     Walker *array;
-
 }WalkerArray ; //where the actual walkers will be stored and initialised and so on
 
 typedef struct s_walker_num_curnext{

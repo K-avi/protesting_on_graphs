@@ -3,18 +3,25 @@
 
 #include "common.h"
 
-
-#include <bits/types/FILE.h>
 #include <stdint.h>
 #include <stdio.h>
 
 //might be irrelevant 
 
 typedef struct s_graph_table_entry GraphTableEntry;
+typedef struct s_line Line;
+struct s_graph_table_entry{
+
+    Line * first_neighboor_ref;
+    uint32_t neighboor_num;
+    uint32_t node_key; 
+    //stores node index; bloated but allows fast lookup of neighboor for the walkers
+    //to store
+};
+
+
 typedef struct s_walker{
     uint32_t id; 
-    uint32_t curgen;
-    //what does a walker need to know ? good question. 
     GraphTableEntry * cur_entry; //gte of the node where the where the walker currently is
 }Walker;
 
@@ -25,36 +32,22 @@ typedef struct s_warray{
 
 }WalkerArray ; //where the actual walkers will be stored and initialised and so on
 
-
-typedef struct s_wkref_stack{
-    uint32_t stack_capa ; 
-    uint32_t stack_in;
-
-    Walker ** walker_stack;
-}WalkerRefStack;
-
-
-typedef struct s_walker_table_entry{
-    uint32_t nb_walker_cur ; //keep track of the nb of the walkers in the cur_stack 
-    //before emptying it; useful to make rules and so on
-    WalkerRefStack cur_stack;
-    WalkerRefStack next_stack;
-
- 
-}WalkerTableEntry ; //deletion w swap ????
-//confused as to how to update this
-
+typedef struct s_walker_num_curnext{
+    //structure to store the number of walker at each node ;updated to keep track of where 
+    //walkers came in and stuff 
+    uint32_t size;
+    uint32_t *cur_num;
+    uint32_t *next_num; 
+}WalkerCurNext;
 
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size);
 void freeWalkerArray(WalkerArray * wArray);
 
 void printWarray(WalkerArray *wArray, FILE * stream);
-uint8_t initWalkerEntry( WalkerTableEntry * tabEntry , uint32_t size );
-void freeWalkerEntry(WalkerTableEntry * tabEntry);
 
-uint8_t push_wte_nextstack( WalkerTableEntry * tabEntry, Walker * walker_ref);
-uint8_t pop_wte_curstack( WalkerTableEntry * tabEntry , Walker ** wkref_ret);
+uint8_t initWalkerCurNext(WalkerCurNext * wkcn , uint32_t size);
+void freeWalkerCurNext(WalkerCurNext * wkcn);
 
-void printWalkerEntry( WalkerTableEntry * tabEntry,  FILE* stream);
+uint8_t swapWalkerCurNext (WalkerCurNext * wkcn);
 
 #endif

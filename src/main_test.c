@@ -7,6 +7,7 @@
 
 #include <bits/types/FILE.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
 
@@ -267,7 +268,7 @@ fclose(f1);
     freeTactics(&trand);
     */
 
-
+/*06/05
      Tactics trand; 
     initTactics(&trand, 5);
     addRule(&trand, 1.0, &ruleRandVar);
@@ -295,5 +296,31 @@ fclose(f1);
 
    freeTactics(&trand);
    freeGraphTab(&gtParis);
+   */
+
+    Tactics trand; 
+    initTactics(&trand, 5);
+    addRule(&trand, 1.0, &rule_rand);
+
+    GraphTable gtParis; 
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv",  200000 ,0);
+    if(failure){ printf("failure 1st call code : %u\n", failure);  exit( failure) ;}
+
+    //printGraphTab(&gtParis, stdout);
+    failure= init_pos(&gtParis);
+    if(failure){ printf("failure 2nd call code : %u\n", failure);  exit( failure) ;}
+
+    failure=iterate_ntimes(&gtParis, &trand, 200);
+  
+
+    /*
+    printGraphTab(&gtParis, stdout);
+    printLineArr( gtParis.arrLine, stdout);
+    printWarray(gtParis.warray, stdout);
+    */
+
+    freeTactics(&trand);
+    freeGraphTab(&gtParis);  
+
     return 0;
 }

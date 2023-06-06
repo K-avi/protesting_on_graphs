@@ -1,5 +1,5 @@
-redesign of code structure count : 3 who the fuck thought iterating through every empty fucking node was 
-a good fucking idea??? me. it's. me .
+redesign of code structure count : 4 fuck it one hot everything spatial complexity is for pussies 
+remember kids everything is in O(1) if u store fucking everything
 
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
   

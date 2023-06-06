@@ -33,8 +33,8 @@ uint8_t addRule( Tactics * t , double rule_coeff, \
 
 //uint8_t chooseNode( Tactics * t , GraphTable* gtable , uint32_t node_from, uint32_t *  index_node_to);
 
-uint8_t chooseNodeVar( Tactics * t, GraphTable* gtable, uint32_t node_from, Line * line_ref);
-uint8_t ruleRandVar( GraphTable * gtable , uint32_t node_from, Line * line_ref);
+uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line * line_ref);
+uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, Line * line_ref);
 //placeholder will ask how the algorithm works exactly at some point
 
 #endif 

@@ -6,16 +6,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-static uint8_t initGtEntry( GraphTableEntry * gentry , uint32_t node_key , int32_t we_size){
+static uint8_t initGtEntry( GraphTableEntry * gentry , uint32_t node_key ){
     /*
     initialises a non null GraphTableentry
     */
     if(!gentry) return GE_NULL;
 
-    
-    uint8_t failure = initWalkerEntry( &gentry->walker_entry, we_size);
-    if(failure) return failure;
     gentry->node_key=node_key;
     gentry->first_neighboor_ref=NULL;
     gentry->neighboor_num=0;
@@ -23,13 +21,22 @@ static uint8_t initGtEntry( GraphTableEntry * gentry , uint32_t node_key , int32
     return GE_OK;
 }//tested; ok
 
-void freeGtEntry( GraphTableEntry * gentry){
-    /* frees the content of a gt entry ;*/
-    if(!gentry) return;
-    freeWalkerEntry(&gentry->walker_entry);
-    
-}//tested; ok
 
+uint8_t swap_flux_curnext(LineArray * larr ){
+    /*swaps the flux to get them 
+    ready for next iteration
+    O(1)*/
+    if(!larr) return L_ARRNULL;
+
+    uint32_t * tmp= larr->cur_flux;
+
+    larr->cur_flux= larr->next_flux;
+
+    larr->next_flux=tmp;
+    memset(larr->next_flux, 0, larr->size*sizeof(uint32_t));
+
+    return LARR_OK;
+}
 
 static uint8_t initnLineArr( LineArray * lineArr, uint32_t arrline_size){
     /*
@@ -39,14 +46,21 @@ static uint8_t initnLineArr( LineArray * lineArr, uint32_t arrline_size){
 
     lineArr->array=NULL; 
     lineArr->array=(Line*) GROW_ARRAY(Line, lineArr->array, 0, arrline_size);
-
     if(!lineArr->array) return GT_MALLOC;
 
     lineArr->cur_in=0; 
     lineArr->size=arrline_size;
 
+    lineArr->cur_flux=NULL;
+    lineArr->cur_flux=GROW_ARRAY(uint32_t, lineArr->cur_flux, 0, arrline_size);
+    if(!lineArr->cur_flux) return GT_MALLOC;
+
+    lineArr->next_flux=NULL;
+    lineArr->next_flux=GROW_ARRAY(uint32_t, lineArr->next_flux, 0, arrline_size);
+    if(!lineArr->next_flux) return GT_MALLOC;
+
     return GT_OK;
-}// tested ok
+}// new version not tested ; 
 
 static void freeLineArr( LineArray * lineArr){
     /*
@@ -55,18 +69,20 @@ static void freeLineArr( LineArray * lineArr){
     */
     if(!lineArr) return;
     if(lineArr->array) free(lineArr->array);
+    if(lineArr->cur_flux) free(lineArr->cur_flux);
+    if(lineArr->next_flux) free(lineArr->next_flux);
 } // tested ok
 
 void printLineArr( LineArray * lineArr, FILE * stream){
     /**/
     if(!lineArr){ fprintf(stream," line arr is null\n"); return;}
     
-    for(unsigned i=0; i<lineArr->cur_in;i++){
-        fprintf(stream,"line,%u:%d:%d\n", lineArr->array[i].node_index, lineArr->array[i].flux_cur, lineArr->array[i].flux_next);
+    for(unsigned i=0; i<lineArr->size;i++){
+        fprintf(stream,"line,%u:%u:%u\n", lineArr->array[i].node_index, lineArr->cur_flux[i], lineArr->next_flux[i]);
     }
 }
 
-uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size, uint32_t warray_size ,uint32_t curgen ){
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t warray_size ,uint32_t curgen ){
     /*
     initialises a non null graph table ; sets it's entries to default values and initialises 
     it's walker entries
@@ -83,7 +99,7 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     }
 
     for(uint32_t i=0; i<table_size; i++){
-        uint8_t failure = initGtEntry(&gt->entries[i], i,we_size);
+        uint8_t failure = initGtEntry(&gt->entries[i], i);
         if(failure) return failure;
     }
 
@@ -98,6 +114,12 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     failure= initnLineArr(gt->arrLine, arrline_size);
     if(failure) return failure;
 
+    gt->wkcn= malloc(sizeof(WalkerCurNext));
+    if(!gt->wkcn) return GT_MALLOC;
+
+    failure=initWalkerCurNext(gt->wkcn, table_size);
+    if(failure)return failure;
+
     return GT_OK;
 }//tested ok;
 
@@ -108,14 +130,14 @@ void freeGraphTab( GraphTable * gt){
     */
     if(!gt) return;
 
-    for(uint32_t i=0; i<gt->table_size; i++){
-        freeGtEntry(&gt->entries[i]);
-    }
     free(gt->entries);
     freeWalkerArray(gt->warray);
     free(gt->warray);
     freeLineArr(gt->arrLine);
     free(gt->arrLine);
+
+    freeWalkerCurNext(gt->wkcn);
+    free(gt->wkcn);
 
     return ;
 }//tested; ok
@@ -156,8 +178,8 @@ static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux_cu
     LineArray* arrline = gt->arrLine;
 
     arrline->array[arrline->cur_in].node_index=node_index; 
-    arrline->array[arrline->cur_in].flux_cur=flux_cur;
-    arrline->array[arrline->cur_in].flux_next=flux_next;
+    arrline->cur_flux[arrline->cur_in]=flux_cur;
+    arrline->next_flux[arrline->cur_in]=flux_next;
     arrline->array[arrline->cur_in].tabRef=&(gt->entries[node_index]);
 
     arrline->cur_in++;
@@ -184,12 +206,16 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
         fprintf(stream, "%u,%u,",i ,gt->entries[i].neighboor_num);
         for(uint32_t j=0; j<gt->entries[i].neighboor_num; j++){
             if(gt->entries->first_neighboor_ref){
-                if(j!=gt->entries[i].neighboor_num-1) 
-                    fprintf(stream, "%u:%d;", (gt->entries[i].first_neighboor_ref+j)->node_index,\
-                         (gt->entries[i].first_neighboor_ref)->flux_cur );
-                else
-                    fprintf(stream, "%u:%d", (gt->entries[i].first_neighboor_ref+j)->node_index, \
-                        (gt->entries[i].first_neighboor_ref+j)->flux_cur);  
+                if(j!=gt->entries[i].neighboor_num-1) {
+
+                    fprintf(stream, "%u:%u;", (gt->entries[i].first_neighboor_ref+j)->node_index ,
+                     gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array] );
+
+                         
+                }else{
+                    fprintf(stream, "%u:%u", (gt->entries[i].first_neighboor_ref+j)->node_index, \
+                        gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array]); 
+                } 
             }
         }
         fprintf(stream, "\n");
@@ -208,7 +234,7 @@ static bool emptyLine( char * str){
     return (*str=='\0' || *str=='\n');
 }
 
-uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t warray_size,uint32_t curgen){
+uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t curgen){
     /*
     takes a non initialised ; non null , empty gt and loads a graph stored at path into it
     also pass walk table entry size parameter cuz it's better looking than to init w a global var
@@ -240,7 +266,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t war
     else{fclose(f); printf("parse err1\n");return GT_PARSE;}
 
     //initialises graph with values consumed on the first line
-    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, we_size, warray_size,curgen);
+    uint8_t failure= initGraphTab(gt, arrline_size,  table_size,  warray_size,curgen);
     if(failure) { fclose(f); return failure;}
 
     uint32_t cpt=0; 
@@ -324,57 +350,4 @@ uint8_t writeGraphTab(GraphTable * gt, char *path ){
     return succes;
 }//tested; some security flaws ig
 
-
-////
-
-uint8_t pushEntryGte ( GraphTableEntry * gtentry, Walker* walker){
-    /*
-    variant of the function where the walker is added from the entry directly 
-
-    O(1) 
-    */
-    if(!gtentry) return GTE_NULL;
-    uint8_t success= push_wte_nextstack(&gtentry->walker_entry,walker);
-    
-    return success;
-}//not tested 
-
-uint8_t pushEntryGT( GraphTable* gtable, uint32_t index_entry, Walker * walker_ref ){
-    /*
-    adds a walker entry in a walk table entry at index passed 
-    O(1)
-    */
-    if(!gtable) return GT_NULL;
-    if(index_entry> gtable->table_size) return GT_SIZE;
-    
-    uint8_t failure = push_wte_nextstack( &gtable->entries[index_entry].walker_entry , walker_ref);
-    if(failure) return failure;
-
-    return GT_OK;
-}//new version; tested 
-
-uint8_t popEntryGT( GraphTable * gtable, uint32_t index_entry,  Walker ** wkref_ret){
-    /*
-    pops a walker from the walkertabentry at index_entry
-    returns the wkref with the wkref_ret arg (maybe useless i dunno)
-    O(1)
-    */
-    if(!gtable) return GT_NULL;
-    if(index_entry> gtable->table_size) return GT_SIZE; 
-
-    return pop_wte_curstack(&gtable->entries[index_entry].walker_entry,wkref_ret);
-
-}//new version; not tested 
-//didnt check for removal of last element actually 
-
-
-void printEntriesGT( GraphTable * gtable, FILE * stream){
-    /*
-    prints the table entries of a gtable; usefull for trace 
-    */
-    for(uint32_t i=0; i<gtable->table_size; i++){
-        fprintf(stream, "entry %u\n", i);
-        printWalkerEntry(&gtable->entries[i].walker_entry, stream);
-    }
-}//tested ; seems ok
 

@@ -273,15 +273,15 @@ fclose(f1);
     addRule(&trand, 1.0, &ruleRandVar);
 
     WalkerArray warray; 
-    initWalkerArray(&warray, 300000);
+    initWalkerArray(&warray, 20000);
 
     GraphTable gtParis; 
-    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_test.csv", 10, 0);
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_gros_cercle.csv", 10, 0);
     if(failure) printf("failure code : %u\n", failure);  
   
     initPos(&gtParis, &warray);  
 
-   iterate_ntimes(&gtParis, &trand, &warray , 1000);
+   iterate_ntimes(&gtParis, &trand, &warray , 2000);
 
    freeTactics(&trand);
    freeWalkerArray(&warray);

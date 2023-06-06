@@ -63,6 +63,51 @@ def loadCSV(path):
     #ret_graph= nx.convert_node_labels_to_integers(ret_graph,ordering='default', label_attribute=None)
     return ret_graph
 
+def discretisePA(Graph, step): 
+    """
+    nxGraph, step-> nxGraph  
+    discretises a graph passed as arg with the step
+    i.e : creates new nodes when the distance between the nodes a,b in a line 
+    is bigger than step  
+    returns new graph
+    by https://github.com/Pacidus
+    """ 
+    N = Graph.number_of_nodes()
+    lengths = Graph.edges(data="length")
+    
+    id_nodes = {j: i for i,j in enumerate(Graph.nodes())}
+    al = [""] * N
+    gd = [0] * N
+    Ne = Graph.number_of_edges()
+    for a, b, length in lengths:
+        ns = int(length/step)
+        Ne += ns
+        new_ed = [id_nodes[a], *list(range(N, N + ns)), id_nodes[b]]
+        al += [""] * ns
+        gd += [2] * ns
+        gd[id_nodes[a]] += 1
+        gd[id_nodes[b]] += 1
+        for i in range(ns + 1):
+            al[new_ed[i]] += f"{new_ed[i+1]}:0;"
+            al[new_ed[-(i+1)]] += f"{new_ed[-(i+2)]}:0;"
+        N += ns 
+    
+    ret_graph = f"{N},{Ne * 2}\n"
+    for i in range(N):
+        ret_graph += f"{i},{gd[i]},{al[i][:-1]}\n"
+
+    return ret_graph
+
+def makeCSVPA(Graph, path):
+    """
+    writes the custom csv corresponding to the graph passed
+    as argument in the file at path
+    by https://github.com/Pacidus
+    """ 
+    with open(path, "w") as file: 
+        file.write(Graph)
+
+
 
 def main():
     """
@@ -92,8 +137,8 @@ def main():
     dict(MG.degree(weight='weight')) 
     
     GG= nx.Graph(MG) #turns it into a normal graph 
-    DGG= discretise( GG, step) # let's go     
-    makeCSV(DGG, path) 
+    DGG= discretisePA( GG, step) # let's go     
+    makeCSVPA(DGG, path) 
  
     return 0
 

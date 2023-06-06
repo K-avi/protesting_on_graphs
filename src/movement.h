@@ -12,8 +12,10 @@ uint8_t initPos(GraphTable * gtable, WalkerArray *walkerArr);
 
 uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, WalkerArray * warray, uint32_t iter_num);
 
-uint8_t iterate_ntimesVAR1( GraphTable * gtable, Tactics * tactics, uint32_t iter_num);
 
+uint8_t init_pos_var2(GraphTable * gtable);
+uint8_t iterate_ntimesVAR1( GraphTable * gtable, Tactics * tactics, uint32_t iter_num);
+uint8_t iterate_ntimes_var2( GraphTable * gt, Tactics * t, uint32_t iter_num);
 
 #ifdef debug_mode
 uint8_t moveEntry(GraphTable * gtable,uint32_t node_from , uint32_t node_to); 

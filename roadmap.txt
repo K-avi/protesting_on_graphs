@@ -1,5 +1,5 @@
-redesign of code structure count : 2 (does completely rewritting the walker entry structure counts? 
-I think it does.)
+redesign of code structure count : 3 who the fuck thought iterating through every empty fucking node was 
+a good fucking idea??? me. it's. me .
 
 the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
   

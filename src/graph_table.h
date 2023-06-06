@@ -3,7 +3,6 @@
 
 #include "common.h"
 #include "walker.h"
-#include <bits/types/FILE.h>
 #include <stdint.h>
 
 typedef struct s_graph_table_entry GraphTableEntry;
@@ -32,6 +31,9 @@ struct s_graph_table_entry{
     WalkerTableEntry walker_entry ; //maybe pass em by reference 
     Line * first_neighboor_ref;
     uint32_t neighboor_num;
+    uint32_t node_key; 
+    //stores node index; bloated but allows fast lookup of neighboor for the walkers
+    //to store
 };
 
 
@@ -40,17 +42,16 @@ typedef struct s_graph_table{ //table indexed by key of node (it's an int)
     
     GraphTableEntry * entries;
     LineArray*  arrLine;
-
+    WalkerArray * warray;
     uint32_t curgen ; //generation of the simulation stored in the table cache and updated at
                       // the end of an iteration in the simul
 
 }GraphTable ;
 
-
-uint8_t initGraphTab(GraphTable * gt,uint32_t arrline_size, uint32_t table_size, uint32_t we_size, uint32_t curgen);
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size, uint32_t warray_size ,uint32_t curgen );
 void freeGraphTab(GraphTable * gt);
 
-uint8_t loadGraphTab(GraphTable * gt ,char* path, uint32_t we_size , uint32_t curgen); //should prolly take Graph * as arg and return succes
+uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t warray_size,uint32_t curgen);
 uint8_t writeGraphTab( GraphTable * gt,  char *path );
 
 uint8_t printGraphTab( GraphTable * gt, FILE * stream);

@@ -4,8 +4,10 @@
 #include "memory.h"
 #include "tactics.h"
 #include "walker.h"
+
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 uint8_t initPos(GraphTable * gtable, WalkerArray *walkerArr){
     /*
@@ -22,7 +24,7 @@ uint8_t initPos(GraphTable * gtable, WalkerArray *walkerArr){
     }
 
     return MV_OK;
-}// new version , test at some point  ; ok
+}// new version , ok
 
 uint8_t moveEntry(GraphTable * gtable,uint32_t node_from , uint32_t node_to){
     /*
@@ -69,17 +71,6 @@ static uint8_t swapStacks(WalkerTableEntry * wtentry){
     wtentry->nb_walker_cur=wtentry->next_stack.stack_in; //sets new value of number of
     //elem at beginning of iteration
 
-/*
-    while(wtentry->cur_stack.stack_capa< wtentry->next_stack.stack_capa){
-        
-       uint32_t oldCapa= wtentry->cur_stack.stack_capa;
-       wtentry->cur_stack.stack_capa= GROW_CAPACITY(wtentry->cur_stack.stack_capa);
-       wtentry->cur_stack.walker_stack= (Walker**) GROW_ARRAY(Walker*, wtentry->cur_stack.walker_stack, 
-       oldCapa, wtentry->cur_stack.stack_capa);
-
-       if(!wtentry->cur_stack.walker_stack) return WTE_REALLOC;
-    }
-    */
     WalkerRefStack wkres= wtentry->cur_stack;
 
     wtentry->cur_stack.walker_stack=wtentry->next_stack.walker_stack; //check for side effects cuz I don't trust this tbh
@@ -91,7 +82,7 @@ static uint8_t swapStacks(WalkerTableEntry * wtentry){
     wtentry->next_stack.walker_stack=wkres.walker_stack;
 
     return WTE_OK;
-}
+}//tested ok
 
 uint8_t prepareIteration( GraphTable * gtable, WalkerArray * warray){
     /*
@@ -119,7 +110,7 @@ uint8_t prepareIteration( GraphTable * gtable, WalkerArray * warray){
     return GT_OK;        
 }//do not use!!! test fn to update easily 
 //terrible performances ; find smtg smarter ffs
-
+//obsolete 
 
 uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
     /*
@@ -158,11 +149,7 @@ uint8_t iterateGen(GraphTable * gtable, Tactics* tactics){
     }
    // gtable->curgen++;
     return MV_OK;
-}//tested seems ok;  this version will have to run w prepareIteration() 
-/*
-the problem is that combining this w prepareIt will have a total runtime of 
-O(2n+b+c) where n is nb of walkers, b nb of lines, c nb of nodes 
-*/
+}//obsolete 
 
 
 uint8_t prepareIterationVAR1( GraphTable * gtable){
@@ -184,7 +171,7 @@ uint8_t prepareIterationVAR1( GraphTable * gtable){
         gtable->arrLine->array[i].flux_next=0;
     }
     return GT_OK;        
-}
+}//doesn't work ; obsolete 
 
 uint8_t iterateGenVAR1(GraphTable * gtable, Tactics* tactics){
     /*
@@ -222,13 +209,76 @@ uint8_t iterateGenVAR1(GraphTable * gtable, Tactics* tactics){
     }
     gtable->curgen++;
     return MV_OK;
-}//tested seems ok;  this version will have to run w prepareIteration() 
-/*
-I swear to god I'll make this fool faster it ain't gonna beat me like a punk 
-total comp of iterate + prepare : 
+}//doesn't work; obsolete; wrong af too wth 
 
-O(w+n+l) w num of walkers, n number of nodes , l number of lines
-*/
+
+
+uint8_t init_pos_var2(GraphTable * gtable){
+    /*
+    randomly inits the position of the walkers contained 
+    in warray passed as argument in the 
+    table wtab
+    */
+    if(!gtable) return GT_NULL;
+ 
+
+    for(uint32_t i=0; i<gtable->warray->size;i++){
+        uint32_t randval= (uint32_t) rand()%gtable->table_size;
+//printf("%u\n",randval);
+
+        gtable->warray->array[i].cur_entry=&gtable->entries[randval];
+
+        uint8_t failure= pushEntryGT( gtable , randval, &gtable->warray->array[i]);
+       if(failure) return failure;
+    }
+
+    return MV_OK;
+}// new version , ok
+
+uint8_t prepare_iteration_var2(GraphTable *gt){
+    /**/
+    for(uint32_t i=0; i<gt->table_size; i++){
+        swapStacks(&gt->entries[i].walker_entry);
+    }
+    for(uint32_t i=0 ; i<gt->arrLine->cur_in;i++){
+        gt->arrLine->array[i].flux_cur=gt->arrLine->array[i].flux_next;
+        gt->arrLine->array[i].flux_next=0;
+    }
+
+    return IT_OK;
+}
+
+uint8_t iterate_once_var2( GraphTable * gtable , Tactics * tactics){
+    /*
+    iterate once function 
+    */
+    Walker * warray = gtable->warray->array;
+    for (uint32_t i=0; i< gtable->warray->size; i++){
+
+        uint8_t failure;
+        Line line_chosen;
+
+        failure= chooseNodeVar(tactics, gtable, warray[i].cur_entry->node_key, &line_chosen); 
+        if(failure) {printf("oh hellhell no %u\n", failure); return failure;}  
+        pushEntryGte( line_chosen.tabRef, &warray[i]);
+
+        warray[i].cur_entry=line_chosen.tabRef;
+        warray[i].curgen++; //useless 
+    }
+    return IT_OK;
+}
+
+uint8_t iterate_ntimes_var2( GraphTable * gt, Tactics * t, uint32_t iter_num){
+    /* COME ON*/
+    for(unsigned i=0; i<iter_num; i++){
+        uint8_t failure = prepare_iteration_var2(gt );
+        if(failure) return failure;
+
+        failure= iterate_once_var2(gt,t);
+        if(failure) return failure;
+    }
+    return IT_OK;
+}   
 
 
 uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, WalkerArray * warray, uint32_t iter_num){
@@ -242,7 +292,7 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, WalkerArray * wa
         if(failure) return failure;
     }
     return IT_OK;
-}
+}//obsolete
 
 uint8_t iterate_ntimesVAR1( GraphTable * gtable, Tactics * tactics, uint32_t iter_num){
     /**/
@@ -255,4 +305,4 @@ uint8_t iterate_ntimesVAR1( GraphTable * gtable, Tactics * tactics, uint32_t ite
         if(failure) return failure;
     }
     return IT_OK;
-}
+}//obsolete 

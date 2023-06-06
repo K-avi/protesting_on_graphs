@@ -3,17 +3,19 @@
 
 #include "common.h"
 
+
 #include <bits/types/FILE.h>
 #include <stdint.h>
 #include <stdio.h>
 
 //might be irrelevant 
 
-
+typedef struct s_graph_table_entry GraphTableEntry;
 typedef struct s_walker{
     uint32_t id; 
     uint32_t curgen;
     //what does a walker need to know ? good question. 
+    GraphTableEntry * cur_entry; //gte of the node where the where the walker currently is
 }Walker;
 
 typedef struct s_warray{

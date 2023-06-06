@@ -1,11 +1,13 @@
 #include "graph_table.h"
+#include "common.h"
 #include "memory.h"
 #include "walker.h"
-#include <bits/types/FILE.h>
+
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-uint8_t initGtEntry( GraphTableEntry * gentry , int32_t we_size){
+static uint8_t initGtEntry( GraphTableEntry * gentry , uint32_t node_key , int32_t we_size){
     /*
     initialises a non null GraphTableentry
     */
@@ -14,7 +16,7 @@ uint8_t initGtEntry( GraphTableEntry * gentry , int32_t we_size){
     
     uint8_t failure = initWalkerEntry( &gentry->walker_entry, we_size);
     if(failure) return failure;
-
+    gentry->node_key=node_key;
     gentry->first_neighboor_ref=NULL;
     gentry->neighboor_num=0;
 
@@ -64,7 +66,7 @@ void printLineArr( LineArray * lineArr, FILE * stream){
     }
 }
 
-uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size, uint32_t curgen ){
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size, uint32_t we_size, uint32_t warray_size ,uint32_t curgen ){
     /*
     initialises a non null graph table ; sets it's entries to default values and initialises 
     it's walker entries
@@ -81,14 +83,19 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     }
 
     for(uint32_t i=0; i<table_size; i++){
-        uint8_t failure = initGtEntry(&gt->entries[i], we_size);
+        uint8_t failure = initGtEntry(&gt->entries[i], i,we_size);
         if(failure) return failure;
     }
 
     gt->arrLine=malloc(sizeof(LineArray));
     if(!gt->arrLine) return GT_MALLOC;
 
-    uint8_t failure= initnLineArr(gt->arrLine, arrline_size);
+    gt->warray= malloc(sizeof(WalkerArray));
+    if(!gt->warray) return WA_ALLOC;
+    uint8_t failure=initWalkerArray(gt->warray, warray_size);
+    if(failure) return failure;
+
+    failure= initnLineArr(gt->arrLine, arrline_size);
     if(failure) return failure;
 
     return GT_OK;
@@ -105,7 +112,8 @@ void freeGraphTab( GraphTable * gt){
         freeGtEntry(&gt->entries[i]);
     }
     free(gt->entries);
-
+    freeWalkerArray(gt->warray);
+    free(gt->warray);
     freeLineArr(gt->arrLine);
     free(gt->arrLine);
 
@@ -200,7 +208,7 @@ static bool emptyLine( char * str){
     return (*str=='\0' || *str=='\n');
 }
 
-uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t curgen){
+uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t warray_size,uint32_t curgen){
     /*
     takes a non initialised ; non null , empty gt and loads a graph stored at path into it
     also pass walk table entry size parameter cuz it's better looking than to init w a global var
@@ -232,7 +240,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t we_size , uint32_t cur
     else{fclose(f); printf("parse err1\n");return GT_PARSE;}
 
     //initialises graph with values consumed on the first line
-    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, we_size, curgen);
+    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, we_size, warray_size,curgen);
     if(failure) { fclose(f); return failure;}
 
     uint32_t cpt=0; 
@@ -369,3 +377,4 @@ void printEntriesGT( GraphTable * gtable, FILE * stream){
         printWalkerEntry(&gtable->entries[i].walker_entry, stream);
     }
 }//tested ; seems ok
+

@@ -124,7 +124,7 @@ uint8_t ruleRandVar( GraphTable * gtable , uint32_t node_from, Line * line_ref){
     */
     if(!gtable) return GT_NULL;
     if(!line_ref) return LINEREF_NULL;
-    if(node_from>gtable->table_size) return GT_SIZE;
+    if(node_from>gtable->table_size){printf("node_from %u gt->size %u\n", node_from, gtable->table_size); return GT_SIZE;}
 
     if(gtable->entries[node_from].neighboor_num==0) return MV_NONEIGHBOORS;
 
@@ -169,7 +169,7 @@ uint8_t chooseNodeVar( Tactics * t, GraphTable* gtable, uint32_t node_from, Line
     uint8_t failure= t->rule_arr[0].rule_fun(gtable, node_from, line_ref);
     if(failure) return failure;
 
-  
+    
     //printf("from choose flux %d id %u\n", line_ref->flux_next, line_ref->node_index);
     return MV_OK;
 }//placeholder ;only relies on first rule of tactic 

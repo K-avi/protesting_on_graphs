@@ -1,13 +1,12 @@
 #include "tactics.h"
+#include "common.h"
 #include "misc.h"
 
 uint8_t initTactics(Tactics * t, uint32_t size){
     /*
     initialises a Tactics ptr 
     */
-    if(!t){
-        return T_NULL;
-    }
+    if(!t){ report_err("initTactics", T_NULL); return T_NULL;}
 
     t->rule_arr=NULL;
     t->rule_arr=(Rule*) GROW_ARRAY(Rule, t->rule_arr, 0, size);
@@ -31,12 +30,14 @@ uint8_t addRule( Tactics * t , double rule_coeff,  uint8_t (*rule_fun)( GraphTab
     /*
     adds a rule function to a tactics structure
     */
-    if(!t) return T_NULL;
+    if(!t){ report_err("addRule", T_NULL); return T_NULL;}
+
     if(t->capa == t->numb){
         uint32_t oldCapa= t->capa; 
         t->capa = GROW_CAPACITY(t->capa);
         t->rule_arr=GROW_ARRAY(Rule, t->rule_arr, oldCapa, t->capa);
         if(!t->rule_arr){
+            report_err("addRule",T_REALLOC);
             return T_REALLOC;
         }
     }
@@ -61,12 +62,13 @@ uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, Line * line_ref){
     WARNING : will update the flux field of gtable 
     O(1)
     */
-    if(!gtable) return GT_NULL;
-    if(node_from>gtable->table_size){printf("node_from %u gt->size %u\n", node_from, gtable->table_size); return GT_SIZE;}
-    if(gtable->entries[node_from].neighboor_num==0) return MV_NONEIGHBOORS;
+    if(!gtable) { report_err( "rule_rand", GT_NULL ) ; return GT_NULL;} 
+    if(node_from>gtable->table_size) { report_err( "rule_rand", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_rand", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
 
     Line * lf = gtable->entries[node_from].first_neighboor_ref+ rand()%gtable->entries[node_from].neighboor_num;
     *line_ref= *lf;
+ 
     line_ref->node_index=lf->tabRef->node_key;
     gtable->arrLine->next_flux[ lf- gtable->arrLine->array]++;
 
@@ -79,17 +81,19 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line *
     chooses a rule from tactics t to use to select a node to move to
     O(c+t) where c is the complexity of the tactic chosen and t the number of tactics to choose from 
     */
-    if(!t) return T_NULL;
-    if(!gtable) return GT_NULL;
+    if(!t) { report_err( "choose_node", T_NULL ) ; return T_NULL;} 
+    if(!gtable){ report_err( "choose_node", GT_NULL ) ; return GT_NULL;} 
     //if(!line_ref) return LINEREF_NULL;
 
     double randval= (double)rand() / (double)RAND_MAX ;
     for(uint32_t i=0; i<t->capa ; i++){
         if( randval< t->rule_arr[i].rule_coeff){
              uint8_t failure= t->rule_arr[i].rule_fun(gtable, node_from, line_ref);
+             report_err("choose_node", failure);
              return failure;
         }
     }  
+    report_err("choose_node", T_CANTCHOOSE);
     return T_CANTCHOOSE;
 }//not tested; don't use double they are too slow
 /*

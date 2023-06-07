@@ -164,10 +164,10 @@ static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux_cu
 
     O(1)
     */
-    if(!gt) return GT_NULL;
-    if(!gt->arrLine) return GT_NULL;
-    if(node_index> gt->table_size) return GT_INDEX;
-    if(gt->arrLine->cur_in==gt->arrLine->size){ fprintf(stderr, "arrfull at node %u\n", node_index); return GT_ARFULL;}
+    if(!gt){ report_err("appLineGt", GT_NULL); return GT_NULL;}
+    if(!gt->arrLine){ report_err("appLineGt", GT_NULL); return GT_NULL;}
+    if(node_index> gt->table_size) { report_err("appLineGt", GT_INDEX); return GT_INDEX;}
+    if(gt->arrLine->cur_in==gt->arrLine->size){ { report_err("appLineGt", GT_ARFULL); return GT_ARFULL;}}
 
     LineArray* arrline = gt->arrLine;
 
@@ -189,10 +189,8 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
     probably faster to build one big string and then print it only once instead of calling print 
     every time 
     */
-    if(!gt){
-        return GT_NULL;
-    }
-    if(!gt->entries) return GT_NULL;
+    if(!gt){ report_err("printGraphTab", GT_NULL); return GT_NULL;}
+    if(!gt->entries) { report_err("printGraphTab", GT_NULL); return GT_NULL;}
  
     fprintf(stream, "%u,%u\n", gt->table_size, gt->arrLine->size);
     
@@ -204,8 +202,7 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
 
                     fprintf(stream, "%u:%u;", (gt->entries[i].first_neighboor_ref+j)->node_index ,
                      gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array] );
-
-                         
+         
                 }else{
                     fprintf(stream, "%u:%u", (gt->entries[i].first_neighboor_ref+j)->node_index, \
                         gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array]); 
@@ -223,7 +220,6 @@ static  bool peek(const char * str, char expected){
 }
 
 static bool emptyLine( char * str){
-    
     while(*str==' ' || *str=='\r') str++;
     return (*str=='\0' || *str=='\n');
 }
@@ -236,32 +232,33 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t c
     if there is more line than space for the graph (i.e : the size of the graph is actually inferior to)
     the number of lines) the lines after the limit of the graph will be ignored
     */
-    if(!gt) return GT_NULL;
+    if(!gt){ report_err("loadGraphTab", GT_NULL); return GT_NULL;}
 
     FILE * f = fopen(path, "r");
-    if(!f) return GT_READFAIL;
+    if(!f) { report_err("loadGraphTab", GT_READFAIL); return GT_READFAIL;};
 
     char line[256];
     memset(line, 0, 256);
 
     if(!fgets(line, 256, f)) {//consume first line to retrieve size of graph and size of arrline
         fclose(f);
-        return GT_NOREAD;
+        report_err("loadGraphTab", GT_NOREAD); 
+        return GT_NULL;
     }
 
     char * end1,*cur1=line;
     uint32_t  table_size = (uint32_t) strtol(cur1, &end1, 10);
     if(peek(end1, ',') && cur1!=end1) cur1=(++end1);
-    else{ fclose(f); printf("parse err0\n"); return GT_PARSE; }
+    else{ fclose(f);  report_err("loadGraphTab parse0", GT_PARSE); return GT_PARSE; }
     
     uint32_t arrline_size = (uint32_t) strtol(cur1, &end1, 10);
    
     if(cur1!=end1) cur1=(++end1);
-    else{fclose(f); printf("parse err1\n");return GT_PARSE;}
+    else{fclose(f); report_err("loadGraphTab parse1", GT_PARSE); return GT_PARSE;}
 
     //initialises graph with values consumed on the first line
     uint8_t failure= initGraphTab(gt, arrline_size,  table_size,  warray_size,curgen);
-    if(failure) { fclose(f); return failure;}
+    if(failure) { fclose(f);  report_err("loadGraphTab" ,failure); return failure;}
 
     uint32_t cpt=0; 
     //keep track of nblines consumed ; report error if nbline consumed higher than counter
@@ -273,11 +270,11 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t c
 
         uint32_t node_index = (uint32_t) strtol(cur, &end, 10); //retrieves index
         if(peek(end, ',') && cur!=end) cur=(++end);
-        else{  fclose(f); printf("parse err2\n");return GT_PARSE;}
+        else{  fclose(f);  report_err("loadGraphTab parse2", GT_PARSE);return GT_PARSE;}
 
         uint32_t neighboor_num = (uint32_t) strtol(cur, &end, 10); //retrieves neighboor num
         if(peek(end, ',') && cur!=end) cur=(++end);
-        else {  fclose(f); printf("parse err3\n");return GT_PARSE;}
+        else {  fclose(f);  report_err("loadGraphTab parse3", GT_PARSE); return GT_PARSE;}
 
         //appends node to the node section
         uint8_t errflag= appNodeGt(gt, node_index, neighboor_num, &(gt->arrLine->array[gt->arrLine->cur_in]));
@@ -290,11 +287,10 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t c
             */
           
             uint32_t new_neighboor= (uint32_t) strtol(cur, &end, 10);
-           
             if(peek(end, ':') && cur!=end) cur=(++end);    
             else {
                 fclose(f);
-               
+                report_err("loadGraphTab parse4", GT_PARSE);
                 return GT_PARSE;
             }
 
@@ -303,14 +299,14 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t c
                 if(peek(end, ';') && cur!=end ) cur=(++end);
                 else {
                     fclose(f);
-                    printf("parse err5\n");
+                    report_err("loadGraphTab parse5", GT_PARSE);
                     return GT_PARSE;
                 }
             }else{
                 if( cur==end){
                     fclose(f);
-                    printf("parse err6\n");
-                     return GT_PARSE; 
+                    report_err("loadGraphTab parse6", GT_PARSE);
+                    return GT_PARSE; 
                 }
             }
 
@@ -335,13 +331,14 @@ uint8_t writeGraphTab(GraphTable * gt, char *path ){
     */
     FILE * f = fopen(path, "w");
     if(!f){
+         report_err("writeGraphTab parse0", GT_OPENFAIL);
         return GT_OPENFAIL;
     }
 
-    uint8_t succes= printGraphTab(gt, f);
+    uint8_t failure= printGraphTab(gt, f);
     fclose(f);
-
-    return succes;
+    if(failure) report_err("writeGraphTab",failure);
+    return failure;
 }//tested; some security flaws ig
 
 

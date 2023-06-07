@@ -1,4 +1,5 @@
 #include "walker.h"
+#include "common.h"
 #include "misc.h"
 
 /* RAW WALKER ARRAY MANIPULATION */
@@ -6,21 +7,19 @@
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){
     /*
     initialises a non null wArray
-
     will memleak if called on an already initialised wArray
     */
-    if(!wArray) return  WA_NULL;
+    if(!wArray) { report_err( "initWalkerArray", WA_NULL ) ; return WA_NULL;} 
 
     wArray->size=size;
 
     wArray->array=NULL;
     wArray->array = (Walker*) GROW_ARRAY(Walker, wArray->array, 0, size);
-    if(!wArray->array) return WA_ALLOC;
+    if(!wArray->array) { report_err( "initWalkerArray", WA_ALLOC ) ; return WA_ALLOC;} 
 
     for(uint32_t i=0; i<size; i++){ //initialises the walkers 
         wArray->array[i].id=i; 
     }
-
     return WA_OK;
 }//ok
 
@@ -43,15 +42,15 @@ void printWarray(WalkerArray *wArray, FILE * stream){
 uint8_t initWalkerCurNext(WalkerCurNext * wkcn , uint32_t size){
     /*init non null wkcn to sizes */
 
-    if(!wkcn) return WKCN_NULL;
+    if(!wkcn) { report_err( "initWalkerCurNext", WKCN_NULL ) ; return WKCN_NULL;} 
 
     wkcn->cur_num=NULL;
     wkcn->cur_num=GROW_ARRAY(uint32_t, wkcn->cur_num, 0, size);
-    if(!wkcn->cur_num) return WKCN_MALLOC;
+    if(!wkcn->cur_num) { report_err( "initWalkerCurNext malloc 1", WKCN_MALLOC ) ; return WKCN_MALLOC;} 
 
     wkcn->next_num=NULL;
     wkcn->next_num=GROW_ARRAY(uint32_t, wkcn->next_num, 0, size);
-    if(!wkcn->next_num) return WKCN_MALLOC;
+        if(!wkcn->next_num) { report_err( "initWalkerCurNext malloc 2", WKCN_MALLOC ) ; return WKCN_MALLOC;} 
 
     memset(wkcn->next_num, 0, size*sizeof(uint32_t));
     memset(wkcn->cur_num, 0, size*sizeof(uint32_t));
@@ -78,8 +77,8 @@ uint8_t swapWalkerCurNext(WalkerCurNext *wkcn){
     then flushes the next array to make it ready for 
     an iteration*/
 
-    if(!wkcn) return WKCN_NULL;
-    if(!(wkcn->cur_num && wkcn->next_num)) return WKCN_NULL;
+    if(!wkcn)  { report_err( "swapWalkerCurNext null check 1", WKCN_NULL ) ; return WKCN_NULL;} 
+    if(!(wkcn->cur_num && wkcn->next_num))  { report_err( "swapWalkerCurNext null check 2", WKCN_NULL ) ; return WKCN_NULL;} 
     
     uint32_t * tmp = wkcn->cur_num;
     

@@ -303,16 +303,33 @@ fclose(f1);
     addRule(&trand, 1.0, &rule_rand);
 
     GraphTable gtParis; 
-    uint8_t failure = loadGraphTab(&gtParis, "test_graph/gt_test2.csv",  100 ,0);
+    uint8_t failure = loadGraphTab(&gtParis, "test_graph/gt_test1.csv",  5 ,0);
     if(failure){ printf("failure 1st call code : %u\n", failure);  exit( failure) ;}
 
-    //printGraphTab(&gtParis, stdout);
+  
     failure= init_pos(&gtParis);
     if(failure){ printf("failure 2nd call code : %u\n", failure);  exit( failure) ;}
 
-    failure=iterate_ntimes(&gtParis, &trand, 1000);
-  
 
+
+ 
+printf("init\n");
+    printGraphTab(&gtParis, stdout);
+    printLineArr( gtParis.arrLine, stdout);
+    printWarray(gtParis.warray, stdout);
+
+   
+
+
+   iterate_ntimes(&gtParis, &trand, 1);
+printf("it 1 \n");
+    printGraphTab(&gtParis, stdout);
+    printLineArr( gtParis.arrLine, stdout);
+    printWarray(gtParis.warray, stdout);
+    
+       iterate_ntimes(&gtParis, &trand, 1);
+  
+printf("it 2 \n");
     printGraphTab(&gtParis, stdout);
     printLineArr( gtParis.arrLine, stdout);
     printWarray(gtParis.warray, stdout);

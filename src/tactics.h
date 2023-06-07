@@ -5,7 +5,6 @@
 #include "graph_table.h"
 
 
-
 typedef struct s_rule{
 /*
 stores the coeff and function pointer of a rule in a tactic; 

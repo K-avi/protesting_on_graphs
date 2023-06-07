@@ -12,7 +12,7 @@ coeff is a double between 0 and 1 corresponding to the probability of choosing t
 
 maybe don't use floats for the coeff cuz they slow af
 */
-    double rule_coeff;  
+    uint8_t rule_coeff;  
     uint8_t (*rule_fun)( GraphTable * gtable, uint32_t node_from, Line* line_to_ref) ;
      
 } Rule; 
@@ -41,5 +41,7 @@ uint8_t addRule( Tactics * t , double rule_coeff, \
 uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line * line_ref);
 uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, Line * line_ref);
 //placeholder will ask how the algorithm works exactly at some point
+
+uint8_t parse_args(Tactics *t, uint32_t argc , char ** argv );
 
 #endif 

@@ -10,7 +10,8 @@ typedef enum {
     GT_ARFULL, T_NULL, T_REALLOC, WA_NULL, WA_ALLOC,  WTE_NULL, WTE_REALLOC, WTE_IN, 
     WT_NULL, WT_REALLOC, WT_INDEX_TOO_BIG, WT_NOT_FOUND, GT_SIZE, GTE_NULL, NDREF_NULL, 
     MV_NONEIGHBOORS, WKR_NULL, LINEREF_NULL, WRS_NULL, WRS_MALLOC, WRS_REALLOC, WRS_EMPTYSTACK , 
-    WKCN_NULL, WKCN_MALLOC, WKCN_REALLOC, MV_NULL, L_ARRNULL, T_CANTCHOOSE, ERRFLAG_REALLOC
+    WKCN_NULL, WKCN_MALLOC, WKCN_REALLOC, MV_NULL, L_ARRNULL, T_CANTCHOOSE, ERRFLAG_REALLOC,
+    ERRFLAG_INVALID_ARG, PRS_NULL, PRS_INVALID_FORMAT
 }ErrFlag;
 
 //ndref stands for node ref 
@@ -28,6 +29,7 @@ typedef enum {
 #define IT_OK FG_OK //it stands for iteration 
 #define WKCN_OK FG_OK// walker cur next arrays
 #define LARR_OK FG_OK //line arr
+#define PFN_OK FG_OK // parse function
 
 #include <stdlib.h>
 #include <stdio.h>

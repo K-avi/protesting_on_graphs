@@ -1,11 +1,10 @@
 redesign of code structure count : 4 fuck it one hot everything spatial complexity is for pussies 
 remember kids everything is in O(1) if u store everything
 
-will have to do clean error reporting (I mean flags r cool n stuff but custom messages
-would be nice)
 
 the done section writes every step I did ; some of them are obsolete (for example I changed 
 implem of graphs multiple times) but it's a good way to track my progress
+
 done : 
     - graphs are kinda implemented
         - I can add stuf to them 
@@ -37,34 +36,43 @@ done :
     - test the updated graph_table functions 
 
     - movement mostly done ; problem with the update of flux for some 
-      fucking reason
+      reason (not anymore)
 
-    -fix the fucking flux
+    -fixed the flux
 
     - do some proper testing of simulations (kinda)
 
-    - write the tactics stuff (not tested )
+    - write the tactics stuff (not tested ) (now it is)
 
     - write propper error reporting 
 
-
-pending :  
-        
     - put error reporting at the right place 
-    - re implement tactics 
+
+    - re implement tactics
+
+    - test tactics (kind of done )
+
+    - write the actual main n maybe do a script to call stuff in bash or smtg 
+      (not finished ; not tested )
+
+
+pending : 
+
+     
+    - find out how to parse tactics 
+
+    - finish docu 
+
+    - create an archive of the CSV files of the graphs 
 
     - change usage of rand() with something better
 
     - write a wrapper around trace dump
-
-    - write the actual main n maybe do a script to call stuff in bash or smtg 
-    
-    - organise the repos ffs 
-
-    - create an archive of the CSV files of the graphs 
 
     - if I have the time use custom malloc 
 
     - think about a smarter implem or something
 
     - write some actual data analysis functions on the graphs in C
+
+    - remove curse words from commentaries and documentation

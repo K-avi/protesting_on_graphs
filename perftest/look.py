@@ -1,3 +1,4 @@
+#this file was written by https://github.com/Pacidus
 import numpy as np
 import matplotlib.pyplot as plt
 

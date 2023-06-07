@@ -72,6 +72,8 @@ char * str_flag(uint8_t flag){
   case L_ARRNULL :return "line array is null";
   case T_CANTCHOOSE :return "couldn't choose a rule based on value given";
   case ERRFLAG_REALLOC : return "failed to allocate memory";
+  case PRS_NULL : return "string passed is null";
+  case PRS_INVALID_FORMAT: return "format of rule string not recognised";
   default : return "unknown error ; how did you get here?\n";
   }
  

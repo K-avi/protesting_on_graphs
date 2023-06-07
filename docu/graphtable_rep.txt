@@ -1,33 +1,15 @@
-the graph_table is a structure representing two disctinct things  
-(another way to represent it is to consider that it's a table storing 
-everything relevant about a node at 1 place)
+the graph_table is the structure representing the graph and the thing it contains. 
 
-the graph table first use of the graph table is to be a representation 
-of a the adjacnecy lists of a graph 
+it contains a size field to keep track of the number of entries in it 
 
-example :
+a GraphTableEntry pointer field containing the graph's entry (see docu of GraphTableEntry)
 
-let gt be a graphtable; i the key for a node in a graph G, 
+a LineArray pointer field where the adjacency lists of the graph are stored (see docu of LineAray)
 
-at gt[i] you can retrieve the number of neighboor (degree) of the node i 
-as well as the reference to it's first neighboor in an array storing the 
-adjacency lists of the graph.
+a WalkerArray pointer field containing the walkers present in the graph
+(see docu of WalkerArray)
 
-this is enough to represent the adjacency lists of a graph G 
+a WalkerCurNext field to keep track of the position of the walkers (see docu of WalkerCurNext)
 
-the second use of the graph table is as a table to store the Walkers. The 
-keys of the table are the index of the nodes where the walkers are. 
-
-This allows to move a walker from node a to b in O(u) where u is the 
-number of walkers in the table entry of the node u , if the number of 
-walkers in the graph isn't really really big this means that movement
-is in ~O(1) 
-
-to improve performance, the table only relies on C arrays. the table of 
-nodes is a static array , the adjacency lists are stored 
-in a big static array the walkers are stored in a static array. 
-(The table actually moves references to the walker)
-
-
-the array containing the references to the walkers at each entry of the
-table is the only dynamic array used. 
+a cur_gen field which is an integer used to keep track of the number of iterations since 
+the beginning of a simulation

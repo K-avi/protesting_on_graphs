@@ -3,9 +3,6 @@
 
 #include "common.h"
 
-#include <stdint.h>
-#include <stdio.h>
-
 //might be irrelevant 
 
 typedef struct s_graph_table_entry GraphTableEntry;

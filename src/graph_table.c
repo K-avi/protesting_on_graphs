@@ -1,12 +1,6 @@
 #include "graph_table.h"
 #include "common.h"
-#include "memory.h"
-#include "walker.h"
-
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "misc.h"
 
 static uint8_t initGtEntry( GraphTableEntry * gentry , uint32_t node_key ){
     /*
@@ -157,7 +151,7 @@ static uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighb
 
     gt->entries[node_index].first_neighboor_ref=first_neighboor_ref;
     gt->entries[node_index].neighboor_num=neighboor_num;
-    
+
     return GT_OK;
     
 }//tested ; ok

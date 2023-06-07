@@ -1,10 +1,8 @@
 redesign of code structure count : 4 fuck it one hot everything spatial complexity is for pussies 
-remember kids everything is in O(1) if u store fucking everything
+remember kids everything is in O(1) if u store everything
 
-the actual graphs I'll use will be retrieved from OSM and pretreated in python with OSMnx 
-  
- 
-also will have to do clean error reporting 
+will have to do clean error reporting (I mean flags r cool n stuff but custom messages
+would be nice)
 
 done : 
     - graphs are kinda implemented
@@ -38,45 +36,31 @@ done :
 
     - movement mostly done ; problem with the update of flux for some 
       fucking reason
-fuck.
-
-pending :  
-
-    
 
     -fix the fucking flux
+
+    - do some proper testing of simulations (kinda)
+
+    - write the tactics stuff (not tested )
+
+pending :  
         
-
-    - write the tactics stuff 
-    
-    - once all of this is done I can actually start to simulate stuff 
-
     - write propper error reporting 
 
-    - write the trace fn 
+    - change usage of rand() with something better
+
+    - write a wrapper around trace dump
 
     - maybe make a "misc" file w the memory + error functions in it 
 
-    - load flux into the CSV function 
+    - write the actual main n maybe do a script to modernise stuff 
+    
+    - organise the repos ffs 
+
+    - create an archive of the CSV files of the graphs 
 
     - if I have the time use custom malloc 
 
-    - write some actual data analysis functions on the graphs in C (if I have time )
+    - think about a smarter implem or something
 
-    
-
-make a choice for the movement of walkers in the table 
-  -> append by ref of entry (know which index) 
-  -> append by index of entry  (use the index)
-I'll implement both and see which one is the best 
-
-change format to retrieve curgen info of the simul
-
-the rules should actually prolly return a line cuz it allows to update flux information fast 
-so it's likely better to work w entry references n stuff in the code 
-
-hollup is the flux the number of ppl going FROM a to b 
-or the number of ppl that went in n out of a node a 
-uh oh
-
-./graph_treament.py 48.866 2.33 1000 10 /tmp/tmp
+    - write some actual data analysis functions on the graphs in C

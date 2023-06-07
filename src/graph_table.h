@@ -3,38 +3,50 @@
 
 #include "common.h"
 #include "walker.h"
-#include <stdint.h>
 
 typedef struct s_graph_table_entry GraphTableEntry;
 
-typedef struct s_line{ //prototype for new line struct 
+typedef struct s_line{ //line struct 
     GraphTableEntry * tabRef; //index of b in the line (a,b) as pointer cuz faster to dereference
     uint32_t node_index; //index of b in the line (a,b) as index cuz faster to print
     
 }Line; 
 //add a first time seen field to check if flux next n 
 
-typedef struct s_line_array{//STATIC ARRAY 
-    uint32_t size; 
+typedef struct s_line_array{//STATIC ARRAY  
+/*the line array stores the adjacency lists of the graphs; 
+the idea is to put every adjacency list one after the other 
+to access them faster*/
+
+    uint32_t size; //size of the array
     uint32_t cur_in ;//kinda usefull when initialising
     Line * array ;
 
+    /*these two are simple arrays storing the flux in the line stored at index i of the 
+    Line* part of the struct at their index i.
+    even though it's theoretically longer to look up the flux this way 
+    it is significantly faster to update it before the beginning of the next iteration.
+    it's in O(1) bc I just need to swap cur and next and flush one of them 
+    */
     uint32_t * cur_flux; 
     uint32_t * next_flux;
 
 }LineArray;
 
 
-typedef struct s_graph_table{ //table indexed by key of node (it's an int)
-    uint32_t table_size ;
-    
-    GraphTableEntry * entries;
-    LineArray*  arrLine;
-    WalkerArray * warray;
+typedef struct s_graph_table{ //the main table structure 
 
-    WalkerCurNext * wkcn;
+    uint32_t table_size ;
+    GraphTableEntry * entries; //the entries of the table storing adjacency lists 
+    //and other stuff
+
+    LineArray*  arrLine; //the big array containing the adjacency lists
+
+    WalkerArray * warray; //the big array containing the walkers
+    WalkerCurNext * wkcn;//wrapper array to acces and update the walker position 
+
     uint32_t curgen ; //generation of the simulation stored in the table cache and updated at
-                      // the end of an iteration in the simul
+    // the end of an iteration in the simul
 
 }GraphTable ;
 

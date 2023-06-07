@@ -1,6 +1,6 @@
 #include "common.h"
 #include "graph_table.h"
-#include "memory.h"
+#include "misc.h"
 #include "tactics.h"
 #include "walker.h"
 #include "movement.h"
@@ -303,7 +303,7 @@ fclose(f1);
     addRule(&trand, 1.0, &rule_rand);
 
     GraphTable gtParis; 
-    uint8_t failure = loadGraphTab(&gtParis, "test.csv",  20000 ,0);
+    uint8_t failure = loadGraphTab(&gtParis, "test_graph/gt_test2.csv",  100 ,0);
     if(failure){ printf("failure 1st call code : %u\n", failure);  exit( failure) ;}
 
     //printGraphTab(&gtParis, stdout);
@@ -313,11 +313,10 @@ fclose(f1);
     failure=iterate_ntimes(&gtParis, &trand, 1000);
   
 
-    /*
     printGraphTab(&gtParis, stdout);
     printLineArr( gtParis.arrLine, stdout);
     printWarray(gtParis.warray, stdout);
-    */
+    
 
     freeTactics(&trand);
     freeGraphTab(&gtParis);  

@@ -1,12 +1,5 @@
 #include "walker.h"
-#include "common.h"
-#include "memory.h"
-
-
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "misc.h"
 
 /* RAW WALKER ARRAY MANIPULATION */
 
@@ -41,9 +34,9 @@ void printWarray(WalkerArray *wArray, FILE * stream){
     /*
     */
     if(!wArray) {fprintf(stream,"warray is null\n"); return;}
-
+    fprintf(stream, "walker array of size %u\n", wArray->size);
     for(uint32_t i=0 ; i<wArray->size; i++){
-        fprintf(stream,"%u%u\n", wArray->array[i].id, (wArray->array[i].cur_entry)->node_key  );
+        fprintf(stream,"%u,%u\n", wArray->array[i].id, (wArray->array[i].cur_entry)->node_key  );
     }
 }
 

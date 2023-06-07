@@ -3,15 +3,21 @@
 
 #include "common.h"
 #include "graph_table.h"
-#include <stdint.h>
+
 
 
 typedef struct s_rule{
+/*
+stores the coeff and function pointer of a rule in a tactic; 
+coeff is a double between 0 and 1 corresponding to the probability of choosing the number
 
-    double rule_coeff; 
-    uint8_t (*rule_fun)( GraphTable * gtable, uint32_t node_from, Line* line_to_ref) ; //placeholder ; not sure of the parameters needed in this function yet
+maybe don't use floats for the coeff cuz they slow af
+*/
+    double rule_coeff;  
+    uint8_t (*rule_fun)( GraphTable * gtable, uint32_t node_from, Line* line_to_ref) ;
+     
 } Rule; 
-//rule should have some kind of function pointer ?
+
 
 typedef struct s_tactics{ 
 /*
@@ -19,7 +25,7 @@ tactics stores rules in a dynamic array used to determine a decision w a
 linear combination 
 of the results of each rule or something
 */
-    uint32_t capa;
+    uint32_t capa; //should prolly be static + use uint8_t 
     uint32_t numb;
 
     Rule * rule_arr;

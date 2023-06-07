@@ -53,7 +53,7 @@ done :
     - test tactics (kind of done )
 
     - write the actual main n maybe do a script to call stuff in bash or smtg 
-      (not finished ; not tested )
+      ( finished ; not tested )
 
 
 pending : 
@@ -65,7 +65,7 @@ pending :
 
     - create an archive of the CSV files of the graphs 
 
-    - change usage of rand() with something better
+    - change usage of rand() with something better ; what if I didn't ???
 
     - write a wrapper around trace dump
 

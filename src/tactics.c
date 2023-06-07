@@ -110,15 +110,15 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line *
 
     double randval= (double)rand() / (double)RAND_MAX ;
     uint8_t uint_coeff = (uint8_t) UINT8_MAX / randval;
-
+//printf("%u", t->rule_arr[0].rule_coeff);
     for(uint32_t i=0; i<t->capa ; i++){
-        if( uint_coeff< t->rule_arr[i].rule_coeff){
+        if( uint_coeff<= t->rule_arr[i].rule_coeff){
              uint8_t failure= t->rule_arr[i].rule_fun(gtable, node_from, line_ref);
-             if(failure) report_err("choose_node", failure);
+             if(failure) report_err("choose_node err1", failure);
              return failure;
         }
     }  
-    report_err("choose_node", T_CANTCHOOSE);
+    report_err("choose_node err2", T_CANTCHOOSE);
     return T_CANTCHOOSE;
 }//tested; seems ok ; error prone though
 /*

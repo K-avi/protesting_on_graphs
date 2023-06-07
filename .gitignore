@@ -4,3 +4,4 @@ walking_on_graph
 cache
 traces
 *.csv
+csv_graph

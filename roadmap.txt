@@ -70,12 +70,16 @@ pending :
 
     - test tactics parsing
 
-    - maybe create a shell / python wrapper for the program 
+    - write the different rules 
+
+    - create a shell / python wrapper for the program 
 
     - remove more elements from structures to gain space 
 
-    - if I have the time use custom malloc using an arena
+    - if I have time create custom malloc using an arena/mempool
       might actually use obstacks instead of reinventing the wheel
+      reading papers talking abt similar stuff ; it's pretty confusing
+      tbh
 
     - write some actual data analysis functions on the graphs in C
 

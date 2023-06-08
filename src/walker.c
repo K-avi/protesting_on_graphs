@@ -60,7 +60,7 @@ uint8_t initWalkerCurNext(WalkerCurNext * wkcn , uint32_t size){
     wkcn->size=size;
 
     return WKCN_OK;
-}//not tested ; prolly ok 
+}//tested ; ok 
 
 void freeWalkerCurNext(WalkerCurNext *wkcn){
     /*frees content of a wkcn*/
@@ -72,7 +72,7 @@ void freeWalkerCurNext(WalkerCurNext *wkcn){
     if(wkcn->next_num){
         free(wkcn->next_num);
     }
-}//not tested; prolly ok
+}//tested; ok
 
 uint8_t swapWalkerCurNext(WalkerCurNext *wkcn){
     /* swaps the cur and next array pointers of a wkcn and 
@@ -89,7 +89,7 @@ uint8_t swapWalkerCurNext(WalkerCurNext *wkcn){
     memset( wkcn->next_num, 0, wkcn->size*sizeof(uint32_t));
 
     return WKCN_OK;
-}//not tested, prolly ok
+}//tested, ok
 
 void printWKCN( WalkerCurNext * wkcn, FILE * stream){
     if(!wkcn){ fprintf(stream, "wkcn is null\n"); return ;}

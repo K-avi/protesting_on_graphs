@@ -9,7 +9,6 @@ it also contains the error reporting and graph dump function
 
 void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
     /*
-   
     */
   if (newSize == 0) {
     if(pointer) free(pointer);
@@ -80,8 +79,7 @@ char * str_flag(uint8_t flag){
   case AR_FULL : return "jesus christ you filled the memory pool???";
   default : return "unknown error ; how did you get here?\n";
   }
- 
-}
+}//ok
 
 void report_err( char * msg , uint8_t flag){ //could be a macro 
   fprintf(stderr, "error : %s at %s\n", str_flag(flag), msg);

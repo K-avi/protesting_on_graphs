@@ -53,7 +53,7 @@ static uint8_t initnLineArr( LineArray * lineArr, uint32_t arrline_size){
     if(!lineArr->next_flux) return GT_MALLOC;
 
     return GT_OK;
-}// new version not tested ; 
+}// tested ; ok
 
 static void freeLineArr( LineArray * lineArr){
     /*
@@ -317,10 +317,8 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t c
     fclose(f);
     return GT_OK;
 }//tested; seems ok ; ugly 
-
 //WARNING : initialises both flux_cur and flux_next to the flux value read; it might be a problem 
 //if the fn is used wrong ; I might change format to path 2 flux values
-
 
 uint8_t writeGraphTab(GraphTable * gt, char *path ){
     /*
@@ -337,6 +335,6 @@ uint8_t writeGraphTab(GraphTable * gt, char *path ){
     fclose(f);
     if(failure) report_err("writeGraphTab",failure);
     return failure;
-}//tested; some security flaws ig
+}//tested; ok
 
 

@@ -40,6 +40,7 @@ uint8_t prepare_ite( GraphTable * gtable){
     return MV_OK;
 
 }//tested ; ok
+
 uint8_t iterate_once(GraphTable * gtable , Tactics * t){
     /*
     iteration function; 

@@ -4,11 +4,8 @@
 #include "misc.h"
 #include "tactics.h"
 #include "walker.h"
-#include <stdint.h>
-#include <stdlib.h>
 
 #include <obstack.h>
-
 //oh boy
 
 uint8_t init_arena(Arena *arena, uint64_t size){
@@ -45,16 +42,43 @@ void * get_memory(Arena * arena, uint8_t * failure, size_t alloc_size){
     arena->top_index+=alloc_size;
 
     return ret;
-}
+}//not tested ; do not use 
 
+//should be wrapped inside of a macro
 uint64_t calculate_size( uint32_t nb_nodes,uint32_t nb_lines ,uint32_t nb_rules , uint32_t nb_walkers){
     /*this will be the single most critical calculation of the program. 
     don't. fuck. this. up*/
 
     uint64_t ret;
+
+    //elements of the graphtable.h 
     ret= sizeof(GraphTable) + sizeof(LineArray); // base gtable struct
+
+    ret+= nb_lines* sizeof(Line) + 2* sizeof( uint32_t); 
+    //line array and two times the size of a flux array in the linearray
+
+    ret+= nb_nodes *( sizeof(GraphTableEntry) ) ;
+    //there is nb_nodes gte 
+
+    ret+= 2* nb_nodes * (sizeof(uint32_t)); //to store the walker_cur
+    //and walker_next array
+
+    //elements of walker.h 
     ret+= sizeof(WalkerCurNext) + sizeof(WalkerArray); //base walker struct
+
+    //store elements of warray
+    ret+= nb_walkers* sizeof(Walker); //I mean yeah
+    
+
+    //elements of tactics.h
     ret+= sizeof(Tactics); //base tactics struct 
+
+    ret+= nb_rules*sizeof(Rule); //straight forward stuff 
+
     return ret;
 
-}//unsafe af 
+}//unsafe af ; not tested !!! don't use 
+/*
+even if it works check that it doesn't give too much stuff 
+it's gonna be hard to take padding into account tbh
+*/

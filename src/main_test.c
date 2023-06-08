@@ -303,7 +303,7 @@ fclose(f1);
     addRule(&trand, 1, &rule_rand);
 
     GraphTable gtParis; 
-    uint8_t failure = loadGraphTab(&gtParis, "csv_graph/city_graph/paris_3000m_radius.csv",  150000 ,0);
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_4450m_radius.csv",  170000 ,0);
     if(failure){ printf("failure 1st call code : %u\n", failure);  exit( failure) ;}
 
   

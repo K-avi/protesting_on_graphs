@@ -75,6 +75,9 @@ char * str_flag(uint8_t flag){
   case PRS_NULL : return "string passed is null";
   case PRS_INVALID_FORMAT: return "format of rule string not recognised";
   case PRS_COEFF : return "coeff passed is too big";
+  case AR_MALLOC : return "failed to allocate memory to the memory pool\n";
+  case AR_NULL : return "the memory pool is null\n";
+  case AR_FULL : return "jesus christ you filled the memory pool???";
   default : return "unknown error ; how did you get here?\n";
   }
  

@@ -9,7 +9,7 @@ typedef struct s_graph_table_entry GraphTableEntry;
 typedef struct s_line Line;
 struct s_graph_table_entry{
 
-    Line * first_neighboor_ref;  //will replace by an 32 bit integer 
+    Line * first_neighboor_ref;  //will replace by a 32 bit integer 
     //representing index to gain a bit of space 
     uint16_t neighboor_num; //Might store on one byte
 };

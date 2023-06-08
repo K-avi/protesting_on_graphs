@@ -74,7 +74,8 @@ pending :
 
     - remove more elements from structures to gain space 
 
-    - if I have the time use custom malloc 
+    - if I have the time use custom malloc using an arena
+      might actually use obstacks instead of reinventing the wheel
 
     - write some actual data analysis functions on the graphs in C
 

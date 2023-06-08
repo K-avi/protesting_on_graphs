@@ -1,6 +1,9 @@
 #include "walker.h"
 #include "common.h"
+#include "graph_table.h"
 #include "misc.h"
+#include <stdint.h>
+#include <string.h>
 
 /* RAW WALKER ARRAY MANIPULATION */
 
@@ -17,9 +20,8 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){
     wArray->array = (Walker*) GROW_ARRAY(Walker, wArray->array, 0, size);
     if(!wArray->array) { report_err( "initWalkerArray", WA_ALLOC ) ; return WA_ALLOC;} 
 
-    for(uint32_t i=0; i<size; i++){ //initialises the walkers 
-        wArray->array[i].id=i; 
-    }
+    memset(wArray->array, 0, wArray->size*sizeof(Walker));
+
     return WA_OK;
 }//ok
 
@@ -29,13 +31,13 @@ void freeWalkerArray(WalkerArray * wArray){
     free(wArray->array);
 }//ok
 
-void printWarray(WalkerArray *wArray, FILE * stream){
+void printWarray(const GraphTableEntry * gt_ref,  WalkerArray *wArray, FILE * stream){
     /*
     */
     if(!wArray) {fprintf(stream,"warray is null\n"); return;}
     fprintf(stream, "walker array of size %u\n", wArray->size);
     for(uint32_t i=0 ; i<wArray->size; i++){
-        fprintf(stream,"%u,%u\n", wArray->array[i].id, (wArray->array[i].cur_entry)->node_key  );
+        fprintf(stream,"%u,%u\n", i,  (uint32_t) ( (wArray->array[i].cur_entry) - gt_ref)  );
     }
 }
 

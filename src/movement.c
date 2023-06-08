@@ -54,11 +54,12 @@ uint8_t iterate_once(GraphTable * gtable , Tactics * t){
 
     for(uint32_t i=0; i<gtable->warray->size;i++){
         Line line_to;
-
-        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].cur_entry->node_key, &line_to);
+        
+        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].cur_entry - gtable->entries, &line_to);
         if(failure)return failure;
         gtable->wkcn->next_num[line_to.node_index]++;
-        gtable->warray->array[i].cur_entry=line_to.tabRef;
+        gtable->warray->array[i].cur_entry= &gtable->entries[line_to.node_index];
+        
     }
     return MV_OK;
 }//tested; seems ok
@@ -75,9 +76,9 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_nu
     for(uint32_t i=0; i<iter_num; i++){
         
         failure= prepare_ite(gtable);
-        if(failure) return failure;
+        if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
         failure= iterate_once(gtable, tactics);
-        if(failure) return failure;
+        if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
     }
     return MV_OK;
 }//tested; ok

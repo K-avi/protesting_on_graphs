@@ -5,9 +5,8 @@
 #include "walker.h"
 #include "movement.h"
 
-#include <bits/types/FILE.h>
-#include <stdio.h>
-#include <stdlib.h>
+
+#include "time.h"
 
 
 
@@ -297,22 +296,47 @@ fclose(f1);
    freeTactics(&trand);
    freeGraphTab(&gtParis);
    */
-   
-    //Tactics trand; 
-    //initTactics(&trand, 5);
-   // addRule(&trand, 1, &rule_rand);
 
+
+ /*   time_t timer;
+    time( &timer);
+    srand(timer);
+   
+    Tactics trand; 
+    initTactics(&trand, 5);
+    addRule(&trand, 255, &rule_rand);
+*/
     GraphTable gtParis; 
-    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_500m_radius.csv",  1 ,0);
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_5000m_radius.csv",  1 ,0);
     if(failure){ printf("failure 1st call code : %u\n", failure);  exit( failure) ;}
 
+  /*
+    failure= init_pos(&gtParis);
+    if(failure){ printf("failure 2nd call code : %u\n", failure);  exit( failure) ;}
+
+printf("it 0\n");
+       printGraphTab(&gtParis, stdout );
+      printLineArr(gtParis.arrLine, stdout);
   
-    //failure= init_pos(&gtParis);
-    //if(failure){ printf("failure 2nd call code : %u\n", failure);  exit( failure) ;}
+     printWarray(gtParis.entries, gtParis.warray, stdout);
 
-   // iterate_ntimes(&gtParis, &trand, 2000);
+    iterate_ntimes(&gtParis, &trand, 1);
+printf("it 1\n");
+     printGraphTab(&gtParis, stdout );
+      printLineArr( gtParis.arrLine, stdout);
+  
+     printWarray(gtParis.entries,gtParis.warray, stdout);
 
-    //freeTactics(&trand);
+         iterate_ntimes(&gtParis, &trand, 1);
+printf("it 2\n");
+     printGraphTab(&gtParis, stdout );
+      printLineArr(gtParis.arrLine, stdout);
+  
+     printWarray(gtParis.entries, gtParis.warray, stdout);
+*/
+
+
+   // freeTactics(&trand);
     freeGraphTab(&gtParis);  
 
     return 0;

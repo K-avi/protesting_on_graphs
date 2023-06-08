@@ -54,25 +54,30 @@ done :
 
     - write the actual main n maybe do a script to call stuff in bash or smtg 
       ( finished ; not tested )
+    
+    - find out how to parse tactics  (not tested yet )
 
+    - removed some of the unnecessary elements from the structure ; 
+      watch out for potential bugs IG
 
-pending : 
-
-     
-    - find out how to parse tactics 
-
-    - finish docu 
-
-    - change usage of rand() with something better ; what if I didn't ???
+    - finish docu (docu of usage is still pending bc main isn't done yet )
 
     - write a wrapper around trace dump
 
-    - if I have the time use custom malloc 
+    - tested main 
 
-    - think about a smarter implem or something
+pending :   
+
+    - test tactics parsing
+
+    - maybe create a shell / python wrapper for the program 
+
+    - remove more elements from structures to gain space 
+
+    - if I have the time use custom malloc 
 
     - write some actual data analysis functions on the graphs in C
 
     - remove curse words from commentaries and documentation
 
-    - remove unnecessary elements from structures to gain space 
+    

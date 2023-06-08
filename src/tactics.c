@@ -1,6 +1,7 @@
 #include "tactics.h"
 #include "common.h"
 #include "misc.h"
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -29,7 +30,7 @@ void freeTactics( Tactics * t){
     
 }//tested ;  ok
 
-uint8_t addRule( Tactics * t , double rule_coeff,  uint8_t (*rule_fun)( GraphTable * gtable, uint32_t node_from, Line * line_ref) ){
+uint8_t addRule( Tactics * t , uint8_t rule_coeff,  uint8_t (*rule_fun)( GraphTable * gtable, uint32_t node_from, Line * line_ref) ){
     /*
     adds a rule function to a tactics structure
     */
@@ -45,35 +46,13 @@ uint8_t addRule( Tactics * t , double rule_coeff,  uint8_t (*rule_fun)( GraphTab
         }
     }
 
-    double double_capped_coeff = rule_coeff > 1.0 ? 1.0 : rule_coeff;
-    double_capped_coeff = double_capped_coeff < 0.0 ? 0.0 : double_capped_coeff;
-
-    if(t->numb==0){
-        t->rule_arr[t->numb].rule_coeff= (uint8_t) UINT8_MAX/double_capped_coeff;
-        t->rule_arr[t->numb].rule_fun=rule_fun;
-        t->numb++;
-    }else{
-        uint8_t prev_coeff = t->rule_arr[t->numb-1].rule_coeff;
-        uint16_t new_coeff= ((uint16_t)prev_coeff + (uint16_t)UINT8_MAX/double_capped_coeff );
-        uint8_t uint_capped_coeff=  new_coeff? UINT8_MAX : (uint8_t)new_coeff;
-
-        t->rule_arr[t->numb].rule_coeff= uint_capped_coeff;
-        t->rule_arr[t->numb].rule_fun=rule_fun;
-        t->numb++;
-    }
+    t->rule_arr[t->numb].rule_coeff= rule_coeff;
+    t->rule_arr[t->numb].rule_fun=rule_fun;
+    t->numb++;
 
     return T_OK;
-}//new version tested; seems ok ; errro prone though 
-/*
-checks for some edge cases :
-
-coeff is represented as 8 bit integer. At each index the coeff is the sum of prev coeff + the one 
-of the current rules; this allows to stop when you find the correct coeff 
-
-doesn't repport coeffs too high or low; should prolly not add them 
-and report error instead 
-*/
-
+}//not tested 
+//assumed that parameters are passed correctly ; do not call outside of parse args
 
 uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, Line * line_ref){
     /*
@@ -86,17 +65,19 @@ uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, Line * line_ref){
     O(1)
     */
     if(!gtable) { report_err( "rule_rand", GT_NULL ) ; return GT_NULL;} 
+  
     if(node_from>gtable->table_size) { report_err( "rule_rand", GT_SIZE ) ; return GT_SIZE;} 
     if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_rand", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
 
     Line * lf = gtable->entries[node_from].first_neighboor_ref+ rand()%gtable->entries[node_from].neighboor_num;
     *line_ref= *lf;
  
-    line_ref->node_index=lf->tabRef->node_key;
+    line_ref->node_index= &(gtable->entries[line_ref->node_index])- gtable->entries;
     gtable->arrLine->next_flux[ lf- gtable->arrLine->array]++;
 
     return T_OK;
 }// seems ok
+//changed watch out 
 
 
 uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line * line_ref){
@@ -110,7 +91,7 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line *
 
     double randval= (double)rand() / (double)RAND_MAX ;
     uint8_t uint_coeff = (uint8_t) UINT8_MAX / randval;
-//printf("%u", t->rule_arr[0].rule_coeff);
+
     for(uint32_t i=0; i<t->capa ; i++){
         if( uint_coeff<= t->rule_arr[i].rule_coeff){
              uint8_t failure= t->rule_arr[i].rule_fun(gtable, node_from, line_ref);
@@ -136,41 +117,85 @@ I selected a number smaller than the current coeff of the rule and will
 use this rule if so 
 */
 
-uint8_t parse_rule_str( Tactics * t , char * rule_str){
-    /*parses a single rule str*/
-    if(!rule_str){ report_err("parse_rule_str", PRS_NULL); return PRS_NULL;}
 
-    if(!strncmp(rule_str, "rand", 4)){
-        rule_str+=4;
+uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t * coeff_arr ){
+    /*
+    puts the coeffs contained in string containing the arguments coeff into 
+    an array of coeffs passed as arg
 
-        if(*rule_str!=':') {report_err("parse_rule_str format 0", PRS_INVALID_FORMAT);}
-        rule_str++;
+    warning : assumes argv is not null and coeff_arr is the same length as argv
+    */
+    if(!coeff_arr){ report_err("parse_rule_coeff", PRS_NULL); return PRS_NULL;}
 
-        char * end = rule_str;
-        double coeff= strtod(rule_str, &end);
-        if(end==rule_str) {report_err("parse_rule_str format 0", PRS_INVALID_FORMAT);}
-        addRule(t, coeff,&rule_rand);
+    double sum=0;
+    double * index_arr = malloc( argc* sizeof(double));
 
-        return PFN_OK;
+    for(uint8_t i=0 ; i< argc; i++){
+        char * cur_coeff_string= strstr(argv[i], ":");
+        if(!cur_coeff_string) { report_err("parse_rule_coeff format err1", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+        cur_coeff_string++;
+
+        char * end=cur_coeff_string; 
+        float coeff = strtod(cur_coeff_string, &end);
+        sum+=coeff;
+
+        if(cur_coeff_string == end) { report_err("parse_rule_coeff format err2", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+        index_arr[i]=coeff;
     }
-    report_err("parse_rule_str format 2", PRS_INVALID_FORMAT);
-    return PRS_INVALID_FORMAT;
+    uint16_t casted_sum= 0;
+
+    for(uint8_t i=0; i<argc ; i++){
+        coeff_arr[i]= (uint8_t) index_arr[i]/(sum *255) +casted_sum ;
+        casted_sum+=coeff_arr[i];
+        if(casted_sum>UINT8_MAX) { report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
+    }
+    free(index_arr);
+    return T_OK;
 }//not tested 
 
+uint8_t parse_rule_fn(  uint8_t argc , char ** argv, 
+    uint8_t  (**rule_fun)( GraphTable * gtable, uint32_t node_from, Line * line_to_ref)){
+    /*parses a single rule str*/
+    if(!rule_fun){ report_err("parse_rule_str", PRS_NULL); return PRS_NULL;}
 
-uint8_t parse_args(Tactics *t, uint32_t argc , char ** argv ){
+    for(uint8_t i=0; i<argc ; i++){
+
+        char * rule_str = argv[i];
+        if(!strncmp(rule_str, "rand", 4)){
+            rule_fun[i]= &rule_rand;
+        }else{
+            report_err("parse_rule_fn", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;
+        }
+    }
+    
+    return PFN_OK;
+}//not tested 
+ 
+
+
+uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
     /*
     parses a list of rules to append to a tactic t 
     */
     if(!t) {report_err("in parse_args", T_NULL); return T_NULL;}
+    uint8_t * coeff_arr = malloc(argc*sizeof(uint8_t));
+    if(!coeff_arr) { report_err("parse_args malloc coeff", PRS_NULL); return PRS_NULL ;}
+
+    rule_fun * rule_arr = malloc(argc* sizeof(rule_fun));
+    if(!rule_arr) { free(coeff_arr); report_err("parse_args malloc rule", PRS_NULL); return PRS_NULL ;}
+
     
-    if(argc==0){
-        addRule(t, 1.0, &rule_rand);
-    }else{
-        for(uint32_t i=0 ; i<argc; i++){
-           uint8_t failure= parse_rule_str(t, argv[i]);
-           if(failure) {report_err("parse_args", failure);}
-        }
+    uint8_t failure = parse_rule_fn(argc, argv, rule_arr);
+    if(failure) { free(coeff_arr); free(rule_arr); report_err("parse_args", failure); return failure;}
+
+    failure = parse_rule_coeff(argc, argv, coeff_arr);
+     if(failure) { free(coeff_arr); free(rule_arr); report_err("parse_args", failure); return failure;}
+    
+
+    for(uint8_t i=0; i<argc; i++){
+        addRule(t, coeff_arr[i], rule_arr[i]);
     }
+    free(coeff_arr);
+    free(rule_arr);
     return T_OK;
 }//not tested 

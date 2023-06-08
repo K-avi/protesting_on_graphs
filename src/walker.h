@@ -9,17 +9,14 @@ typedef struct s_graph_table_entry GraphTableEntry;
 typedef struct s_line Line;
 struct s_graph_table_entry{
 
-    Line * first_neighboor_ref;
-    uint32_t neighboor_num; //Might store on one byte
-    uint32_t node_key; 
-    //stores node index; bloated but allows fast lookup of neighboor for the walkers
-    //to store
-    //will kill to gain space 
+    Line * first_neighboor_ref;  //will replace by an 32 bit integer 
+    //representing index to gain a bit of space 
+    uint16_t neighboor_num; //Might store on one byte
 };
 
 
 typedef struct s_walker{
-    uint32_t id;  //will delete 
+   
     GraphTableEntry * cur_entry; //gte of the node where the where the walker currently is
     //make it into the index 
 }Walker;
@@ -40,7 +37,8 @@ typedef struct s_walker_num_curnext{
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size);
 void freeWalkerArray(WalkerArray * wArray);
 
-void printWarray(WalkerArray *wArray, FILE * stream);
+//void printWarray(WalkerArray *wArray, FILE * stream);
+void printWarray(const GraphTableEntry * gt_ref,  WalkerArray *wArray, FILE * stream);
 
 uint8_t initWalkerCurNext(WalkerCurNext * wkcn , uint32_t size);
 void freeWalkerCurNext(WalkerCurNext * wkcn);

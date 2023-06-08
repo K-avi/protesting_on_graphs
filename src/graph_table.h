@@ -7,9 +7,8 @@
 typedef struct s_graph_table_entry GraphTableEntry;
 
 typedef struct s_line{ //line struct 
-    GraphTableEntry * tabRef; //index of b in the line (a,b) as pointer cuz faster to dereference
-    uint32_t node_index; //index of b in the line (a,b) as index cuz faster to print
-    //will remove it ; not necessary 
+    uint32_t node_index; //index of b in the line (a,b) stored as 
+    //index bc smaller than pointer 
 }Line; 
 //add a first time seen field to check if flux next n 
 

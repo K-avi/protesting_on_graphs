@@ -4,6 +4,7 @@
 #include "movement.h"
 #include "walker.h"
 #include "tactics.h"
+#include <time.h>
 
 
 int main(int argc , char ** argv){
@@ -47,11 +48,20 @@ int main(int argc , char ** argv){
     failure= initTactics(&tactics, DEFAULT_CAPA_TACTICS);
     if(failure) {report_err("in main loadGraphTab call", failure); exit(failure);}
 
-    failure=parse_args(&tactics, argc-4, (argv+4));
-    if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
+    //tries to parse the tactics arg if they are present 
+    //if the program is called without it ; simply uses the rand rule
+    if(argc>4){
+        failure=parse_args(&tactics, argc-4, (argv+4));
+        if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
+    }else{
+        failure = addRule(&tactics, 255,  &rule_rand);
+        if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
+    }
     
-
     //starts the simulation 
+
+    failure= init_pos(&gtable);
+    if(failure){report_err("in main init_pos call", failure); exit(failure);}
     failure=iterate_ntimes(&gtable, &tactics, iteration_num);
     if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
 

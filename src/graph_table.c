@@ -2,13 +2,12 @@
 #include "common.h"
 #include "misc.h"
 
-static uint8_t initGtEntry( GraphTableEntry * gentry , uint32_t node_key ){
+static uint8_t initGtEntry( GraphTableEntry * gentry ){
     /*
     initialises a non null GraphTableentry
     */
     if(!gentry) return GE_NULL;
 
-    gentry->node_key=node_key;
     gentry->first_neighboor_ref=NULL;
     gentry->neighboor_num=0;
 
@@ -93,7 +92,7 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     }
 
     for(uint32_t i=0; i<table_size; i++){
-        uint8_t failure = initGtEntry(&gt->entries[i], i);
+        uint8_t failure = initGtEntry(&gt->entries[i]);
         if(failure) return failure;
     }
 
@@ -174,8 +173,7 @@ static uint8_t appLineGt( GraphTable * gt , uint32_t node_index, int32_t flux_cu
     arrline->array[arrline->cur_in].node_index=node_index; 
     arrline->cur_flux[arrline->cur_in]=flux_cur;
     arrline->next_flux[arrline->cur_in]=flux_next;
-    arrline->array[arrline->cur_in].tabRef=&(gt->entries[node_index]);
-
+  
     arrline->cur_in++;
 
     return GT_OK;
@@ -196,7 +194,7 @@ uint8_t printGraphTab(GraphTable * gt, FILE * stream){
     
     for(uint32_t i=0; i<gt->table_size; i++){
         fprintf(stream, "%u,%u,",i ,gt->entries[i].neighboor_num);
-        for(uint32_t j=0; j<gt->entries[i].neighboor_num; j++){
+        for(uint16_t j=0; j<gt->entries[i].neighboor_num; j++){
             if(gt->entries->first_neighboor_ref){
                 if(j!=gt->entries[i].neighboor_num-1) {
 

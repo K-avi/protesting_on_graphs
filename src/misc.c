@@ -1,11 +1,11 @@
 #include "misc.h"
-#include "common.h"
-#include <stdint.h>
-#include <stdio.h>
-//this file contains the realloc functions for every dynamic array in the project 
-//to avoid boilerplates; dynamic arrays reallocations will be handled here
-//actually now most of the project is static so it's kinda useless ig ? 
-//I might keep it cuz I think it's a nice wrapper around malloc
+/*
+this file contains the realloc functions for every dynamic array in the project 
+to avoid boilerplates; dynamic arrays reallocations will be handled here
+actually now most of the project is static so it's kinda useless ig ? 
+I might keep it cuz I think it's a nice wrapper around malloc
+it also contains the error reporting and graph dump function 
+*/
 
 void* reallocate(void* pointer, size_t oldSize, size_t newSize) {
     /*
@@ -74,6 +74,7 @@ char * str_flag(uint8_t flag){
   case ERRFLAG_REALLOC : return "failed to allocate memory";
   case PRS_NULL : return "string passed is null";
   case PRS_INVALID_FORMAT: return "format of rule string not recognised";
+  case PRS_COEFF : return "coeff passed is too big";
   default : return "unknown error ; how did you get here?\n";
   }
  
@@ -81,4 +82,18 @@ char * str_flag(uint8_t flag){
 
 void report_err( char * msg , uint8_t flag){ //could be a macro 
   fprintf(stderr, "error : %s at %s\n", str_flag(flag), msg);
+}
+
+void dump_trace(GraphTable * gt, FILE * stream){
+  //the trace function to dump graph after it
+    if(!gt){ fprintf(stream,  "graph table is null\n"); return;}
+
+    fprintf(stream, "graphtable at gen %u :\n", gt->curgen);
+    printGraphTab(gt, stream) ;  
+
+    fprintf(stream, "line array :\n");
+    printLineArr(gt->arrLine, stream);
+
+    fprintf(stream, "walkers :\n");
+    printWarray(gt->entries, gt->warray, stream);
 }

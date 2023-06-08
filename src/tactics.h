@@ -3,7 +3,9 @@
 
 #include "common.h"
 #include "graph_table.h"
+#include <stdint.h>
 
+typedef uint8_t(*rule_fun)( GraphTable * gtable, uint32_t node_from, Line * line_to_ref);
 
 typedef struct s_rule{
 /*
@@ -32,8 +34,7 @@ of the results of each rule or something
 
 uint8_t initTactics(Tactics * t, uint32_t size);
 void freeTactics( Tactics * t);
-uint8_t addRule( Tactics * t , double rule_coeff, \
-     uint8_t(*rule_fun)( GraphTable * gtable, uint32_t node_from, Line * line_to_ref)); 
+uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun);
 //maybe not like this though
 
 //uint8_t chooseNode( Tactics * t , GraphTable* gtable , uint32_t node_from, uint32_t *  index_node_to);
@@ -42,6 +43,6 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line *
 uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, Line * line_ref);
 //placeholder will ask how the algorithm works exactly at some point
 
-uint8_t parse_args(Tactics *t, uint32_t argc , char ** argv );
+uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv );
 
 #endif 

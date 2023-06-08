@@ -4,10 +4,37 @@
 #include "movement.h"
 #include "walker.h"
 #include "tactics.h"
+
+#include <stdint.h>
 #include <time.h>
 
 
 int main(int argc , char ** argv){
+
+    int8_t c;
+    uint8_t helpset=0 , dumpset=0;
+    while ((c = getopt(argc, argv, "hd:")) != -1) {
+        
+        switch (c) {
+        case 'h':
+            helpset=1;
+            break;
+ 
+        case 'd':
+            dumpset=1;
+            break;
+        case '?':
+            fprintf(stderr, "Unknown option character `\\x%x'.", optopt);
+            exit(ERRFLAG_INVALIDOPT);
+        default:
+            abort();
+        }
+    }
+    if(helpset){ //prints help
+        fprintf(stdout, "usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n \
+        check out the docu directory for more informations\n");
+        exit(0);
+    }
 
     if(argc < 4){ //checks that the number of args is ok
         fprintf(stderr, "usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
@@ -62,9 +89,14 @@ int main(int argc , char ** argv){
 
     failure= init_pos(&gtable);
     if(failure){report_err("in main init_pos call", failure); exit(failure);}
-    failure=iterate_ntimes(&gtable, &tactics, iteration_num);
-    if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
 
+    if(!dumpset){
+        failure=iterate_ntimes(&gtable, &tactics, iteration_num);
+        if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
+    }else{
+        failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, stdout);
+        if(failure){report_err("in main iterate_ntimes_dump call", failure); exit(failure);}
+    }
 
     //frees memory
     freeGraphTab(&gtable);

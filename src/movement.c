@@ -1,6 +1,7 @@
 #include "movement.h"
 #include "common.h"
 #include "misc.h"
+#include <stdint.h>
 
 
 uint8_t init_pos(GraphTable * gtable){
@@ -81,5 +82,26 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_nu
         failure= iterate_once(gtable, tactics);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
     }
+
     return MV_OK;
 }//tested; ok
+
+uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num, FILE * stream){
+    /*
+    O(w*i)
+    clone of iterate_ntimes that dumps the graph after each iteration
+    */
+    if(!gtable){ report_err("iterate_ntimes", GT_NULL); return GT_NULL;}
+    if(!tactics){ report_err("iterate_ntimes", T_NULL); return T_NULL;}
+    uint8_t failure;
+    for(uint32_t i=0; i<iter_num; i++){
+        
+        failure= prepare_ite(gtable);
+        if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
+        failure= iterate_once(gtable, tactics);
+        if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
+        dump_trace(gtable, stream);
+    }
+    return MV_OK;
+}//tested; ok
+

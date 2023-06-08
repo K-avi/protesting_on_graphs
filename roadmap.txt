@@ -63,8 +63,6 @@ pending :
 
     - finish docu 
 
-    - create an archive of the CSV files of the graphs 
-
     - change usage of rand() with something better ; what if I didn't ???
 
     - write a wrapper around trace dump
@@ -76,3 +74,5 @@ pending :
     - write some actual data analysis functions on the graphs in C
 
     - remove curse words from commentaries and documentation
+
+    - remove unnecessary elements from structures to gain space 

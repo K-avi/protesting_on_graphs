@@ -298,21 +298,21 @@ fclose(f1);
    freeGraphTab(&gtParis);
    */
    
-    Tactics trand; 
-    initTactics(&trand, 5);
-    addRule(&trand, 1, &rule_rand);
+    //Tactics trand; 
+    //initTactics(&trand, 5);
+   // addRule(&trand, 1, &rule_rand);
 
     GraphTable gtParis; 
-    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_4450m_radius.csv",  170000 ,0);
+    uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_500m_radius.csv",  1 ,0);
     if(failure){ printf("failure 1st call code : %u\n", failure);  exit( failure) ;}
 
   
-    failure= init_pos(&gtParis);
-    if(failure){ printf("failure 2nd call code : %u\n", failure);  exit( failure) ;}
+    //failure= init_pos(&gtParis);
+    //if(failure){ printf("failure 2nd call code : %u\n", failure);  exit( failure) ;}
 
-    iterate_ntimes(&gtParis, &trand, 2000);
+   // iterate_ntimes(&gtParis, &trand, 2000);
 
-    freeTactics(&trand);
+    //freeTactics(&trand);
     freeGraphTab(&gtParis);  
 
     return 0;

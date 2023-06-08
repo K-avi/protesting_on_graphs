@@ -10,16 +10,18 @@ typedef struct s_line Line;
 struct s_graph_table_entry{
 
     Line * first_neighboor_ref;
-    uint32_t neighboor_num;
+    uint32_t neighboor_num; //Might store on one byte
     uint32_t node_key; 
     //stores node index; bloated but allows fast lookup of neighboor for the walkers
     //to store
+    //will kill to gain space 
 };
 
 
 typedef struct s_walker{
-    uint32_t id; 
+    uint32_t id;  //will delete 
     GraphTableEntry * cur_entry; //gte of the node where the where the walker currently is
+    //make it into the index 
 }Walker;
 
 typedef struct s_warray{

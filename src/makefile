@@ -1,7 +1,7 @@
 TARGET := ../walking_on_graph
 TEST := ../test
 CC := gcc
-CFLAGS := -O2  -g -Wall -Wextra -Wpedantic -Wno-unused-parameter
+CFLAGS := -O2  -g -Wall -Wextra -Wpedantic -Wno-unused-parameter -std=gnu17
 
 SRCS := misc.c tactics.c trace.c walker.c  graph_table.c movement.c
 

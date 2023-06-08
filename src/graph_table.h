@@ -9,7 +9,7 @@ typedef struct s_graph_table_entry GraphTableEntry;
 typedef struct s_line{ //line struct 
     GraphTableEntry * tabRef; //index of b in the line (a,b) as pointer cuz faster to dereference
     uint32_t node_index; //index of b in the line (a,b) as index cuz faster to print
-    
+    //will remove it ; not necessary 
 }Line; 
 //add a first time seen field to check if flux next n 
 
@@ -28,7 +28,7 @@ to access them faster*/
     it is significantly faster to update it before the beginning of the next iteration.
     it's in O(1) bc I just need to swap cur and next and flush one of them 
     */
-    uint32_t * cur_flux; 
+    uint32_t * cur_flux;  //might store on 16bits 
     uint32_t * next_flux;
 
 }LineArray;

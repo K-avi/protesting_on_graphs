@@ -18,7 +18,7 @@ while True:
     fl = float(fl.split(",")[0])
     print(fl)
     tb = time()
-    sb.run("../test", shell=True)
+    sb.run("ulimit -s 16384;old_test_bin", shell=True)
     tf = time()
 
     data = [fl, tf - tb]

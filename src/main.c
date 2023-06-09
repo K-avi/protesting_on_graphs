@@ -13,7 +13,7 @@ int main(int argc , char ** argv){
 
     int8_t c;
     uint8_t helpset=0 , dumpset=0;
-    while ((c = getopt(argc, argv, "hd:")) != -1) {
+    while ((c = getopt(argc, argv, "hd")) != -1) {
         
         switch (c) {
         case 'h':
@@ -37,24 +37,24 @@ int main(int argc , char ** argv){
     }
 
     if(argc < 4){ //checks that the number of args is ok
-        fprintf(stderr, "usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
+        fprintf(stderr, "1usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
         return ERRFLAG_NOFILE;
     }
-    char * path = argv[1]; 
-    char * end=argv[2];
+    char * path = argv[1+dumpset]; 
+    char * end=argv[2+dumpset];
 
     //parses number of walkers
-    uint32_t walker_num=  (uint32_t) strtol( argv[2], &end , 10);
-    if(end == argv[2]){
-        fprintf(stderr, "usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
+    uint32_t walker_num=  (uint32_t) strtol( argv[2+dumpset], &end , 10);
+    if(end == argv[2+dumpset]){
+        fprintf(stderr, "2usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
         return ERRFLAG_INVALID_ARG;
     }
 
     //parses number of iterations
-    end= argv[3];
-    uint32_t iteration_num = (uint32_t ) strtol( argv[2], &end , 10);
-    if(end== argv[3]){
-        fprintf(stderr, "usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");     
+    end= argv[3+dumpset];
+    uint32_t iteration_num = (uint32_t ) strtol( argv[2+dumpset], &end , 10);
+    if(end== argv[3+dumpset]){
+        fprintf(stderr, "3usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");     
         return ERRFLAG_INVALID_ARG;
     }
 
@@ -78,7 +78,7 @@ int main(int argc , char ** argv){
     //tries to parse the tactics arg if they are present 
     //if the program is called without it ; simply uses the rand rule
     if(argc>4){
-        failure=parse_args(&tactics, argc-4, (argv+4));
+        failure=parse_args(&tactics, argc-4-dumpset, (argv+4+dumpset));
         if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
     }else{
         failure = addRule(&tactics, 255,  &rule_rand);
@@ -94,6 +94,7 @@ int main(int argc , char ** argv){
         failure=iterate_ntimes(&gtable, &tactics, iteration_num);
         if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
     }else{
+     
         failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, stdout);
         if(failure){report_err("in main iterate_ntimes_dump call", failure); exit(failure);}
     }

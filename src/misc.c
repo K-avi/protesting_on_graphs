@@ -1,4 +1,5 @@
 #include "misc.h"
+#include "walker.h"
 /*
 this file contains the realloc functions for every dynamic array in the project 
 to avoid boilerplates; dynamic arrays reallocations will be handled here
@@ -95,6 +96,9 @@ void dump_trace(GraphTable * gt, FILE * stream){
     fprintf(stream, "line array :\n");
     printLineArr(gt->arrLine, stream);
 
-    fprintf(stream, "walkers :\n");
+    fprintf(stream, "walker array  :\n");
     printWarray(gt->entries, gt->warray, stream);
+
+    fprintf(stream, "walker cur/next arrays :\n");
+    printWKCN(gt->wkcn, stream);
 }

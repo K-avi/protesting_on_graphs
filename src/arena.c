@@ -80,5 +80,5 @@ uint64_t calculate_size( uint32_t nb_nodes,uint32_t nb_lines ,uint32_t nb_rules 
 }//unsafe af ; not tested !!! don't use 
 /*
 even if it works check that it doesn't give too much stuff 
-it's gonna be hard to take padding into account tbh
+it's gonna be hard to take padding into account tbhuint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun);
 */

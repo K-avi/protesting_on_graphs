@@ -5,7 +5,7 @@
 #include "graph_table.h"
 #include <stdint.h>
 
-typedef uint8_t(*rule_fun)( GraphTable * gtable, uint32_t node_from, Line * line_to_ref);
+typedef uint8_t(*rule_fun)( GraphTable * gtable, uint32_t node_from, uint32_t walker_index);
 
 typedef struct s_rule{
 /*
@@ -15,7 +15,7 @@ coeff is a double between 0 and 1 corresponding to the probability of choosing t
 maybe don't use floats for the coeff cuz they slow af
 */
     uint8_t rule_coeff;  
-    uint8_t (*rule_fun)( GraphTable * gtable, uint32_t node_from, Line* line_to_ref) ;
+    rule_fun rule_function;
      
 } Rule; 
 
@@ -34,15 +34,18 @@ of the results of each rule or something
 
 uint8_t initTactics(Tactics * t, uint32_t size);
 void freeTactics( Tactics * t);
-uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun);
+
 //maybe not like this though
 
-//uint8_t chooseNode( Tactics * t , GraphTable* gtable , uint32_t node_from, uint32_t *  index_node_to);
-
-uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, Line * line_ref);
-uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, Line * line_ref);
-//placeholder will ask how the algorithm works exactly at some point
 
 uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv );
+
+#ifdef debug_mode
+
+uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index);
+uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index);
+uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun);
+
+#endif
 
 #endif 

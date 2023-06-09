@@ -373,23 +373,20 @@ printf("it 2\n");
 */
  // printf("%lu\n", calculate_size(367521,791312, 0, 10));
 
-
-  //GraphTable gtParis; 
-  //loadGraphTab(&gtParis, "city_graph/paris_4000m_radius.csv",  1 ,0);  
-  //freeGraphTab(&gtParis);
 /*
-  FILE * fparis = fopen("city_graph/paris_5000m_radius.csv", "r");
-  char line[256];
+  GraphTable gtParis; 
+  loadGraphTab(&gtParis, "city_graph/paris_4000m_radius.csv",  1 ,0);  
+  freeGraphTab(&gtParis);
 
-  while (fgets(line, 256, fparis)) {
-  memset(line, 0, 256*sizeof(char));
-  }
-  fclose(fparis);*/
+  Tactics t; 
+  initTactics(&t, 1);
+  addRule(&t, 1, &rule_rand);
+  freeTactics(&t);
 
-
+*/
   Arena arena_test;
   
-  uint8_t failure= init_arena(&arena_test, calculate_size(135525,283956, 0, 1));
+  uint8_t failure= init_arena(&arena_test, calculate_size(135525,283956, 1, 1));
   if(failure) printf("AAAAHA. AAAAAH. AAAAAAAAAAAAAAAAAAAAA\n");
   free_arena(&arena_test);
   //if(failure) exit(failure);
@@ -402,7 +399,6 @@ printf("it 2\n");
   }
   fclose(fparis);
 
- // printf("%lu\n", calculate_size(157963,331122 0, 1));
 
   return 0;
 }

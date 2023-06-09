@@ -35,9 +35,6 @@ of the results of each rule or something
 uint8_t initTactics(Tactics * t, uint32_t size);
 void freeTactics( Tactics * t);
 
-//maybe not like this though
-
-
 uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv );
 
 #ifdef debug_mode

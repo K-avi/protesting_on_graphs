@@ -68,9 +68,11 @@ uint64_t calculate_size( uint32_t nb_nodes,uint32_t nb_lines ,uint32_t nb_rules 
     ret+= nb_nodes * sizeof(uint32_t); // walker cur in array
     ret+= nb_nodes * sizeof(uint32_t); // walker next in array
 
+    ret+= nb_rules* sizeof(Rule);
+
     ret+=40* sizeof(uint8_t); 
-    //I'm always off by 40 bytes from the actual size needed for some 
-    //reason 
+    //I'm off by 40 bytes from the actual size needed for some 
+    //reason ; I don't like doing this but I'll just add em 
     return ret;
 
 }//unsafe af ; not tested !!! don't use 

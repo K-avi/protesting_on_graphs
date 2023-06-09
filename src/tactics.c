@@ -4,6 +4,8 @@
 #include "misc.h"
 #include "walker.h"
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 uint8_t initTactics(Tactics * t, uint32_t size){
     /*initialises a Tactics ptr */
@@ -99,26 +101,67 @@ uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walk
         }
     }   
     if(!line_to)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    
+
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
     gtable->warray->array[walker_index].cur_entry= &gtable->entries[line_to->node_index];
 
     return T_OK;
 
-}//not tested; proly wrong 
-//updated ; very likely wrong
+}//tested; seems ok
 
 uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
-    /*O(d(node_from)) where d(n) is the number of neighbors of n*/
+    /*
+    where d(n) is the number of neighbors of n
+    O(d(n)*a) where d(n) is the degree of neighboors and a is the 
+    the average of the sum of the degrees of the neighboors of 
+    n
+    */
     if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
   
     if(node_from>gtable->table_size) { report_err( "rule_alignement", GT_SIZE ) ; return GT_SIZE;} 
     if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    
 
+    
+    int64_t flux_max=INT64_MIN;
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_to=NULL;
+
+    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
+
+        Line * cur_line = cur_entry->first_neighboor_ref +i;
+        uint32_t cur_line_index=  cur_line - gtable->arrLine->array;
+        uint32_t flux_from_to= gtable->arrLine->cur_flux[cur_line_index];
+
+        int64_t flux_to_from= INT64_MIN;
+        for(uint32_t j=0; j<gtable->entries[cur_line->node_index].neighboor_num; j++){
+            Line * cur_line_inside = gtable->entries[cur_line->node_index].first_neighboor_ref+j;
+            if(cur_line_inside->node_index==node_from){
+                flux_to_from= gtable->arrLine->cur_flux[cur_line_inside - gtable->arrLine->array];
+                break;
+            }
+        }
+        if(flux_to_from == INT64_MIN){
+            report_err( "rule_alignement weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
+        }
+
+        if(flux_from_to - flux_to_from > flux_max){
+            line_to= cur_line;
+            flux_max= flux_from_to- flux_to_from;
+        }
+    }   
+
+    if(!line_to)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
+    gtable->wkcn->next_num[line_to->node_index]++;
+    gtable->warray->array[walker_index].cur_entry= &gtable->entries[line_to->node_index];
 
     return T_OK;
-}//not done
+}//not tested; awful tbh
+/*
+need to retrieve flux to_from
+*/
 
 uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
     /*
@@ -140,6 +183,7 @@ uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint32_t w
     /**/
     return  T_OK;
 }//not done ; weird 
+
 
 uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index){
     /*
@@ -210,11 +254,11 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t * coeff_arr ){
     if(!sum){report_err("parse_rule_coeff format err3", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
 
     for(uint8_t i=0; i<argc ; i++){
+        if(casted_sum>UINT8_MAX) { fprintf(stderr,"casted sum %u\n", casted_sum); report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
 
-        if(casted_sum>UINT8_MAX) { report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
         coeff_arr[i]= (uint8_t)( ( (double)((double)index_arr[i]/(double)sum)* (double)255 )+casted_sum );
         printf("i:%u coeffarri:%u\n", i, coeff_arr[i]);
-        casted_sum+=coeff_arr[i];
+        casted_sum=coeff_arr[i];
         //if(casted_sum>UINT8_MAX) { report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
     }
     free(index_arr);
@@ -238,7 +282,7 @@ uint8_t parse_rule_fn(  uint8_t argc , char ** argv, rule_fun * rule_fun_arr){
             rule_fun_arr[i]= &rule_alignement;
         }else if (!strncmp(rule_str, "attra", 5)){
             rule_fun_arr[i]= &rule_attraction;
-        }else if (!strncmp(rule_str, "spe_cons", 8)){
+        }else if (!strncmp(rule_str, "sleep", 5)){
             rule_fun_arr[i]= &rule_speed_constant;
         }else{
             report_err("parse_rule_fn", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;

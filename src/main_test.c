@@ -1,3 +1,4 @@
+#include "arena.h"
 #include "common.h"
 #include "graph_table.h"
 #include "misc.h"
@@ -7,6 +8,8 @@
 
 
 #include "time.h"
+#include <stdio.h>
+#include <string.h>
 
 
 
@@ -306,11 +309,13 @@ fclose(f1);
     initTactics(&trand, 5);
     addRule(&trand, 255, &rule_rand);
 */
+   
+   /*07/06,08/06
     GraphTable gtParis; 
     uint8_t failure = loadGraphTab(&gtParis, "city_graph/paris_5000m_radius.csv",  1 ,0);
     if(failure){ printf("failure 1st call code : %u\n", failure);  exit( failure) ;}
 
-  /*
+  
     failure= init_pos(&gtParis);
     if(failure){ printf("failure 2nd call code : %u\n", failure);  exit( failure) ;}
 
@@ -333,11 +338,71 @@ printf("it 2\n");
       printLineArr(gtParis.arrLine, stdout);
   
      printWarray(gtParis.entries, gtParis.warray, stdout);
-*/
+
 
 
    // freeTactics(&trand);
     freeGraphTab(&gtParis);  
+*/
+/*
+  int * a= NULL, *b=NULL; 
 
-    return 0;
+  Arena arena_test;
+  
+  uint8_t failure= init_arena(&arena_test, 2*sizeof(int*)+sizeof(char*)+sizeof(int));
+  if(failure) printf("AAAAHA. AAAAAH. AAAAAAAAAAAAAAAAAAAAA\n");
+  a=(int*) get_memory( &arena_test, &failure , sizeof(int*));
+  *a=2;
+
+  b= (int*)get_memory(&arena_test, &failure, sizeof(int*));
+  *b=4;
+
+ // printf("a,%p b,%p\n", a ,b);
+
+  char * c = get_memory(&arena_test, &failure, sizeof(char*));
+  if(failure){printf("HOW\n") ;return 0;}
+
+  int num = (int) get_memory(&arena_test, &failure, sizeof(int));
+
+  num=5+*a; 
+ // printf("%d\n", num);
+ // printf("a: %p *a:%d\n", a , *a);
+  
+  //printf(" sizeof arsize %lu arena size: %lu , arena_top_index %d " , sizeof(arena_test.memory) , arena_test.size, arena_test.top_index );
+  free_arena(&arena_test);
+*/
+ // printf("%lu\n", calculate_size(367521,791312, 0, 10));
+
+
+  //GraphTable gtParis; 
+  //loadGraphTab(&gtParis, "city_graph/paris_4000m_radius.csv",  1 ,0);  
+  //freeGraphTab(&gtParis);
+/*
+  FILE * fparis = fopen("city_graph/paris_5000m_radius.csv", "r");
+  char line[256];
+
+  while (fgets(line, 256, fparis)) {
+  memset(line, 0, 256*sizeof(char));
+  }
+  fclose(fparis);*/
+
+
+  Arena arena_test;
+  
+  uint8_t failure= init_arena(&arena_test, calculate_size(135525,283956, 0, 1));
+  if(failure) printf("AAAAHA. AAAAAH. AAAAAAAAAAAAAAAAAAAAA\n");
+  free_arena(&arena_test);
+  //if(failure) exit(failure);
+
+  FILE * fparis = fopen("city_graph/paris_4000m_radius.csv", "r");
+  char line[256];
+
+  while (fgets(line, 256, fparis)) {
+  memset(line, 0, 256*sizeof(char));
+  }
+  fclose(fparis);
+
+ // printf("%lu\n", calculate_size(157963,331122 0, 1));
+
+  return 0;
 }

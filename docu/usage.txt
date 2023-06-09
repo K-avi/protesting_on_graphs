@@ -1,1 +1,29 @@
-pending
+to use the program ; you must pass it an input file for it to load a graph from. 
+
+You must then pass a integer representing the number of iterations and an integer 
+representing a number of walker 
+
+the other arguments are not necessary and are options and tactics arguments. 
+
+the options supported are -h to print out help and return and -d to dump the graph at each iteration. 
+
+the rules arguments are passed as formatted string : 
+
+RuleName:coeff 
+
+the coeffs passed can be any floating point number as it will be renormalized before
+running the simulation
+
+the rules currently supported are : 
+rand (random movement)
+align ( alignement rule)
+attra (attraction rule)
+sleep (don't do anything)
+
+example of a string of rule argument : 
+
+attra:3 align:2 sleep:1
+
+the program will load this and make it so there's ~16% of chances that a walker will sleep 
+~33% of chances that it will align and ~50% of chances it will be attracted.
+(the numbers are casted as integers so the probabilities aren't exact)

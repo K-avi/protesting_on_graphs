@@ -257,7 +257,7 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t * coeff_arr ){
         if(casted_sum>UINT8_MAX) { fprintf(stderr,"casted sum %u\n", casted_sum); report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
 
         coeff_arr[i]= (uint8_t)( ( (double)((double)index_arr[i]/(double)sum)* (double)255 )+casted_sum );
-        printf("i:%u coeffarri:%u\n", i, coeff_arr[i]);
+        //printf("i:%u coeffarri:%u\n", i, coeff_arr[i]);
         casted_sum=coeff_arr[i];
         //if(casted_sum>UINT8_MAX) { report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
     }

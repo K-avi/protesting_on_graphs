@@ -2,7 +2,7 @@ test*.py
 old_test_bin
 test 
 *swp*
-walking_on_graph 
+walking_on_graphs
 cache
 traces
 *.csv

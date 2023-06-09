@@ -52,7 +52,7 @@ int main(int argc , char ** argv){
 
     //parses number of iterations
     end= argv[3+dumpset];
-    uint32_t iteration_num = (uint32_t ) strtol( argv[2+dumpset], &end , 10);
+    uint32_t iteration_num = (uint32_t ) strtol( argv[3+dumpset], &end , 10);
     if(end== argv[3+dumpset]){
         fprintf(stderr, "3usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");     
         return ERRFLAG_INVALID_ARG;

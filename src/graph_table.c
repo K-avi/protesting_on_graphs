@@ -1,6 +1,7 @@
 #include "graph_table.h"
 #include "common.h"
 #include "misc.h"
+#include <stdint.h>
 
 static uint8_t initGtEntry( GraphTableEntry * gentry ){
     /*
@@ -99,12 +100,12 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     gt->arrLine=malloc(sizeof(LineArray));
     if(!gt->arrLine) return GT_MALLOC;
 
-    gt->warray= malloc(sizeof(WalkerArray));
-    if(!gt->warray) return WA_ALLOC;
-    uint8_t failure=initWalkerArray(gt->warray, warray_size);
+    uint8_t failure= initnLineArr(gt->arrLine, arrline_size);
     if(failure) return failure;
 
-    failure= initnLineArr(gt->arrLine, arrline_size);
+    gt->warray= malloc(sizeof(WalkerArray));
+    if(!gt->warray) return WA_ALLOC;
+    failure=initWalkerArray(gt->warray, warray_size);
     if(failure) return failure;
 
     gt->wkcn= malloc(sizeof(WalkerCurNext));

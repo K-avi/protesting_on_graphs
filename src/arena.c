@@ -5,7 +5,9 @@
 #include "tactics.h"
 #include "walker.h"
 
+
 #include <obstack.h>
+#include <stdint.h>
 //oh boy
 
 uint8_t init_arena(Arena *arena, uint64_t size){
@@ -36,9 +38,9 @@ void * get_memory(Arena * arena, uint8_t * failure, size_t alloc_size){
         *failure=AR_FULL ; 
         return NULL;
     }
+   // printf("alloc size %d\n", alloc_size);
     
     void * ret = &arena->memory[arena->top_index];
-    arena->top_index+=alloc_size;
     arena->top_index+=alloc_size;
 
     return ret;
@@ -51,30 +53,24 @@ uint64_t calculate_size( uint32_t nb_nodes,uint32_t nb_lines ,uint32_t nb_rules 
 
     uint64_t ret;
 
-    //elements of the graphtable.h 
-    ret= sizeof(GraphTable) + sizeof(LineArray); // base gtable struct
+    //I'm off by 40 bytes wtf 
+    ret=nb_lines * sizeof(Line); //line array 
+    ret+= nb_lines * sizeof(uint32_t); //flux cur 
+    ret+=nb_lines * sizeof(uint32_t); // flux next 
 
-    ret+= nb_lines* sizeof(Line) + 2* sizeof( uint32_t); 
-    //line array and two times the size of a flux array in the linearray
+    ret+= nb_nodes *sizeof(GraphTableEntry); //table entries
+    ret+=sizeof(GraphTableEntry * ); //gte ptr
+    ret+=sizeof(LineArray*); //in gtable 
+    ret+=sizeof(WalkerArray*); // in gtable 
 
-    ret+= nb_nodes *( sizeof(GraphTableEntry) ) ;
-    //there is nb_nodes gte 
+    ret+=sizeof(WalkerCurNext*); //walker cur next ptr in gt
+    ret+= nb_walkers* sizeof(Walker); //walker array
+    ret+= nb_nodes * sizeof(uint32_t); // walker cur in array
+    ret+= nb_nodes * sizeof(uint32_t); // walker next in array
 
-    ret+= 2* nb_nodes * (sizeof(uint32_t)); //to store the walker_cur
-    //and walker_next array
-
-    //elements of walker.h 
-    ret+= sizeof(WalkerCurNext) + sizeof(WalkerArray); //base walker struct
-
-    //store elements of warray
-    ret+= nb_walkers* sizeof(Walker); //I mean yeah
-    
-
-    //elements of tactics.h
-    ret+= sizeof(Tactics); //base tactics struct 
-
-    ret+= nb_rules*sizeof(Rule); //straight forward stuff 
-
+    ret+=40* sizeof(uint8_t); 
+    //I'm always off by 40 bytes from the actual size needed for some 
+    //reason 
     return ret;
 
 }//unsafe af ; not tested !!! don't use 

@@ -66,22 +66,27 @@ done :
 
     - tested main 
 
-pending :   
-
     - test tactics parsing
 
     - write the different rules 
 
+pending :   
+
+    - do the malloc wrapper arena/mempool thingy 
+
+    - test the bitch
+
+    - format output better 
+
+    - perftest 
+
+    - write some actual data analysis functions on the graphs in C
+
+    - implement the weird sleep thing 
+
     - create a shell / python wrapper for the program 
 
     - remove more elements from structures to gain space 
-
-    - if I have time create custom malloc using an arena/mempool
-      might actually use obstacks instead of reinventing the wheel
-      reading papers talking abt similar stuff ; it's pretty confusing
-      tbh
-
-    - write some actual data analysis functions on the graphs in C
 
     - remove curse words from commentaries and documentation
 

@@ -6,6 +6,8 @@
 #include "tactics.h"
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 
@@ -94,9 +96,15 @@ int main(int argc , char ** argv){
         failure=iterate_ntimes(&gtable, &tactics, iteration_num);
         if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
     }else{
-     
-        failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, stdout);
+        
+        char * trace_name = malloc(257* sizeof(char));
+        snprintf(trace_name, 256, "simul_%u_%u_%u", gtable.table_size , walker_num, iteration_num );
+        trace_name[256]='\0';
+        
+        failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, trace_name);
         if(failure){report_err("in main iterate_ntimes_dump call", failure); exit(failure);}
+
+        free(trace_name);
     }
 
     //frees memory

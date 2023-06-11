@@ -1,5 +1,8 @@
 #include "misc.h"
+#include "graph_table.h"
 #include "walker.h"
+#include <stdint.h>
+#include <stdio.h>
 /*
 this file contains the realloc functions for every dynamic array in the project 
 to avoid boilerplates; dynamic arrays reallocations will be handled here
@@ -78,6 +81,7 @@ char * str_flag(uint8_t flag){
   case AR_MALLOC : return "failed to allocate memory to the memory pool\n";
   case AR_NULL : return "the memory pool is null\n";
   case AR_FULL : return "jesus christ you filled the memory pool???";
+  case ERRGLAG_CANTWRITE: return "couldn't open the files to dump the trace\n";
   default : return "unknown error ; how did you get here?\n";
   }
 }//ok
@@ -86,19 +90,16 @@ void report_err( char * msg , uint8_t flag){ //could be a macro
   fprintf(stderr, "error : %s at %s\n", str_flag(flag), msg);
 }
 
-void dump_trace(GraphTable * gt, FILE * stream){
+
+void dump_trace(GraphTable * gt, FILE * stream_curnum , FILE * stream_flux, FILE * stream_walker ){
   //the trace function to dump graph after it
-    if(!gt){ fprintf(stream,  "graph table is null\n"); return;}
 
-    fprintf(stream, "graphtable at gen %u :\n", gt->curgen);
-    printGraphTab(gt, stream) ;  
-
-    fprintf(stream, "line array :\n");
-    printLineArr(gt->arrLine, stream);
-
-    fprintf(stream, "walker array  :\n");
-    printWarray(gt->entries, gt->warray, stream);
-
-    fprintf(stream, "walker cur/next arrays :\n");
-    printWKCN(gt->wkcn, stream);
-}
+   //dumps the bin array of the walker's position in the file for curnum trace
+   fwrite(gt->wkcn->cur_num, sizeof(uint32_t), gt->wkcn->size, stream_curnum);
+   //dumps the binary array of the flux at each line in the file for flux trace
+   fwrite(gt->arrLine->cur_flux, sizeof(uint32_t), gt->arrLine->size, stream_flux);  
+   //dumps the bin array of walkers
+   fwrite(gt->warray->array, sizeof(Walker), gt->warray->size , stream_walker);
+}//not tested ; prolly ok 
+//might be an issue if the walkers have more fields added 
+//if it happens separate their immutable states from their mutable ones 

@@ -98,7 +98,7 @@ int main(int argc , char ** argv){
     }else{
         
         char * trace_name = malloc(257* sizeof(char));
-        snprintf(trace_name, 256, "simul_%u_%u_%u", gtable.table_size , walker_num, iteration_num );
+        snprintf(trace_name, 256, "simul_%u_%u_%u_%u", gtable.table_size , gtable.arrLine->size ,walker_num, iteration_num );
         trace_name[256]='\0';
         
         failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, trace_name);

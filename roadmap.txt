@@ -70,15 +70,19 @@ done :
 
     - write the different rules 
 
+    - format output 
+
 pending :   
 
-    - do the malloc wrapper arena/mempool thingy 
+    - separate mutable / immutable fields of walkers (necessary to create relevant trace)
+    
+    - write the whole load trace python script
 
-    - test the bitch
-
-    - format output better 
+    - do the malloc wrapper arena/mempool thingy     
 
     - perftest 
+
+    - result test 
 
     - write some actual data analysis functions on the graphs in C
 

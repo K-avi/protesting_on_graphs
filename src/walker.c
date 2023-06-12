@@ -37,7 +37,7 @@ void printWarray(const GraphTableEntry * gt_ref,  WalkerArray *wArray, FILE * st
     if(!wArray) {fprintf(stream,"warray is null\n"); return;}
     fprintf(stream, "walker array of size %u\n", wArray->size);
     for(uint32_t i=0 ; i<wArray->size; i++){
-        fprintf(stream,"%u,%u\n", i,  (uint32_t) ( (wArray->array[i].cur_entry) - gt_ref)  );
+        fprintf(stream,"%u,%u\n", i,  wArray->array[i].index_entry  );
     }
 }
 
@@ -96,4 +96,4 @@ void printWKCN( WalkerCurNext * wkcn, FILE * stream){
     for(unsigned i=0; i<wkcn->size; i++){
         fprintf(stream, "%u,%u,%u\n", i, wkcn->cur_num[i], wkcn->next_num[i]);
     }
-}//not tested ; prolly ok 
+}//tested ; ok 

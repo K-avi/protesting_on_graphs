@@ -21,7 +21,7 @@ uint8_t init_pos(GraphTable * gtable){
     for(uint32_t i=0; i<gtable->warray->size;i++){
         uint32_t randval= (uint32_t) rand()%gtable->table_size;
         
-        gtable->warray->array[i].cur_entry=&gtable->entries[randval];
+        gtable->warray->array[i].index_entry=randval;
         gtable->wkcn->next_num[randval]++;
     }
     return MV_OK;
@@ -62,7 +62,7 @@ uint8_t iterate_once(GraphTable * gtable , Tactics * t){
 
     for(uint32_t i=0; i<gtable->warray->size;i++){
 
-        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].cur_entry - gtable->entries, i);
+        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].index_entry, i);
         if(failure)return failure;      
     }
     return MV_OK;
@@ -134,11 +134,10 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     for(uint32_t i=0; i<iter_num; i++){
         
         failure= prepare_ite(gtable);
+        dump_trace(gtable, f_curnum, f_flux, f_wkpos);
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
         failure= iterate_once(gtable, tactics);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
-      
-        dump_trace(gtable, f_curnum, f_flux, f_wkpos);
     }
 
     fclose(f_curnum); 
@@ -147,4 +146,4 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
 
     return MV_OK;
 }//done ; tested scaling ; seems constant (great) however 
-//haven't tested outputs yet 
+//tested outputs; seems ok

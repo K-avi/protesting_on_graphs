@@ -69,7 +69,7 @@ uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_ind
    
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].cur_entry= &gtable->entries[line_to->node_index];
+    gtable->warray->array[walker_index].index_entry= line_to->node_index;
 
     return T_OK;
 }// new version ;tested ; seems ok
@@ -104,7 +104,7 @@ uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walk
 
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].cur_entry= &gtable->entries[line_to->node_index];
+    gtable->warray->array[walker_index].index_entry= line_to->node_index;
 
     return T_OK;
 
@@ -155,13 +155,11 @@ uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walke
     if(!line_to)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].cur_entry= &gtable->entries[line_to->node_index];
+    gtable->warray->array[walker_index].index_entry= line_to->node_index;
 
     return T_OK;
-}//not tested; awful tbh
-/*
-need to retrieve flux to_from
-*/
+}// tested; seems ok ; awful tbh
+
 
 uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
     /*

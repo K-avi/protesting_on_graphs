@@ -17,7 +17,7 @@ struct s_graph_table_entry{
 
 typedef struct s_walker{
    
-    GraphTableEntry * cur_entry; //gte of the node where the where the walker currently is
+    uint32_t index_entry; //gte of the node where the where the walker currently is
     //make it into the index 
 }Walker;
 

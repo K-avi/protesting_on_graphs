@@ -20,7 +20,7 @@ uint8_t init_arena(Arena *arena, uint64_t size){
     arena->top_index=0;
     
     return AR_OK;
-}//not tested ; prolly ok
+}// tested ;  ok
 
 void free_arena(Arena * arena){
     /* frees an arena*/

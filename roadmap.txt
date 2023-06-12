@@ -42,7 +42,7 @@ done :
 
     - do some proper testing of simulations (kinda)
 
-    - write the tactics stuff (not tested ) (now it is)
+    - write the tactics stuff (tested ) (now it is)
 
     - write propper error reporting 
 
@@ -53,9 +53,9 @@ done :
     - test tactics (kind of done )
 
     - write the actual main n maybe do a script to call stuff in bash or smtg 
-      ( finished ; not tested )
+      ( finished ; tested )
     
-    - find out how to parse tactics  (not tested yet )
+    - find out how to parse tactics  (tested yet )
 
     - removed some of the unnecessary elements from the structure ; 
       watch out for potential bugs IG
@@ -72,25 +72,24 @@ done :
 
     - format output 
 
-pending :   
-
     - separate mutable / immutable fields of walkers (necessary to create relevant trace)
+      I actually just replaced the posref inside the walker to an uint32 representing 
+      the index so it should work now 
+    
+    - remove more elements from structures to gain space (I might be able to remove more 
+      but I'm not sure what I could do tbh)
     
     - write the whole load trace python script
 
+pending :   
+
     - do the malloc wrapper arena/mempool thingy     
 
-    - perftest 
-
-    - result test 
+    - perftest (currently running)
 
     - write some actual data analysis functions on the graphs in C
 
-    - implement the weird sleep thing 
-
     - create a shell / python wrapper for the program 
-
-    - remove more elements from structures to gain space 
 
     - remove curse words from commentaries and documentation
 

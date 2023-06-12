@@ -100,6 +100,6 @@ void dump_trace(GraphTable * gt, FILE * stream_curnum , FILE * stream_flux, FILE
    fwrite(gt->arrLine->cur_flux, sizeof(uint32_t), gt->arrLine->size, stream_flux);  
    //dumps the bin array of walkers
    fwrite(gt->warray->array, sizeof(Walker), gt->warray->size , stream_walker);
-}//not tested ; prolly ok 
+}//tested; ok 
 //might be an issue if the walkers have more fields added 
 //if it happens separate their immutable states from their mutable ones 

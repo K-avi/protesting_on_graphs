@@ -7,3 +7,4 @@ cache
 traces
 *.csv
 csv_graph
+simul_*

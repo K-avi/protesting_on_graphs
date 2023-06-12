@@ -4,6 +4,7 @@
 #include "misc.h"
 #include "walker.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <float.h>
 #include <stdio.h>
@@ -232,6 +233,7 @@ uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_ind
 
 uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint16_t choice_coeff, bool * movement_choice) {
     /*the hell */
+  
     if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
     if(node_from>gtable->table_size) { report_err( "rule_speed_constant", GT_SIZE ) ; return GT_SIZE;}
 
@@ -243,22 +245,25 @@ uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint16_t c
         line_cur = cur_entry->first_neighboor_ref+i;
         tot+= gtable->wkcn->cur_num[line_cur->node_index];
     }
-    if( tot > ((choice_coeff/UINT16_MAX)*UINT64_MAX)  ) *movement_choice=0;
-    *movement_choice=tot;
+    if( tot >= ((choice_coeff/UINT16_MAX)*UINT64_MAX)  ) *movement_choice= true;
+    *movement_choice= false;
 
     return T_OK;
-}//not done ; weird 
+}//tested; weird ; seems ok
 //make a metarule
-//mv choice 0 or 1 if u moove
+
 
 uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint16_t choice_coeff, bool * movement_choice ){
+    /*O(1)
+    returns true if the value generated is higher than the constant 
+    probability to move */
     if(!movement_choice) { report_err( "rule_speed_constant", GT_NULL ) ; return GT_NULL; }
     
-    printf("%u \n", choice_coeff);
-    *movement_choice=  ((rand()%UINT16_MAX)) > choice_coeff ;
+
+    *movement_choice=  ((rand()%UINT16_MAX))+1 > choice_coeff ;
     return T_OK;
 }
-//will have to modify to accept the same thing as speed reaction
+//tested ; seems ok
 
 
 
@@ -278,7 +283,6 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
     if(failure){ report_err("choose_node", failure); return failure;}
 
     if(!mv_check){   
-        printf("yo\n"); 
         return rule_sleep(gtable,  node_from,  walker_index);
     }
 
@@ -307,8 +311,9 @@ at the second one it will be 50 and at the last one it will be 100
 when I generate a number between 0 and 1 I will check at each rule if 
 I selected a number smaller than the current coeff of the rule and will 
 use this rule if so 
+
+it also checks if u actually have the right to move 
 */
-//oh yeah shit
 
 
 uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint16_t * coeff_arr ){
@@ -356,7 +361,7 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
     //hardcoding it just in case 
 
     return T_OK;
-}//new version; not tested; prolly wrong ; error prone
+}//new version; tested;seems ok ; error prone
 
 uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fun * rule_fun_arr){
     /*parses a single rule str*/
@@ -389,16 +394,19 @@ uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fu
         }
     }  
     return PFN_OK;
-}// new version; prolly wrong ; not tested
+}// new version; tested; seems ok
  
-uint8_t parse_meta_rules( uint8_t argc, char ** argv, uint8_t* rule_count_ref, Tactics * t){
-    /*shit*/
-    printf("reached mparse\n");
+static uint8_t parse_meta_rules( uint8_t argc, char ** argv, uint8_t* rule_count_ref, Tactics * t){
+    /*
+    parses the meta rules in the args given to the program ;
+    does so by custom parsing the coeff and arg type given ; 
+    also substract them from the total of rules given to the program 
+    if multiple meta args are given ; only the last one is taken into account
+    */
     for(uint8_t i=0 ; i<argc; i++){
-        printf("it in parse meta %s\n", argv[i]);
+  
         if(argv[i][0]=='m'){
             (*rule_count_ref)--;
-printf("dude wtf\n");
             if(!strncmp(argv[i], "mconst", 6)){
                 t->meta_function.meta_function=&rule_speed_constant;
 
@@ -409,7 +417,9 @@ printf("dude wtf\n");
                 char * end=str_coeff; 
                 double coeff = strtod(str_coeff, &end);
                 if(end==str_coeff){ report_err("parse_meta_rules", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
-printf("row oceff %.2f \n", coeff);
+
+                coeff= coeff>1.0 ? 1.0 : coeff; //makes sures that nothing goes wrong 
+                coeff = coeff < 0.0 ? 0.0 : coeff;
                 t->meta_function.rule_coeff= (uint16_t) ( coeff * (double)UINT16_MAX);
            
             }else if (!strncmp(argv[i], "mprop" , 5)){ 
@@ -423,7 +433,7 @@ printf("row oceff %.2f \n", coeff);
             
                 if(end==str_coeff){ report_err("parse_meta_rules", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
 
-                t->meta_function.rule_coeff= (uint16_t) coeff;
+                t->meta_function.rule_coeff= (uint16_t) (coeff/DBL_MAX);
             }else{
                 report_err("parse_meta_rules", PRS_INVALID_FORMAT);
                 return PRS_INVALID_FORMAT;
@@ -432,11 +442,11 @@ printf("row oceff %.2f \n", coeff);
     }
     if(*rule_count_ref==argc){//if no meta fn is given ; sets this to default values 
         t->meta_function.meta_function=&rule_speed_constant;
-        t->meta_function.rule_coeff=1;
+        t->meta_function.rule_coeff=0;
     }
     return PFN_OK;
-}//not tested; prolly wrong
-//so fucking ugly jeez 
+}//tested ;seems ok ; error prone
+//so f***** ugly 
 
 uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
     /*
@@ -453,7 +463,9 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
 
     if(rule_count == 0){ //if only meta rules are given defaults to rand
         addRule(t, 255, &rule_rand);
+        return T_OK;
     }
+
     uint16_t * coeff_arr = malloc(rule_count*sizeof(uint16_t));
     if(!coeff_arr) { report_err("parse_args malloc coeff", PRS_NULL); return PRS_NULL ;}
 
@@ -474,4 +486,4 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
     free(coeff_arr);
     free(rule_arr);
     return T_OK;
-}// new version; not tested; prolly wrong 
+}// new version;  tested ; seems ok ; error prone 

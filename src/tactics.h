@@ -45,6 +45,8 @@ void freeTactics( Tactics * t);
 
 uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv );
 
+
+
 #ifdef debug_mode
 
 uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index);

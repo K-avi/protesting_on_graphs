@@ -85,6 +85,7 @@ int main(int argc , char ** argv){
     }else{//hmmm
         failure = addRule(&tactics, 255,  &rule_rand);
         if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
+        
     }
     
     //starts the simulation 

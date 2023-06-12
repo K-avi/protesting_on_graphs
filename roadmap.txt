@@ -83,9 +83,13 @@ done :
 
     - implemented the coefficient based attraction rule
 
+    - make the movement choice a meta tactic 
+
+    - make sure that the program behaves well when not given optionnal args
+
 pending :   
 
-    - make the movement choice a meta tactic 
+   
 
     - do the malloc wrapper arena/mempool thingy     
 
@@ -104,4 +108,4 @@ pending :
 
   
 
-  nb : je suis un sac à merde 
+ 

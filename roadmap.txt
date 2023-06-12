@@ -81,7 +81,13 @@ done :
     
     - write the whole load trace python script
 
+    - implement the coefficient based attraction rule
+
 pending :   
+
+    - make the movement choice a meta tactic 
+
+    
 
     - do the malloc wrapper arena/mempool thingy     
 

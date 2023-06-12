@@ -15,10 +15,14 @@ the coeffs passed can be any floating point number as it will be renormalized be
 running the simulation
 
 the rules currently supported are : 
-rand (random movement)
+rand (random movement) 
 align ( alignement rule)
 attra (attraction rule)
-sleep (don't do anything)
+sleep (don't do anything) deprecated 
+
+
+mrand:5
+mprop:20
 
 example of a string of rule argument : 
 

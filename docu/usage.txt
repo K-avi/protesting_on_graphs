@@ -18,15 +18,13 @@ the rules currently supported are :
 rand (random movement) 
 align ( alignement rule)
 attra (attraction rule)
-sleep (don't do anything) deprecated 
+sleep (doesn't do anything) deprecated 
+attco (attraction coeff rule)
 
-
-mrand:5
-mprop:20
 
 example of a string of rule argument : 
 
-attra:3 align:2 sleep:1
+attra:3 align:2 rand:1
 
 the program will load this and make it so there's ~16% of chances that a walker will sleep 
 ~33% of chances that it will align and ~50% of chances it will be attracted.

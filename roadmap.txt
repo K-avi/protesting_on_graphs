@@ -81,22 +81,27 @@ done :
     
     - write the whole load trace python script
 
-    - implement the coefficient based attraction rule
+    - implemented the coefficient based attraction rule
 
 pending :   
 
     - make the movement choice a meta tactic 
 
-    
-
     - do the malloc wrapper arena/mempool thingy     
 
     - perftest (currently running)
 
-    - write some actual data analysis functions on the graphs in C
+    - write some actual data analysis functions on the graphs in C (starting 13/06)
 
     - create a shell / python wrapper for the program 
+      yeah I should prolly do that at some point lol
+      the idea would be to wire up the different sections of the prgm 
+      smtg like : 
+
+      python retriever -> C simulation -> python trace loader -> python dt analysis 
 
     - remove curse words from commentaries and documentation
 
-    
+  
+
+  nb : je suis un sac à merde 

@@ -82,7 +82,7 @@ int main(int argc , char ** argv){
     if(argc>4){
         failure=parse_args(&tactics, argc-4-dumpset, (argv+4+dumpset));
         if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
-    }else{
+    }else{//hmmm
         failure = addRule(&tactics, 255,  &rule_rand);
         if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
     }

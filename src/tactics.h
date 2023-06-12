@@ -6,7 +6,9 @@
 #include <stdint.h>
 
 typedef uint8_t(*rule_fun)( GraphTable * gtable, uint32_t node_from, uint32_t walker_index);
-typedef uint8_t(*metarule_fun)(GraphTable * gtable, uint32_t node_from , uint64_t choice_coeff, bool * movement_choice);
+typedef uint8_t(*metarule_fun)(GraphTable * gtable, uint32_t node_from , uint16_t choice_coeff, bool * movement_choice);
+
+
 typedef struct s_rule{
 /*
 stores the coeff and function pointer of a rule in a tactic; 
@@ -14,13 +16,13 @@ coeff is a double between 0 and 1 corresponding to the probability of choosing t
 
 maybe don't use floats for the coeff cuz they slow af
 */
-    uint8_t rule_coeff;  
+    uint16_t rule_coeff;  
     rule_fun rule_function;
      
 } Rule; 
 
 typedef struct s_meta_rule{
-    uint8_t rule_coeff;
+    uint16_t rule_coeff;
     metarule_fun meta_function; //placeholder 
 }MetaRule;
 
@@ -33,7 +35,7 @@ of the results of each rule or something
 */
     uint32_t capa; //should prolly be static + use uint8_t 
     uint32_t numb;
-    
+
     MetaRule meta_function;
     Rule * rule_arr;
 }Tactics;

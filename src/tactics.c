@@ -455,6 +455,11 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
 
     if(!t) {report_err("in parse_args", T_NULL); return T_NULL;}
 
+    if(argc ==0 ){
+        addRule(t, 255, &rule_rand);
+        t->meta_function.meta_function=&rule_speed_constant;
+        t->meta_function.rule_coeff=0;
+    }
     //parses the 'meta' rules
     uint8_t rule_count=argc;
     uint8_t failure= parse_meta_rules(argc , argv, &rule_count, t);

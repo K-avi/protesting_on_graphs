@@ -83,9 +83,8 @@ int main(int argc , char ** argv){
         failure=parse_args(&tactics, argc-4-dumpset, (argv+4+dumpset));
         if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
     }else{//hmmm
-        failure = addRule(&tactics, 255,  &rule_rand);
-        if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
-        
+        failure = parse_args(&tactics, 0, NULL);
+         if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
     }
     
     //starts the simulation 

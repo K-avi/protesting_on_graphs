@@ -2,6 +2,7 @@
 #WARNING: the functions are currently prototypes / placeholders; do NOT use them 
 import numpy as np
 import networkx as nx
+from statistics import mean
 
 def count_groups(group_array):
     """
@@ -28,22 +29,56 @@ def spreading_groups(group_array):
     return mean([len(i) for i in group_array])
 
 
-def load_csv_set_graph(path):
+def load_csv_dict_graph(path):
     """
-    str -> set_graph
+    str -> dict_graph
     
-    creates a set of the graph rep 
+    creates a dict of the graph rep 
     contained at path (assuming the 
     graph is stored as the custom csv rep)
     """
-    return 0
+    
+    dict_graph= dict()
+    
+    with open (path, "r") as file: 
+        next(file)
+        for line in file:
+            node_from=int(line.split(",")[0])   
+            nodes_to=line.split(",")[2].split(";")
+            line_array=[]
+            for i in nodes_to:  
+                node_to = int(i.split(":")[0])
+                line_array.append(node_to)
+            dict_graph.update({node_from:[line_array,0]})
+    file.close
+    
+    return dict_graph
 
-def get_adj_group(walker_pos_mat , graph ):
+def merge_wkpos_dictgraph( walker_pos_row , dict_graph): 
     """
-    np.array , set_graph -> group_array
+    np.array , dict_graph -> dict_graph
+    updates the nb_elem stored in the dict graph given a walker pos_row
+    
+    O(nb_walkers)
+    """
+    
+    for i in walker_pos_row:
+        dict_graph[i][1]+=1
+    
+    return dict_graph
+
+
+def get_adj_group( dict_graph ):
+    """
+    dict_graph -> group_array
     
     creates the subgraphs of graph
     representing the groups of walkers
+    
+    
+    should be like a normal graph search except u generate 
+    a bunch of smaller dict that are like subgraphs of dict_graph where 
+    each node has at least 1 guy and is linked to another one 
     
     O(?)
     """
@@ -85,3 +120,24 @@ def get_mean_nodes_visited(walker_pos_mat):
     
     return mean(val_list)
 
+
+def main():
+    """
+    count_groups(["0"])
+    spreading_groups(["0"])
+    #merge_wkpos_dictgraph([],[])
+    get_adj_group(["0"])
+    
+    get_mean_group_size(["0"])
+    get_mean_nodes_visited(["0"])
+    """
+    graph_dict = load_csv_dict_graph("../test_graph/gt_test3.csv")
+    test_arr= np.concatenate( (np.ones(2,dtype=int) , np.zeros(2, dtype=int)) )
+    merge_wkpos_dictgraph( test_arr  , graph_dict)
+    print(graph_dict)
+    group_array = get_adj_group(graph_dict)
+    
+    return 0
+
+if __name__=='__main__':
+    main()

@@ -91,12 +91,36 @@ done :
 
     - fix the args handling (I think)
 
-pending :    
+    - heavy perftest : tested  time complexity of different rules ; 
+      results were predictible ; 
+      from slowest to fastest : 
+
+      attco 
+      align 
+      attra 
+      rand
+      sleep 
+
+    - tested multi threading ; thread management is slower than running the actual 
+      simulation on small scale (lol)
+      might retest w a bigger graph I dunno 
+    
+    - found out something really weird : the space complexity DID NOT 
+      affect the number of nodes where I get out of the cache so I'm not sure what 
+      causes me to break in perftest. I'm really confused 
+    
+
+pending :  
+
 
     - perftest another 20000walker * 1000 it simul cuz the last result was fucked up 
-      (will start around 1pm)
+      (currently running)
 
     - write some actual data analysis functions on the graphs in Python
+
+    - evaluate meta fns with variant of other fns and stuff to try and gain performance
+
+    - maybe revert to bigger space complexity cuz dereferencing pointers good?????
 
     - script to do simul and do data analysis on it afterwards 
 

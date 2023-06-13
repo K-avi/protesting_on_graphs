@@ -8,3 +8,4 @@ traces
 *.csv
 csv_graph
 simul_*
+.vscode

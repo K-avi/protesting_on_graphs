@@ -11,14 +11,14 @@ while True:
     r = int(10**(rmin + (np.random.rand(1)[0]*(rmax-rmin))))
     print(r)
 
-    sb.run(f"python ../../city_graph/graph_treament.py 48.866 2.33 {r} 10 test.csv", shell=True)
+    sb.run(f"python ../../graph_treatment/graph_treament.py 48.866 2.33 {r} 10 test.csv", shell=True)
     with open("test.csv") as NTM:
         fl = NTM.readline()
 
     fl = float(fl.split(",")[0])
     print(fl)
     tb = time()
-    sb.run("../wog0906 test.csv 20000 1000", shell=True)
+    sb.run("wog1206bin test.csv 200000 100 rand:1 mconst:0", shell=True)
     tf = time()
 
     data = [fl, tf - tb]

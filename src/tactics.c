@@ -231,7 +231,7 @@ uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_ind
 }//tested ; seems ok
 //make a metarule
 
-uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint16_t choice_coeff, bool * movement_choice) {
+uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice) {
     /*the hell */
   
     if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
@@ -245,22 +245,22 @@ uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint16_t c
         line_cur = cur_entry->first_neighboor_ref+i;
         tot+= gtable->wkcn->cur_num[line_cur->node_index];
     }
-    if( tot >= ((choice_coeff/UINT16_MAX)*UINT64_MAX)  ) *movement_choice= true;
-    *movement_choice= false;
+    if( tot >= choice_coeff )*movement_choice= true;
+    else *movement_choice= false;
 
     return T_OK;
 }//tested; weird ; seems ok
 //make a metarule
 
 
-uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint16_t choice_coeff, bool * movement_choice ){
+uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice ){
     /*O(1)
     returns true if the value generated is higher than the constant 
     probability to move */
     if(!movement_choice) { report_err( "rule_speed_constant", GT_NULL ) ; return GT_NULL; }
     
 
-    *movement_choice=  ((rand()%UINT16_MAX))+1 > choice_coeff ;
+    *movement_choice=  ((rand()%UINT32_MAX))+1 > choice_coeff ;
     return T_OK;
 }
 //tested ; seems ok
@@ -433,32 +433,33 @@ static uint8_t parse_meta_rules( uint8_t argc, char ** argv, uint8_t* rule_count
             
                 if(end==str_coeff){ report_err("parse_meta_rules", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
 
-                t->meta_function.rule_coeff= (uint16_t) (coeff/DBL_MAX);
+                t->meta_function.rule_coeff= (uint32_t) coeff;
             }else{
                 report_err("parse_meta_rules", PRS_INVALID_FORMAT);
                 return PRS_INVALID_FORMAT;
             }
         }
     }
-    if(*rule_count_ref==argc){//if no meta fn is given ; sets this to default values 
+    if(*rule_count_ref==argc){//if no meta fn is given ; set to always move 
         t->meta_function.meta_function=&rule_speed_constant;
         t->meta_function.rule_coeff=0;
     }
     return PFN_OK;
 }//tested ;seems ok ; error prone
+//new version; not tested; seems ok
 //so f***** ugly 
 
 uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
     /*
     parses a list of rules to append to a tactic t 
     */
-
     if(!t) {report_err("in parse_args", T_NULL); return T_NULL;}
 
-    if(argc ==0 ){
+    if(argc ==0 ){ //default behavior when no optionnal arguments are given
         addRule(t, 255, &rule_rand);
         t->meta_function.meta_function=&rule_speed_constant;
         t->meta_function.rule_coeff=0;
+        return T_OK;
     }
     //parses the 'meta' rules
     uint8_t rule_count=argc;

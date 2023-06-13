@@ -46,7 +46,7 @@ int main(int argc , char ** argv){
     char * end=argv[2+dumpset];
 
     //parses number of walkers
-    uint32_t walker_num=  (uint32_t) strtol( argv[2+dumpset], &end , 10);
+    double walker_coeff=  (double) strtod( argv[2+dumpset], &end );
     if(end == argv[2+dumpset]){
         fprintf(stderr, "2usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
         return ERRFLAG_INVALID_ARG;
@@ -65,10 +65,9 @@ int main(int argc , char ** argv){
     time( &timer);
     srand(timer);
 
-
     //init graph 
     GraphTable gtable; 
-    uint8_t failure = loadGraphTab(&gtable, path, walker_num, 0);
+    uint8_t failure = loadGraphTab(&gtable, path, walker_coeff, 0);
     if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
 
 
@@ -98,7 +97,7 @@ int main(int argc , char ** argv){
     }else{
         
         char * trace_name = malloc(257* sizeof(char));
-        snprintf(trace_name, 256, "simul_%u_%u_%u_%u", gtable.table_size , gtable.arrLine->size ,walker_num, iteration_num );
+        snprintf(trace_name, 256, "simul_%u_%u_%u_%u", gtable.table_size , gtable.arrLine->size ,gtable.warray->size, iteration_num );
         trace_name[256]='\0';
         
         failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, trace_name);

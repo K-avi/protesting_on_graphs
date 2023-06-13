@@ -1,3 +1,4 @@
+#file containing the functions to load the traces of a simulation
 import  numpy as np
 import sys
 

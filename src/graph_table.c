@@ -223,13 +223,20 @@ static bool emptyLine( char * str){
     return (*str=='\0' || *str=='\n');
 }
 
-uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t curgen){
+uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t curgen){
     /*
     takes a non initialised ; non null , empty gt and loads a graph stored at path into it
     also pass walk table entry size parameter cuz it's better looking than to init w a global var
 
     if there is more line than space for the graph (i.e : the size of the graph is actually inferior to)
     the number of lines) the lines after the limit of the graph will be ignored
+
+    warray coeff is a double used to determine the nb of walkers in the graph; 
+    it is multiplied by the nb of nodes in the graph to calculate the nb of walkers.
+
+    on a graph with 1000 nodes , if warray coeff is 1 there will be 1000 walkers; 
+    if it's 0.8 there will be 800 and so on 
+    if its 3 there will be 3000...
     */
     if(!gt){ report_err("loadGraphTab", GT_NULL); return GT_NULL;}
 
@@ -256,7 +263,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, uint32_t warray_size,uint32_t c
     else{fclose(f); report_err("loadGraphTab parse1", GT_PARSE); return GT_PARSE;}
 
     //initialises graph with values consumed on the first line
-    uint8_t failure= initGraphTab(gt, arrline_size,  table_size,  warray_size,curgen);
+    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, (uint32_t) (table_size* warray_coeff),curgen);
     if(failure) { fclose(f);  report_err("loadGraphTab" ,failure); return failure;}
 
     uint32_t cpt=0; 

@@ -52,7 +52,7 @@ typedef struct s_graph_table{ //the main table structure
 uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t warray_size ,uint32_t curgen );
 void freeGraphTab(GraphTable * gt);
 
-uint8_t loadGraphTab(GraphTable *gt, char *path,  uint32_t warray_size,uint32_t curgen);
+uint8_t loadGraphTab(GraphTable *gt, char *path,  double warray_coeff,uint32_t curgen);
 uint8_t writeGraphTab( GraphTable * gt,  char *path );
 
 uint8_t printGraphTab( GraphTable * gt, FILE * stream);

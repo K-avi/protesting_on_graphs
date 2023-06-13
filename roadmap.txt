@@ -87,22 +87,48 @@ done :
 
     - make sure that the program behaves well when not given optionnal args
 
-pending :   
+    - scale walker num like opt args
+
+    - fix the args handling (I think)
+
+pending :    
+
+    - perftest another 20000walker * 1000 it simul cuz the last result was fucked up 
+      (will start around 1pm)
+
+    - write some actual data analysis functions on the graphs in Python
+
+    - script to do simul and do data analysis on it afterwards 
+
+    - script to get mean of mean i.e do a bunch of simulation ; get their results and plot 
+      the mean of their result 
+
+    - create a shell / python wrapper for the program 
+      wire up the different sections of the prgm smtg like : 
+      python retriever -> C simulation -> python trace loader -> python dt analysis 
 
     - do the malloc wrapper arena/mempool thingy     
 
-    - perftest (currently running)
-
-    - write some actual data analysis functions on the graphs in C (starting 13/06)
-
-    - create a shell / python wrapper for the program 
-      yeah I should prolly do that at some point lol
-      the idea would be to wire up the different sections of the prgm 
-      smtg like : 
-
-      python retriever -> C simulation -> python trace loader -> python dt analysis 
-
     - remove curse words from commentaries and documentation
+
+notes in french from the meeting I had: 
+
+mesures: 
+
+compter nb groupes : (SGI par les noeuds où il y a des marcheurs connexes)
+
+etalement des gp : ( çad nb cases occupées par le gp)
+
+nb moyen de marcheurs sr un gp :
+
+  (
+  a la fin : faire courbe de l'étalement en fonction du nb etapes 
+  (etalement moyen gp ; nb pers moyen gp )
+  groupe : commence à partir de 2 marcheurs 
+  )
+
+mobilité : nb moyen de noeuds différents que chaque marcheur a parcouru 
+
 
   
 

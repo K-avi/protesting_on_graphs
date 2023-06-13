@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 typedef uint8_t(*rule_fun)( GraphTable * gtable, uint32_t node_from, uint32_t walker_index);
-typedef uint8_t(*metarule_fun)(GraphTable * gtable, uint32_t node_from , uint16_t choice_coeff, bool * movement_choice);
+typedef uint8_t(*metarule_fun)(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice);
 
 
 typedef struct s_rule{

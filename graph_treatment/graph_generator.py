@@ -1,5 +1,5 @@
 #!/bin/python3.10
-#this is the file doing to the retrieval/ treatment of city graphs using OSMNX 
+#this is the file doing to the retrieval/ treatment of city graphs using OSMNX and networkx
 import osmnx as ox
 import networkx as nx
 import argparse as arg
@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 def discretise(Graph, step): 
     """
     nxGraph, step-> nxGraph  
+    
     discretises a graph passed as arg with the step
     i.e : creates new nodes when the distance between the nodes a,b in a line 
     is bigger than step  
@@ -33,6 +34,7 @@ def discretise(Graph, step):
 
 def makeCSV(Graph, path):
     """
+    nxGraph , str 
     writes the custom csv corresponding to the graph passed
     as argument in the file at path
     """ 
@@ -45,6 +47,7 @@ def makeCSV(Graph, path):
 
 def loadCSV(path):
     """
+    str -> nxGraph
     creates a networx graph from the custom csv stored at path
     should prolly use a real csv loader but this function is somewhat 
     trivial so it doesn't really mater I guess
@@ -65,7 +68,7 @@ def loadCSV(path):
 
 def discretisePA(Graph, step): 
     """
-    nxGraph, step-> nxGraph  
+    nxGraph, step-> graph_string
     discretises a graph passed as arg with the step
     i.e : creates new nodes when the distance between the nodes a,b in a line 
     is bigger than step  
@@ -100,6 +103,7 @@ def discretisePA(Graph, step):
 
 def makeCSVPA(Graph, path):
     """
+    graph_string , path
     writes the custom csv corresponding to the graph passed
     as argument in the file at path
     by https://github.com/Pacidus

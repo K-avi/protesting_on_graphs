@@ -18,7 +18,7 @@ while True:
     fl = float(fl.split(",")[0])
     print(fl)
     tb = time()
-    sb.run("wog13_06_cstwk_bin test.csv 1 1000", shell=True)
+    sb.run("wog13_06_cstwk_bin test.csv 1 1000 attra:1", shell=True)
     tf = time()
 
     data = [fl, tf - tb]

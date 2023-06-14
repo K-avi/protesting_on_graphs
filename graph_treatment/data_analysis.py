@@ -77,14 +77,13 @@ def modified_bfs(visited, dict_graph, node): #function for BFS
     set_nodes={ (node,dict_graph[node][1])}
     while queue: # Creating loop to visit each node
         m = queue.pop(0) 
-
         for neighbor in dict_graph[m][0]:
             if neighbor not in visited and is_in_group(dict_graph,neighbor) and dict_graph[neighbor][1]>0:
-                visited.add(neighbor)
+        
                 queue.append(neighbor)
                 set_nodes.add( (neighbor,dict_graph[neighbor][1]))
-            else :
-                visited.add(neighbor)
+           
+            visited.add(neighbor)
     return set_nodes 
 
 def get_adj_group( dict_graph ):

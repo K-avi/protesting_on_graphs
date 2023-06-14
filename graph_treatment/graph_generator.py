@@ -68,7 +68,7 @@ def loadCSV(path):
 
 def discretisePA(Graph, step): 
     """
-    nxGraph, step-> graph_string
+    nxGraph, step -> graph_string
     discretises a graph passed as arg with the step
     i.e : creates new nodes when the distance between the nodes a,b in a line 
     is bigger than step  

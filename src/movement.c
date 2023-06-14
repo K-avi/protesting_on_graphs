@@ -125,8 +125,6 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
         return ERRGLAG_CANTWRITE;
     }
     printGraphTab(gtable, f_hr);
-    printWarray(gtable->entries, gtable->warray, f_hr);
-    printWKCN(gtable->wkcn, f_hr);
     fclose(f_hr);
 
     uint8_t failure;

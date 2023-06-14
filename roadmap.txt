@@ -122,13 +122,17 @@ done :
     
     -  fix the number of threads used for the program (not tested )
 
+    - figure out proper way to parse walking_on_graphs rules 
+      they can be given as a single beeg string to bash and it will then 
+      be read correctly by the C program (cool)
+
 pending : 
 
     Data analysis : 
 
     - implement the nb_nodes_visited / walkers stuff 
 
-    - figure out proper way to parse walking_on_graphs optionnal args
+    - implement rule parsing 
 
     - finish the shell / python wrapper for the program 
       wire up the different sections of the prgm smtg like : 

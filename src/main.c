@@ -5,7 +5,6 @@
 #include "walker.h"
 #include "tactics.h"
 
-#include <bits/getopt_core.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

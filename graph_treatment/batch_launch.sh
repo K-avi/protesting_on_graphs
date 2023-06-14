@@ -8,9 +8,11 @@
 #$6: trace file 
 i=0
 
+
+
 while [[ i -lt $1 ]]; do
 
-./walking_on_graphs "$2" "$3" "$4" "$5" -d "$6" &
+./walking_on_graphs "$2" "$3" "$4" $5 -d "$6" &
 i=$i+1
 
 done 

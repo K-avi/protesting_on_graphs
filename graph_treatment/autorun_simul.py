@@ -91,6 +91,8 @@ def main():
     parser.add_argument('simul_tot', metavar='simul_tot', type=int, nargs=1, help="number of simuls per batch")
     parser.add_argument('nb_walkers', metavar='walkers', type=int, nargs=1, help="number of simul running per batch")
     parser.add_argument('nb_iterations', metavar='walkers', type=int, nargs=1, help="number of simul running per batch")
+    #doesn't parse the fucking options of the simulation 
+    #which is kinda fucking stupid
     args = parser.parse_args()
     (latt, long, rad, step, path)= (args.lattitude[0] ,  args.longitude[0], args.radius[0], args.step[0], args.path[0])
     gg.gen_graph(latt, long, rad, step , path)

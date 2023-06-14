@@ -107,33 +107,53 @@ done :
     
     - found out something really weird : the space complexity DID NOT 
       affect the number of nodes where I get out of the cache so I'm not sure what 
-      causes me to break in perftest. I'm really confused 
+      causes me to break in perftest. I'm really confused
+
+    - perftest another 20000walker * 1000 it simul cuz the last result was fucked up 
+      done; results are what were expected but kinda disapointing
     
+    - wrote + tested most of the dt analysis functions ; haven't tested 
+      the nb nodes visited by walkers yet 
 
 pending :  
 
+    Data analysis : 
 
-    - perftest another 20000walker * 1000 it simul cuz the last result was fucked up 
-      (currently running)
-
-    - write some actual data analysis functions on the graphs in Python
-
-    - evaluate meta fns with variant of other fns and stuff to try and gain performance
-
-    - maybe revert to bigger space complexity cuz dereferencing pointers good?????
-
-    - script to do simul and do data analysis on it afterwards 
-
-    - script to get mean of mean i.e do a bunch of simulation ; get their results and plot 
-      the mean of their result 
+    - finish testing dt analysis
 
     - create a shell / python wrapper for the program 
       wire up the different sections of the prgm smtg like : 
       python retriever -> C simulation -> python trace loader -> python dt analysis 
+                        (possibility to run the simulation a bunch of times to get avg of simul)
+    
+    - entry of big wrapper script should be : 
+       
+       number of times the simulation will be ran -> used in a wrapper to iterate a bunch of times
 
-    - do the malloc wrapper arena/mempool thingy     
+       args for the graph generation -> passed to graph gen function
+
+       args for the simul -> C binary called w it 
+
+
+       once the simul is done running : 
+
+          load the trace, 
+          analyze it 
+          plot stuff idk
+
+    
+    Optimization : 
+
+    - evaluate meta fns with variant of other fns and stuff to try and gain performance
+
+    - use __builtin_prefetch
+
+    - do the malloc wrapper arena/mempool thingy  
+
+    Misc:    
 
     - remove curse words from commentaries and documentation
+
 
 notes in french from the meeting I had: 
 

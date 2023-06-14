@@ -11,7 +11,6 @@ def load_trace_elem( path, nb_elem, nb_it ):
     dt_arr= np.fromfile(path, dtype=np.int32)
     return dt_arr.reshape( nb_it, nb_elem)
 
-
 def load_trace(trace_name):
     """
     loads the formatted trace files corresponding to the trace name 
@@ -31,25 +30,3 @@ def load_trace(trace_name):
     t_wkpos = load_trace_elem( trace_name+"_wkpos", int(trace_name.split("_")[3]), nb_it)
     
     return (t_curnum, t_flux ,t_wkpos)
-    
-def main():
-    """
-    loads the trace files from the current directory 
-    and stores em into variables. 
-    
-    placeholder main relying on the load_trace function 
-    which is the relevant one tbh
-    """
-    if(len(sys.argv) == 0 ):
-        print(f"usage: {sys.argv[0]} trace_name\n")
-        exit(1)
-    
-    trace_name = sys.argv[1]
-    (curnum, flux, wkpos)= load_trace(trace_name)
-    print(f"curnum:\n{curnum}\nflux:\n{flux}\nwkpos:\n{wkpos}")
-    return 0
-
-
-if __name__=='__main__':
-    main()
-    

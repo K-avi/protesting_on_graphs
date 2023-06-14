@@ -4,48 +4,6 @@ import numpy as np
 import networkx as nx
 from statistics import mean
 
-def load_csv_dict_graph(path):
-    """
-    str -> dict_graph
-    
-    creates a dict of the graph rep 
-    contained at path (assuming the 
-    graph is stored as the custom csv rep)
-    really ugly
-    """
-    
-    dict_graph= dict()
-    
-    with open (path, "r") as file: 
-        next(file)
-        for line in file:
-            if len(line.strip())!=0:
-                node_from=int(line.split(",")[0]) 
-                if int(line.split(",")[1]) > 0: 
-                    nodes_to=line.split(",")[2].split(";")
-                    line_array=[]
-                    for i in nodes_to:  
-                        node_to = int(i.split(":")[0])
-                        line_array.append(node_to)
-                    dict_graph.update({node_from:[line_array,0]})
-                else :
-                    dict_graph.update({node_from:[[],0]})
-    file.close
-    
-    return dict_graph
-
-def merge_wkpos_dictgraph( walker_pos_row , dict_graph): 
-    """
-    np.array , dict_graph -> dict_graph
-    updates the nb_elem stored in the dict graph given a walker pos_row
-    
-    O(nb_walkers)
-    """
-    for i in walker_pos_row:
-        dict_graph[i][1]+=1
-
-    return dict_graph
-
 
 def is_in_group(dict_graph , entry):
     """
@@ -173,13 +131,13 @@ def get_mean_nodes_visited(walker_pos_mat):
     
     return mean(val_list)
 
-
-def test():
+ 
+def test_dta():
     """
     testing stuff 
     get_mean_nodes_visited(["0"])
     """
-    graph_dict = load_csv_dict_graph("../test_graph/gt_test3.csv")
+    #graph_dict = dt.load_dict_graph("../test_graph/gt_test3.csv")
    
     test_arr= np.array([0,1,4,1,5,5])
     print("test_arr", test_arr)
@@ -194,4 +152,4 @@ def test():
     return 0
 
 if __name__=='__main__':
-    test()
+    test_dta()

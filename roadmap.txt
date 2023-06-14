@@ -114,35 +114,35 @@ done :
     
     - wrote + tested most of the dt analysis functions ; haven't tested 
       the nb nodes visited by walkers yet 
+    
+    - wrote python script to start 1 simulation and generate it's trace 
 
-pending :  
+    - change the way dumping works program should dump w smtg like 
+      "-d tname" and then create tname_flux tname_curnum , ...
+    
+    -  fix the number of threads used for the program (not tested )
+
+pending : 
 
     Data analysis : 
 
-    - finish testing dt analysis
+    - implement the nb_nodes_visited / walkers stuff 
 
-    - create a shell / python wrapper for the program 
+    - figure out proper way to parse walking_on_graphs optionnal args
+
+    - finish the shell / python wrapper for the program 
       wire up the different sections of the prgm smtg like : 
       python retriever -> C simulation -> python trace loader -> python dt analysis 
                         (possibility to run the simulation a bunch of times to get avg of simul)
-    
-    - entry of big wrapper script should be : 
-       
-       number of times the simulation will be ran -> used in a wrapper to iterate a bunch of times
 
-       args for the graph generation -> passed to graph gen function
+    - create a script to plot it
 
-       args for the simul -> C binary called w it 
-
-
-       once the simul is done running : 
-
-          load the trace, 
-          analyze it 
-          plot stuff idk
-
+    - optimize the python stuff 
     
     Optimization : 
+
+    - start simulations in batch on multiple CPUs (the idea is that 1 simulation is too fast to 
+      benefit of multithread so just start a bunch of them on a bunch of threads)
 
     - evaluate meta fns with variant of other fns and stuff to try and gain performance
 
@@ -154,7 +154,7 @@ pending :
 
     - remove curse words from commentaries and documentation
 
-
+I'm so stupid I litteraly remember the number of guys at each gen wtf is wrong with me 
 notes in french from the meeting I had: 
 
 mesures: 

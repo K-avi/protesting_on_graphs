@@ -5,6 +5,7 @@
 #include "walker.h"
 #include "tactics.h"
 
+#include <bits/getopt_core.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +16,8 @@ int main(int argc , char ** argv){
 
     int8_t c;
     uint8_t helpset=0 , dumpset=0;
-    while ((c = getopt(argc, argv, "hd")) != -1) {
+    char * trace_name =NULL;
+    while ((c = getopt(argc, argv, "hd:")) != -1) {
         
         switch (c) {
         case 'h':
@@ -23,11 +25,17 @@ int main(int argc , char ** argv){
             break;
  
         case 'd':
-            dumpset=1;
+            dumpset=2;
+            trace_name = optarg;
             break;
         case '?':
-            fprintf(stderr, "Unknown option character `\\x%x'.", optopt);
-            exit(ERRFLAG_INVALIDOPT);
+            if(optopt=='d'){
+                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+            }else{
+                fprintf(stderr, "Unknown option character `\\x%x'.", optopt);
+                exit(ERRFLAG_INVALIDOPT);
+            }
+            break;
         default:
             abort();
         }
@@ -55,6 +63,7 @@ int main(int argc , char ** argv){
     //parses number of iterations
     end= argv[3+dumpset];
     uint32_t iteration_num = (uint32_t ) strtol( argv[3+dumpset], &end , 10);
+    fprintf(stderr, "args : %s %s\n", argv[5], argv[4]);
     if(end== argv[3+dumpset]){
         fprintf(stderr, "3usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");     
         return ERRFLAG_INVALID_ARG;
@@ -95,15 +104,10 @@ int main(int argc , char ** argv){
         failure=iterate_ntimes(&gtable, &tactics, iteration_num);
         if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
     }else{
-        
-        char * trace_name = malloc(257* sizeof(char));
-        snprintf(trace_name, 256, "simul_%u_%u_%u_%u", gtable.table_size , gtable.arrLine->size ,gtable.warray->size, iteration_num );
-        trace_name[256]='\0';
-        
+
         failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, trace_name);
         if(failure){report_err("in main iterate_ntimes_dump call", failure); exit(failure);}
 
-        free(trace_name);
     }
 
     //frees memory

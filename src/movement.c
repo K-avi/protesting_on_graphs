@@ -124,7 +124,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
         report_err("iterate_ntimes_dump",  ERRGLAG_CANTWRITE);
         return ERRGLAG_CANTWRITE;
     }
-    printGraphTab(gtable, f_hr);
+    printGraphTabVar(gtable, f_hr);
     fclose(f_hr);
 
     uint8_t failure;

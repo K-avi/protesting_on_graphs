@@ -92,7 +92,7 @@ int main(int argc , char ** argv){
         failure = parse_args(&tactics, 0, NULL);
          if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
     }
-    fprintf(stderr, "nb rules :%s %s %u\n", argv[6], argv[7], tactics.numb);
+    //fprintf(stderr, "nb rules :%s %s %u\n", argv[6], argv[7], tactics.numb);
     
     //starts the simulation 
 

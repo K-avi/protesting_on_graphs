@@ -17,7 +17,7 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_nu
 uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num, char * trace_name);
 //same as iterate_ntimes but also dumps graph
 
-
+uint8_t printGraphTabVar(GraphTable * gt, FILE * stream);
 #ifdef debug_mode
 
 uint8_t prepare_ite( GraphTable * gtable); //O(1)

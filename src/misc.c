@@ -103,3 +103,33 @@ void dump_trace(GraphTable * gt, FILE * stream_curnum , FILE * stream_flux, FILE
 }//tested; ok 
 //might be an issue if the walkers have more fields added 
 //if it happens separate their immutable states from their mutable ones 
+
+
+uint8_t printGraphTabVar(GraphTable * gt, FILE * stream){
+    /*
+    prints the graph of a GraphTab in a adjacency list format 
+    probably faster to build one big string and then print it only once instead of calling print 
+    every time 
+    */
+    if(!gt){ report_err("printGraphTab", GT_NULL); return GT_NULL;}
+    if(!gt->entries) { report_err("printGraphTab", GT_NULL); return GT_NULL;}
+    
+    for(uint32_t i=0; i<gt->table_size; i++){
+        fprintf(stream, "%u,%u,",i ,gt->entries[i].neighboor_num);
+        for(uint16_t j=0; j<gt->entries[i].neighboor_num; j++){
+            if(gt->entries->first_neighboor_ref){
+                if(j!=gt->entries[i].neighboor_num-1) {
+
+                    fprintf(stream, "%u:%u;", (gt->entries[i].first_neighboor_ref+j)->node_index ,
+                     gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array] );
+         
+                }else{
+                    fprintf(stream, "%u:%u", (gt->entries[i].first_neighboor_ref+j)->node_index, \
+                        gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array]); 
+                } 
+            }
+        }
+        fprintf(stream, "\n");
+    }
+    return GT_OK;
+}// tested; seems ok

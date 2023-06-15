@@ -32,7 +32,6 @@ def load_dict_graph(path):
             if len(line.strip())!=0:
                 node_from=int(line.split(",")[0]) 
                 if int(line.split(",")[1]) > 0: 
-                  # print(line)
                     nodes_to=line.split(",")[2].split(";")
                     line_array=[]
                     for i in nodes_to:  

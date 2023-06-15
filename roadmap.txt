@@ -1,6 +1,6 @@
-redesign of code structure count : 4 fuck it one hot everything spatial complexity is for pussies 
-remember kids everything is in O(1) if u store everything
+redesign of code structure count : 4 
 
+we gettin somewhere I'm litteraly so happy 
 
 the done section writes every step I did ; some of them are obsolete (for example I changed 
 implem of graphs multiple times) but it's a good way to track my progress
@@ -125,6 +125,17 @@ done :
     - figure out proper way to parse walking_on_graphs rules 
       they can be given as a single beeg string to bash and it will then 
       be read correctly by the C program (cool)
+    
+    - implement rule parsing 
+
+    - finish the shell / python wrapper for the program 
+      wire up the different sections of the prgm smtg like : 
+      python retriever -> C simulation -> python trace loader -> python dt analysis 
+                        (possibility to run the simulation a bunch of times to get avg of simul)
+    
+    - start simulations in batch on multiple CPUs (the idea is that 1 simulation is too fast to 
+      benefit of multithread so just start a bunch of them on a bunch of threads)
+
 
 pending : 
 
@@ -132,21 +143,12 @@ pending :
 
     - implement the nb_nodes_visited / walkers stuff 
 
-    - implement rule parsing 
-
-    - finish the shell / python wrapper for the program 
-      wire up the different sections of the prgm smtg like : 
-      python retriever -> C simulation -> python trace loader -> python dt analysis 
-                        (possibility to run the simulation a bunch of times to get avg of simul)
-
     - create a script to plot it
 
-    - optimize the python stuff 
     
     Optimization : 
 
-    - start simulations in batch on multiple CPUs (the idea is that 1 simulation is too fast to 
-      benefit of multithread so just start a bunch of them on a bunch of threads)
+    - optimize the python stuff  ( call for help)
 
     - evaluate meta fns with variant of other fns and stuff to try and gain performance
 
@@ -158,7 +160,6 @@ pending :
 
     - remove curse words from commentaries and documentation
 
-I'm so stupid I litteraly remember the number of guys at each gen wtf is wrong with me 
 notes in french from the meeting I had: 
 
 mesures: 

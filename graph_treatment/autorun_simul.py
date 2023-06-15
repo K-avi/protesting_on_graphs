@@ -17,13 +17,13 @@ def gen_data_groups( t_curnum, graph_dict):
     """
     ret= np.array([])
     for i in t_curnum:
-        graph_dict=lt.merge_wknum_row__dictgraph(i,graph_dict)
+        graph_dict=lt.merge_wknum_row_dictgraph(i,graph_dict)
         group_array=dt.get_adj_group(graph_dict)
    
         ret= np.append(ret , np.array([dt.count_groups(group_array) , dt.spreading_groups(group_array), \
-                    dt.get_mean_group_size(group_array)]))
+                    dt.get_mean_group_size(group_array), 0]))
      
-    return ret.reshape(-1, 3)
+    return ret.reshape(-1, 4)
         
 
 

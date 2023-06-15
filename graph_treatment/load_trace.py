@@ -25,8 +25,7 @@ def load_dict_graph(path):
     dict_graph= dict()
     
     with open (path, "r") as file: 
-        
-        next(file)
+    
         for line in list(file):
            
             if len(line.strip())!=0:
@@ -62,12 +61,15 @@ def merge_wkpos_row_dictgraph( walker_pos_row , dict_graph):
 
     return dict_graph
 
-def merge_wknum_row__dictgraph( node_walker_num_arr , dict_graph):
+def merge_wknum_row_dictgraph( node_walker_num_arr , dict_graph):
     """
     updates the num of walkers at each entry of dict_graph
     with a row of the walker trace matrix 
     """
+  
     for i in range(0, len(node_walker_num_arr)):
+        if not i in dict_graph: 
+            print("missing key: ," ,i)
         dict_graph[i][1]=node_walker_num_arr[i]
     
     return dict_graph

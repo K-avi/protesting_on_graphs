@@ -9,7 +9,7 @@
 i=0
 
 while [[ i -lt $1 ]]; do
-echo "started simulation $i"
+echo "started simulation"
 ./walking_on_graphs "$2" "$3" "$4" $5 -d "$6$i" & 
 sleep 1
 #$5 isnt quoted cuz I want the C program to read it as more than 1 argument

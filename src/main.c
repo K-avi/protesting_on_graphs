@@ -62,7 +62,7 @@ int main(int argc , char ** argv){
     //parses number of iterations
     end= argv[3+dumpset];
     uint32_t iteration_num = (uint32_t ) strtol( argv[3+dumpset], &end , 10);
-    fprintf(stderr, "args : %s %s\n", argv[5], argv[4]);
+ 
     if(end== argv[3+dumpset]){
         fprintf(stderr, "3usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");     
         return ERRFLAG_INVALID_ARG;
@@ -83,7 +83,6 @@ int main(int argc , char ** argv){
     Tactics tactics; 
     failure= initTactics(&tactics, DEFAULT_CAPA_TACTICS);
     if(failure) {report_err("in main loadGraphTab call", failure); exit(failure);}
-
     //tries to parse the tactics arg if they are present 
     //if the program is called without it ; simply uses the rand rule
     if(argc>4){
@@ -93,6 +92,7 @@ int main(int argc , char ** argv){
         failure = parse_args(&tactics, 0, NULL);
          if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
     }
+    fprintf(stderr, "nb rules :%s %s %u\n", argv[6], argv[7], tactics.numb);
     
     //starts the simulation 
 

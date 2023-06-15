@@ -373,12 +373,14 @@ uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fu
         
         char * rule_str = argv[i];
         if(!strncmp(rule_str, "rand", 4)){
+          //  printf("rand reached\n");
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_rand;
         }else if (!strncmp(rule_str, "align", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_alignement;
         }else if (!strncmp(rule_str, "attra", 5)){
+          //   printf("attra reached\n");
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_attraction;
         }else if (!strncmp(rule_str, "attco", 5)){

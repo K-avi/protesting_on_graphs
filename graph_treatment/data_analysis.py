@@ -24,25 +24,27 @@ def modified_bfs(visited, dict_graph, node): #function for BFS
     O(?)
     """
     if node in visited: 
-        return set()
+        return (visited, set())
     visited.add(node)
     
     if dict_graph[node][1]==0 or not is_in_group(dict_graph, node) :
-        return set()
+        return (visited,set())
     
     queue=[node]
-  
+    a=0
     set_nodes={ (node,dict_graph[node][1])}
     while queue: # Creating loop to visit each node
         m = queue.pop(0) 
+        #print(queue)
         for neighbor in dict_graph[m][0]:
-            if neighbor not in visited and is_in_group(dict_graph,neighbor) and dict_graph[neighbor][1]>0:
-        
+            if neighbor not in visited and dict_graph[neighbor][1]>0:
+                #print(a, neighbor)
+                a+=1
                 queue.append(neighbor)
                 set_nodes.add( (neighbor,dict_graph[neighbor][1]))
            
             visited.add(neighbor)
-    return set_nodes 
+    return (visited,set_nodes )
 
 def get_adj_group( dict_graph ):
     """
@@ -63,12 +65,14 @@ def get_adj_group( dict_graph ):
     
     visited= set()
     group_array=[]
-    
+   
     for m in dict_graph:
-        set_graph= modified_bfs(visited,  dict_graph , m)
+        (visited_new , set_graph)= modified_bfs(visited,  dict_graph , m)
+        visited = visited | visited_new
+        
         if set_graph:
             group_array.append(set_graph)
-    
+    del(visited)
     return group_array
 
 def count_groups(group_array):
@@ -171,6 +175,7 @@ def mean_results(simul_name, res_name):
     if ret_mat.any():
         ret_mat/=nb_file
         np.savetxt(res_name, ret_mat)
+    del(ret_mat)
 
 def clean_results(simul_name):
     """

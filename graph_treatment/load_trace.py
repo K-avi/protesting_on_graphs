@@ -75,7 +75,7 @@ def merge_wknum_row_dictgraph( node_walker_num_arr , dict_graph):
     return dict_graph
 
 
-def load_trace(trace_name, nb_it):
+def load_trace(trace_name, nb_it, query=[]):
     """
     loads the formatted trace files corresponding to the trace name 
     given as argument from the current directory 
@@ -89,10 +89,11 @@ def load_trace(trace_name, nb_it):
     """
   
     t_curnum = load_trace_elem( trace_name+"_curnum", nb_it)
+    t_flux = load_trace_elem( trace_name+"_flux",  nb_it)
     t_wkpos = load_trace_elem( trace_name+"_wkpos", nb_it)
     t_graph = load_dict_graph(trace_name+"_hr")
     
-    return (t_curnum,t_wkpos, t_graph)
+    return (t_curnum, t_flux ,t_wkpos, t_graph)
 
 def clean_trace(trace_name):
     os.remove(trace_name+"_curnum")

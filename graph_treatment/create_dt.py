@@ -50,8 +50,8 @@ def auto_stat():
     latt=48.866667
     long=2.333333
 
-    it_par = np.linspace(100, 2000, num=20, dtype=int)
-    gsize_par = np.linspace(200, 5000, num=49 , dtype=int)
+    it_par = np.linspace(10, 200, num=20, dtype=int)
+    gsize_par = np.linspace(200, 500, num=4 , dtype=int)
     while(True):
        
         #gen_graph and options 
@@ -74,12 +74,12 @@ def auto_stat():
            
         #runs simul and produces a result file
         start = t.time()
-        ars.run_simul_nth(8,4,"tmp_graph",1, nb_it_gen, sim_opt ,"trace", "res_sim"+str(nb_sim_ran))
+        ars.run_simul_nth(2,2,"tmp_graph",1, nb_it_gen, sim_opt ,"trace", "res_sim")
         print(f"finished simul in {t.time()-start} seconds, starting data analysis\n")
         
         #analyze the data of the simul and cleans the directory
         dt.mean_results("res_sim"+str(nb_sim_ran), "res_mean"+str(nb_sim_ran))
-        dt.clean_results("res_sim"+str(nb_sim_ran))
+        dt.clean_results("res_sim")
         print(f"finished data analysis results are stored at res_sim{nb_sim_ran}\n")
         
         nb_sim_ran+=1

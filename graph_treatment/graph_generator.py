@@ -117,7 +117,7 @@ def gen_graph(latt, long , rad, step, path):
     
     center= (latt,long)
 
-    MG= ox.graph.graph_from_point( center_point=center, dist=rad, retain_all=False) #retrieves multigraph
+    MG= ox.graph.graph_from_point( center_point=center, dist=rad, network_type='drive',retain_all=False) #retrieves multigraph
     dict(MG.degree(weight='weight')) 
     
     GG= nx.Graph(MG) #turns it into a normal graph 

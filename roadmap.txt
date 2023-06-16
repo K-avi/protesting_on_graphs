@@ -138,17 +138,30 @@ done :
     
     - implemented / tested a script to start simulations w random parameters to generate a LOT 
       of data will run it during the week end
+    
+    - implement the nb_nodes_visited / walkers stuff (ty pacidus)
 
 
 pending : 
 
     Data analysis : 
 
-    - implement the nb_nodes_visited / walkers stuff 
-      use numpy uniq w return_index=True ; pass it to numpy repeat ? 
+    
+      - reproduce sim results to compare n plot them on a nice lil fig guy: 
+        
+        - simul for : 
+          - attra (done)
+          - noisy attra (done) 
+          - align (done)
+          - noisy align (done)
+          - attra coeff (done)
 
+        on the big paris graph w 100 iterations
 
-    - create the script to plot stuff 
+        them create figures for each 4 outputs of simul n plot them 
+        there 
+
+      - create the script to plot stuff 
 
     
     Optimization : 
@@ -168,3 +181,6 @@ pending :
     - make simul db thing ???? (weird idea I just had )
 
 mobilité : nb moyen de noeuds différents que chaque marcheur a parcouru à chaque itération
+somme des flux : regarder sur qq dernieres iterations le flux total pr voir si les 
+gens se suivent ( variation du flux / nb marcheurs )
+

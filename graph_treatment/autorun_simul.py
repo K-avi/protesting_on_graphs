@@ -99,7 +99,7 @@ def main():
     parser.add_argument('path', metavar='path', type=str, nargs=1, help="the path of the file where the csv rep \
         of the graph will be stored")
     
-    
+    parser.add_argument('output_file', metavar='output_file', type=int, nargs=1, help="final output file name") 
     parser.add_argument('simul_tot', metavar='simul_tot', type=int, nargs=1, help="number of simuls per batch")
     parser.add_argument('nb_thread_max', metavar='max_thread', type=int, nargs=1, help="number of threads used per batch")
     parser.add_argument('coeff_walkers', metavar='walkers', type=int, nargs=1, help="coeff of walkers per batch")
@@ -114,10 +114,12 @@ def main():
     
     start_time = t.time()
     (nb_thread_max, tot, coeff_wk, nb_it, sim_opt) = (opt.nb_thread_max[0], opt.simul_tot[0], opt.coeff_walkers[0], opt.nb_iterations[0], opt.simul_opt[0])
+    output_file= opt.output_file[0
+                                 ]
     print("starting simulations, please do not remove files created by the simulation before it is done running")
     
     run_simul_nth(tot, nb_thread_max , path , coeff_wk, nb_it,  sim_opt, "trace", "res_group_data", "res_walker_path")
-    ms.mean_results("res_group_data", "res_mean")
+    ms.mean_results("res_group_data", output_file)
     ms.clean_results("res_group_data")
     
     print("simulation finished in "+ str(t.time()-start_time) +" seconds\nResults are stored in res_mean")

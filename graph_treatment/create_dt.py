@@ -57,7 +57,7 @@ def auto_stat():
         #gen_graph and options 
         graph_size = np.random.choice(gsize_par)
         simul_opt = gen_opt()
-        nb_it_gen= 10 #np.random.choice(it_par)
+        nb_it_gen= np.random.choice(it_par)
         print(f"simul {nb_sim_ran} started with parameters:\nit: {nb_it_gen}\nopt: {simul_opt}\ngsize: {graph_size}")
        
         #generates graph and retrieves number of nodes 
@@ -74,7 +74,7 @@ def auto_stat():
            
         #runs simul and produces a result file
         start = t.time()
-        ars.run_simul_nth(2,2,"tmp_graph",1, nb_it_gen, sim_opt ,"trace", "res_sim"+str(nb_sim_ran), "res_file_mean")
+        ars.run_simul_nth(8,4,"tmp_graph",1, nb_it_gen, sim_opt ,"trace", "res_sim"+str(nb_sim_ran))
         print(f"finished simul in {t.time()-start} seconds, starting data analysis\n")
         
         #analyze the data of the simul and cleans the directory

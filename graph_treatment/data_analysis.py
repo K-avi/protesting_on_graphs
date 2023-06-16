@@ -131,6 +131,24 @@ def get_mean_nodes_visited(walker_pos_mat):
     
     return mean(val_list)
 
+def stat_mobility(wlkr_pos_mat):
+    """
+    np.array(2D) -> np.array(1D)
+    """
+    itt, Nw = wlkr_pos_mat.shape
+    N_visit = np.zeros(wlkr_pos_mat.shape)
+    for i, wlkr in enumerate(wlkr_pos_mat.T):
+        u, idx = np.unique(wlkr, return_index=True)
+        n = u.size
+        R = np.arange(1, n + 1)
+        idx = np.sort(idx)
+        ntime = list(np.diff(idx))
+        ntime.append(itt - idx[-1])
+        N_visit[:, i] = np.repeat(R, ntime)
+
+    return N_visit.mean(1)
+
+
 def mean_results(simul_name, res_name):
     """
     str -> file 

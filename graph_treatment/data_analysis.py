@@ -1,7 +1,6 @@
 #this file contains the functions to analyze the data produced by the simulation
 #WARNING: the functions are currently prototypes / placeholders; do NOT use them 
 import numpy as np
-import networkx as nx
 from statistics import mean
 import os
 

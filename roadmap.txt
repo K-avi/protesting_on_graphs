@@ -136,8 +136,8 @@ done :
     - start simulations in batch on multiple CPUs (the idea is that 1 simulation is too fast to 
       benefit of multithread so just start a bunch of them on a bunch of threads)
     
-    - implemented a script to start simulations w random parameters to generate a LOT 
-      of data (not tested yet) will run it during the week end
+    - implemented / tested a script to start simulations w random parameters to generate a LOT 
+      of data will run it during the week end
 
 
 pending : 
@@ -145,8 +145,10 @@ pending :
     Data analysis : 
 
     - implement the nb_nodes_visited / walkers stuff 
+      use numpy uniq w return_index=True ; pass it to numpy repeat ? 
 
-    - create a script to plot stuff 
+
+    - create the script to plot stuff 
 
     
     Optimization : 
@@ -163,20 +165,6 @@ pending :
 
     - remove curse words from commentaries and documentation
 
-notes in french from the meeting I had: 
+    - make simul db thing ???? (weird idea I just had )
 
-mesures: 
-
-compter nb groupes : (SGI par les noeuds où il y a des marcheurs connexes)
-
-etalement des gp : ( çad nb cases occupées par le gp)
-
-nb moyen de marcheurs sr un gp :
-
-  (
-  a la fin : faire courbe de l'étalement en fonction du nb etapes 
-  (etalement moyen gp ; nb pers moyen gp )
-  groupe : commence à partir de 2 marcheurs 
-  )
-
-mobilité : nb moyen de noeuds différents que chaque marcheur a parcouru 
+mobilité : nb moyen de noeuds différents que chaque marcheur a parcouru à chaque itération

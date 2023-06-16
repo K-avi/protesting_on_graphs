@@ -2,9 +2,7 @@
 #this is the file doing to the retrieval/ treatment of city graphs using OSMNX and networkx
 import osmnx as ox
 import networkx as nx
-import argparse as arg
 import numpy as np
-import matplotlib.pyplot as plt
 
 def discretise(Graph, step): 
     """

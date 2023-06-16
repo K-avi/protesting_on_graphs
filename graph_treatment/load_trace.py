@@ -10,7 +10,7 @@ def load_trace_elem( path, nb_it ):
     and stores it in a numpy matrix
     """
     dt_arr= np.fromfile(path, dtype=np.int32)
-    return dt_arr.reshape( nb_it, -1)
+    return dt_arr.reshape( int(nb_it), -1)
 
 def load_dict_graph(path):
     """
@@ -100,12 +100,4 @@ def clean_trace(trace_name):
     os.remove(trace_name+"_flux")
     os.remove(trace_name+"_wkpos")
     os.remove(trace_name+"_hr")
-
-def test_lt():
-    """
-    """
-    (t_curnum, t_flux ,t_wkpos, t_graph)= load_trace(sys.argv[1])
-    print(t_curnum)
-    return 0
-
     

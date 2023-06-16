@@ -3,6 +3,7 @@
 import numpy as np
 import networkx as nx
 from statistics import mean
+import os
 
 
 def is_in_group(dict_graph , entry):
@@ -131,25 +132,37 @@ def get_mean_nodes_visited(walker_pos_mat):
     
     return mean(val_list)
 
- 
-def test_dta():
+def mean_results(simul_name, res_name):
     """
-    testing stuff 
-    get_mean_nodes_visited(["0"])
+    str -> file 
+    
+    reads through every file at the current dir , 
+    if they match "simul_name*" attemps to load them 
+    generate the numpy matrix corresponding to the mean of all 
+    of these results and writes it 
     """
-    #graph_dict = dt.load_dict_graph("../test_graph/gt_test3.csv")
-   
-    test_arr= np.array([0,1,4,1,5,5])
-    print("test_arr", test_arr)
-    merge_wkpos_dictgraph( test_arr  , graph_dict)
-    print("graph_dict", graph_dict)
-    group_array = get_adj_group(graph_dict)
-    print("gp_array", group_array, "len gp arr", len(group_array))
-    
+    ret_mat=np.array([])
+    nb_file=0
+    for i in os.listdir("."):
+      
+        if simul_name in i:
+            if not ret_mat.any():      
+                ret_mat= np.loadtxt(i)
+            else: 
+                ret_mat+= np.loadtxt(i)       
+            nb_file+=1
+    if ret_mat.any():
+        ret_mat/=nb_file
+        np.savetxt(res_name, ret_mat)
 
-    print(f"ct_gp {count_groups(group_array)}\nmean_gp {get_mean_group_size(group_array)}\nspreading: {spreading_groups(group_array)}")
+def clean_results(simul_name):
+    """
+    str -> 
     
-    return 0
-
-if __name__=='__main__':
-    test_dta()
+    erases the files matching starting 
+    matching "simul_name*" from the 
+    currrent directory
+    """
+    for i in os.listdir("."):
+        if simul_name in i :
+            os.remove(i)

@@ -1,2 +1,0 @@
-warning : the graphs don't scale properly because there might be some slight
-differences with the coordinates I used to generate them 

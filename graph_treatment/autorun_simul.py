@@ -6,7 +6,6 @@ import subprocess as sb
 import numpy as np
 import time as t
 import argparse as args
-import multi_sim_analysis as ms
 
 
 def gen_data_groups( t_curnum, graph_dict):
@@ -72,14 +71,6 @@ def run_simul_nth(num,nb_threads,path_graph , coeff_wk, nb_it, simul_opt ,trace_
     run_simul_once(num%nb_threads, path_graph , coeff_wk , nb_it, simul_opt, trace_name, a, f"{result_file_gp}_{i}", f"{result_file_mean}_{i}")
     print("simulation are done running; starting data analysis")
    
-
-def test():
-    start = t.time()
-    run_simul_nth(2, 2,"city_graph/paris_4000m_radius.csv",1 , 10, "rand:1 attra:2", "trace", "res_gp" , "res_fm" )
-    #sb.run(f"bash graph_treatment/batch_launch.sh 1 city_graph/paris_4000m_radius.csv 1 100",shell=True)
-    #sb.run(f"bash graph_treatment/batch_launch.sh 1 city_graph/paris_4000m_radius.csv 1 100",shell=True)
-
-    print(t.time()-start)
 def main(): 
     """
     args: 
@@ -99,7 +90,7 @@ def main():
     parser.add_argument('path', metavar='path', type=str, nargs=1, help="the path of the file where the csv rep \
         of the graph will be stored")
     
-    parser.add_argument('output_file', metavar='output_file', type=int, nargs=1, help="final output file name") 
+    parser.add_argument('output_file', metavar='output_file', type=str, nargs=1, help="final output file name") 
     parser.add_argument('simul_tot', metavar='simul_tot', type=int, nargs=1, help="number of simuls per batch")
     parser.add_argument('nb_thread_max', metavar='max_thread', type=int, nargs=1, help="number of threads used per batch")
     parser.add_argument('coeff_walkers', metavar='walkers', type=int, nargs=1, help="coeff of walkers per batch")
@@ -119,8 +110,8 @@ def main():
     print("starting simulations, please do not remove files created by the simulation before it is done running")
     
     run_simul_nth(tot, nb_thread_max , path , coeff_wk, nb_it,  sim_opt, "trace", "res_group_data", "res_walker_path")
-    ms.mean_results("res_group_data", output_file)
-    ms.clean_results("res_group_data")
+    dt.mean_results("res_group_data", output_file)
+    dt.clean_results("res_group_data")
     
     print("simulation finished in "+ str(t.time()-start_time) +" seconds\nResults are stored in res_mean")
     return 0

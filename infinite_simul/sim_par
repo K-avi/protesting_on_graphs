@@ -1,8 +1,1 @@
 
-1,100,attra:5 attco:6 mconst:0 ,500,3762
-2,100,align:9 mconst:0 ,500,3762
-1,100,attco:9 align:5 mconst:0 ,500,3762
-2,100,rand:4 align:2 attra:4 mprop:91 ,500,3762
-1,100,attra:4 align:10 mconst:0 ,500,1364
-2,100,attra:8 rand:6 mprop:86 ,500,1364
-3,100,rand:9 attra:9 mconst:0 ,500,1364

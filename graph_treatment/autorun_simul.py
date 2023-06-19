@@ -8,7 +8,7 @@ import time as t
 import argparse as args
 
 
-def gen_data_groups( t_curnum, adj, mobility_mean):
+def gen_data_groups( nb_wk, t_curnum, adj, mobility_mean):
     """
     curnum matrix , gr - finish testing dt analysisaph_dict -> array of tuples (nb_group, spread_group , group size)
     generates the data related to group for 
@@ -16,8 +16,9 @@ def gen_data_groups( t_curnum, adj, mobility_mean):
     """
     ret= np.array([])
     it=0
+   
     for i in t_curnum:
-        print("analysis for it : ", it)
+        print("analysis for iteration : ", it)
         print("pb gdg 0 ")
         nadj = lt.merge_wknum_row_dictgraph(i, adj )
         start = t.time()
@@ -25,7 +26,7 @@ def gen_data_groups( t_curnum, adj, mobility_mean):
         group_array=dt.get_adj_group(i, nadj)
         print("adj group generated in", t.time()-start)
         ret= np.append(ret , np.array([dt.count_groups(group_array) , dt.spreading_groups(group_array), \
-                    dt.get_mean_group_size(len(mobility_mean ) , group_array), mobility_mean[it]]))
+                    dt.get_mean_group_size( nb_wk , group_array), mobility_mean[it]]))
         it+=1
         print("pb gdg 2")
         del(group_array)
@@ -58,10 +59,11 @@ def run_simul_once(nb_threads, path_graph, coeff_wk, nb_it , sim_opt ,trace_name
     #simulation
       
         mobility_mean=dt.stat_mobility(t_wkpos)
-        del(t_wkpos)
-        print("bp 1")
-        group_data_mat=gen_data_groups(t_curnum, nadj ,mobility_mean)
+     
+      
+        group_data_mat=gen_data_groups( len(t_wkpos[0]) , t_curnum, nadj ,mobility_mean)
         del(t_curnum , nadj)
+        del(t_wkpos)
         print("bp 2")
         np.savetxt(result_file+str(i), group_data_mat)
     

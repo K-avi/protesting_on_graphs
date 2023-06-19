@@ -19,17 +19,17 @@ def gen_data_groups( nb_wk, t_curnum, adj, mobility_mean):
    
     for i in t_curnum:
         print("analysis for iteration : ", it)
-        print("pb gdg 0 ")
-        nadj = lt.merge_wknum_row_dictgraph(i, adj )
+      
+        nadj = lt.merge_wknum_adj_mat(i, adj )
         start = t.time()
         print("pb gdg 1 ")
-        group_array=dt.get_adj_group(i, nadj)
+        group_array=dt.get_adj_group_var(i, nadj)
         
-        nb_gp,adj_mat,diff = group_array
+        nb_gp,adj_mat = group_array
         print("adj group generated in", t.time()-start)
         
-        ret= np.append(ret , np.array([dt.count_groups(group_array) , dt.spreading_groups(group_array), \
-                    dt.get_mean_group_size( nb_wk , group_array), mobility_mean[it], diff]))
+        ret= np.append(ret , [nb_gp , dt.spreading_groups(group_array), \
+                    dt.get_mean_group_size( nb_wk , group_array), mobility_mean[it], 0])
         it+=1
         print("pb gdg 2")
         del(group_array)

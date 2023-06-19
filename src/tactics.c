@@ -92,17 +92,24 @@ uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walk
     if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_attraction", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
 
     int64_t max=INT64_MIN; 
+    uint8_t diff=0;
     GraphTableEntry * cur_entry = &gtable->entries[node_from];
     Line * line_to=NULL;
     for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
-
+        
         Line * cur_line = cur_entry->first_neighboor_ref +i;
+        uint32_t cur_val = gtable->wkcn->cur_num[cur_line->node_index];
+       
         if( gtable->wkcn->cur_num[cur_line->node_index] > max ) {
             line_to = cur_line; 
             max= gtable->wkcn->cur_num[cur_line->node_index];
+            diff++;
+        }else if (cur_val != max){
+            diff++;
         }
     }   
     if(!line_to)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    if(!diff) return rule_rand(gtable,  node_from,  walker_index); //goes to random node if no diff num
 
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
@@ -180,7 +187,7 @@ uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walke
     int64_t flux_max=INT64_MIN;
     GraphTableEntry * cur_entry = &gtable->entries[node_from];
     Line * line_to=NULL;
-
+    uint8_t diff=0;
     for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
 
         Line * cur_line = cur_entry->first_neighboor_ref +i;
@@ -202,10 +209,14 @@ uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walke
         if(flux_from_to - flux_to_from > flux_max){
             line_to= cur_line;
             flux_max= flux_from_to- flux_to_from;
+            diff++;
+        }else if(flux_from_to - flux_to_from != flux_max) { 
+            diff++;
         }
     }   
 
     if(!line_to)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    if(!diff) return rule_rand(gtable,  node_from, walker_index);
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
     gtable->warray->array[walker_index].index_entry= line_to->node_index;

@@ -43,7 +43,7 @@ def load_dict_graph(path):
 
 
 
-def merge_wknum_row_dictgraph(node_walker_num_arr, adj_mat):
+def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     """
     updates the num of walkers at each entry of dict_graph
     with a row of the walker trace matrix 

@@ -5,11 +5,11 @@ import matplotlib.pyplot as plt
 
 plt.figure(1)
 
-dt_align = np.loadtxt("res_100_paris_align_var")
-dt_attra = np.loadtxt("res_100_paris_attra_var")
-dt_attco = np.loadtxt("res_100_paris_attra_coeff_var")
-dt_noisy_align = np.loadtxt("res_100_paris_noisy_align_var")
-dt_noisy_attra = np.loadtxt("res_100_paris_noisy_attra_var")
+dt_align = np.loadtxt("res_100_paris_align")
+dt_attra = np.loadtxt("res_100_paris_attra")
+dt_attco = np.loadtxt("res_100_paris_attra_coeff")
+dt_noisy_align = np.loadtxt("res_100_paris_noisy_align")
+dt_noisy_attra = np.loadtxt("res_100_paris_noisy_attra")
 
 plt.plot(dt_align.T[0], color='r', label='align')
 plt.plot(dt_attra.T[0], color='y', label='attra')

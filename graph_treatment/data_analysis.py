@@ -19,13 +19,15 @@ def get_adj_group(node_walker_num_arr, nadj):
     n = 0
     n_labels = []
     alone = 0
+    nb_wk=0
     for i in range(N):
         mask = (labels == i)
         if node_walker_num_arr[mask].sum() > 1:
             n_labels += [n] * mask.sum()
             n += 1
-    print("nb co , nb gp , diff", N, n , N-n)
-    return n, np.array(n_labels) , N-n 
+            nb_wk += node_walker_num_arr[mask].sum()
+   
+    return n, np.array(n_labels) , len(labels)-nb_wk
 
     
 

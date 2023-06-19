@@ -22,14 +22,15 @@ def get_adj_group(node_walker_num_arr, nadj):
     nb_wk=0
     for i in range(N):
         mask = (labels == i)
-        if node_walker_num_arr[mask].sum() > 1:
+        new_wk =  node_walker_num_arr[mask].sum()
+        if new_wk > 1:
             n_labels += [n] * mask.sum()
             n += 1
-            nb_wk += node_walker_num_arr[mask].sum()
+            nb_wk += new_wk
    
     return n, np.array(n_labels) , len(labels)-nb_wk
 
-    
+
 
 def count_groups(adj_mat):
     """
@@ -70,7 +71,6 @@ def get_mean_group_size(nb_wk, adj_mat):
     walkers present in the groups
     """
     a,b,n = adj_mat
-    print("nbwk, a", nb_wk,a)
     return nb_wk/a
 
 

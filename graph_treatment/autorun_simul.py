@@ -27,7 +27,7 @@ def gen_data_groups( nb_wk, t_curnum, adj, mobility_mean):
         
         nb_gp,adj_mat,diff = group_array
         print("adj group generated in", t.time()-start)
-        print(diff)
+        
         ret= np.append(ret , np.array([dt.count_groups(group_array) , dt.spreading_groups(group_array), \
                     dt.get_mean_group_size( nb_wk , group_array), mobility_mean[it], diff]))
         it+=1

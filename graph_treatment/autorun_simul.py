@@ -24,14 +24,17 @@ def gen_data_groups( nb_wk, t_curnum, adj, mobility_mean):
         start = t.time()
         print("pb gdg 1 ")
         group_array=dt.get_adj_group(i, nadj)
+        
+        nb_gp,adj_mat,diff = group_array
         print("adj group generated in", t.time()-start)
+        print(diff)
         ret= np.append(ret , np.array([dt.count_groups(group_array) , dt.spreading_groups(group_array), \
-                    dt.get_mean_group_size( nb_wk , group_array), mobility_mean[it]]))
+                    dt.get_mean_group_size( nb_wk , group_array), mobility_mean[it], diff]))
         it+=1
         print("pb gdg 2")
         del(group_array)
         del(nadj)
-    return ret.reshape(-1, 4)
+    return ret.reshape(-1, 5)
         
 
 

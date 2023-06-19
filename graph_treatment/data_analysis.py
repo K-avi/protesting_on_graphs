@@ -18,12 +18,14 @@ def get_adj_group(node_walker_num_arr, nadj):
     N, labels = cg.connected_components(nadj, directed=False, return_labels=True)
     n = 0
     n_labels = []
+    alone = 0
     for i in range(N):
         mask = (labels == i)
         if node_walker_num_arr[mask].sum() > 1:
             n_labels += [n] * mask.sum()
             n += 1
-    return n, np.array(n_labels)
+    print("nb co , nb gp , diff", N, n , N-n)
+    return n, np.array(n_labels) , N-n 
 
     
 
@@ -36,7 +38,7 @@ def count_groups(adj_mat):
     
     O(1)
     """
-    a,b = adj_mat
+    a,b,n = adj_mat
     return a
 
 def spreading_groups(adj_mat): 
@@ -50,9 +52,10 @@ def spreading_groups(adj_mat):
     
     O(1)
     """
-    a,b = adj_mat
+    a,b,n = adj_mat
     v,c = np.unique(b , return_counts=True)
-    return mean([i for i in c ])
+
+    return sum(c)/len(c)
 
 
 def get_mean_group_size(nb_wk, adj_mat):
@@ -64,7 +67,7 @@ def get_mean_group_size(nb_wk, adj_mat):
     calculates the mean of the nb of 
     walkers present in the groups
     """
-    a,b = adj_mat
+    a,b,n = adj_mat
     print("nbwk, a", nb_wk,a)
     return nb_wk/a
 

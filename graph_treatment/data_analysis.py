@@ -3,92 +3,45 @@
 import numpy as np
 from statistics import mean
 import os
+import scipy.sparse.csgraph as cg
 
-
-def is_in_group(dict_graph , entry):
+def get_adj_group(node_walker_num_arr, nadj):
     """
-    dict_graph , num -> boolean
-    
-    returns True if the node 'entry' is part of a group 
-    false otherwise 
-    """
-    return (sum([dict_graph[i][1] for i in dict_graph[entry][0]])+dict_graph[entry][1])>=2
-
-def modified_bfs(visited, dict_graph, node): #function for BFS
-    """
-    set , array , dict_graph , num -> set_nodes
-    
-    returns the group that node is a part of if
-    it hasn't been explored already
-    
-    O(?)
-    """
-    if node in visited: 
-        return (visited, set())
-    visited.add(node)
-    
-    if dict_graph[node][1]==0 or not is_in_group(dict_graph, node) :
-        return (visited,set())
-    
-    queue=[node]
-    a=0
-    set_nodes={ (node,dict_graph[node][1])}
-    while queue: # Creating loop to visit each node
-        m = queue.pop(0) 
-        #print(queue)
-        for neighbor in dict_graph[m][0]:
-            if neighbor not in visited and dict_graph[neighbor][1]>0:
-                #print(a, neighbor)
-                a+=1
-                queue.append(neighbor)
-                set_nodes.add( (neighbor,dict_graph[neighbor][1]))
-           
-            visited.add(neighbor)
-    return (visited,set_nodes )
-
-def get_adj_group( dict_graph ):
-    """
-    dict_graph -> group_array
+    np.array[1D]  , adj_matrix -> cg.sparse.csgraph
     
     creates the subgraphs of graph
-    representing the groups of walkers
-    
-    
-    should be like a normal graph search except u generate 
-    a bunch of smaller dict that are like subgraphs of dict_graph where 
-    each node has at least 1 guy and is linked to another one 
-    
-    relies on BFS cuz I think it's cooler than DFS
-    
-    O(?)
+    representing the groups of walkers 
+    relies on the csgraph connected
+    componnents function
+    fast
     """
-    
-    visited= set()
-    group_array=[]
-   
-    for m in dict_graph:
-        (visited_new , set_graph)= modified_bfs(visited,  dict_graph , m)
-        visited = visited | visited_new
-        
-        if set_graph:
-            group_array.append(set_graph)
-    del(visited)
-    return group_array
+    N, labels = cg.connected_components(nadj, directed=False, return_labels=True)
+    n = 0
+    n_labels = []
+    for i in range(N):
+        mask = (labels == i)
+        if node_walker_num_arr[mask].sum() > 1:
+            n_labels += [n] * mask.sum()
+            n += 1
+    return N, np.array(n_labels)
 
-def count_groups(group_array):
+    
+
+def count_groups(adj_mat):
     """
-    group_array -> num
+    cg sparce matrix -> num
     
     returns the number of walker
     groups 
     
     O(1)
     """
-    return len(group_array)
+    a,b = adj_mat
+    return a
 
-def spreading_groups(group_array): 
+def spreading_groups(adj_mat): 
     """
-    group_array -> num
+    cg sparce matrix -> num
     
     returns the mean spread
     (number of nodes occupied)
@@ -97,43 +50,23 @@ def spreading_groups(group_array):
     
     O(1)
     """
-    return mean([len(i) for i in group_array])
+    a,b = adj_mat
+    v,c = np.unique(b , return_counts=True)
+    return mean([i for i in c ])
 
 
-def get_mean_group_size(group_array):
+def get_mean_group_size(nb_wk, adj_mat):
     """
-    group_array -> num
+    cg sparce matrix -> num
     
     given an array containing every group
     of walkers in a simulation 
     calculates the mean of the nb of 
     walkers present in the groups
-    
-    O(group_array*mean(nb_elem_in_groups)) (not sure about that)
     """
-    return sum([ (j[1]) for i in group_array for j in i])/len(group_array)
+    a,b = adj_mat
+    return nb_wk/a
 
-def get_mean_nodes_visited(walker_pos_mat): 
-    """
-    np.array -> num
-    
-    given a numpy matrix of nb_iterations * nb_walker dimensions
-    calculates the mean of the number of distinct nodes visited by the walkers 
-    during the simulation
-    
-    O(i*w)
-    """
-    val_list=[]
-    for column in walker_pos_mat.T:
-        nb_diff_nodes=0
-        i=set()
-        for elem in column:
-            if not elem in i:
-               nb_diff_nodes+=1
-               i.add(elem)
-        val_list.append(nb_diff_nodes)
-    
-    return mean(val_list)
 
 def stat_mobility(wlkr_pos_mat):
     """

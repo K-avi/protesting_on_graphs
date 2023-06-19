@@ -8,7 +8,7 @@ import time as t
 import argparse as args
 
 
-def gen_data_groups( t_curnum, graph_dict, mobility_mean):
+def gen_data_groups( t_curnum, adj, mobility_mean):
     """
     curnum matrix , gr - finish testing dt analysisaph_dict -> array of tuples (nb_group, spread_group , group size)
     generates the data related to group for 
@@ -17,14 +17,19 @@ def gen_data_groups( t_curnum, graph_dict, mobility_mean):
     ret= np.array([])
     it=0
     for i in t_curnum:
-        g_dict=lt.merge_wknum_row_dictgraph(i,graph_dict)
-        group_array=dt.get_adj_group(graph_dict)
-
+        print("analysis for it : ", it)
+        print("pb gdg 0 ")
+        nadj = lt.merge_wknum_row_dictgraph(i, adj )
+        start = t.time()
+        print("pb gdg 1 ")
+        group_array=dt.get_adj_group(i, nadj)
+        print("adj group generated in", t.time()-start)
         ret= np.append(ret , np.array([dt.count_groups(group_array) , dt.spreading_groups(group_array), \
-                    dt.get_mean_group_size(group_array), mobility_mean[it]]))
+                    dt.get_mean_group_size(len(mobility_mean ) , group_array), mobility_mean[it]]))
         it+=1
+        print("pb gdg 2")
         del(group_array)
-        del(g_dict)
+        del(nadj)
     return ret.reshape(-1, 4)
         
 
@@ -45,16 +50,19 @@ def run_simul_once(nb_threads, path_graph, coeff_wk, nb_it , sim_opt ,trace_name
     for i in range (0, nb_threads):
         tr_comp_name=trace_name+str(trace_num)+str(i)
         
-        (t_curnum ,t_flux, t_wkpos, dict_graph)= lt.load_trace(tr_comp_name, nb_it)
+        (t_curnum ,t_flux, t_wkpos, nadj)= lt.load_trace(tr_comp_name, nb_it)
         del(t_flux)
+        print("bp 0")
         lt.clean_trace(tr_comp_name)
     #append the results of analysis functions to a file used to generate mean results of the 
     #simulation
       
         mobility_mean=dt.stat_mobility(t_wkpos)
         del(t_wkpos)
-        group_data_mat=gen_data_groups(t_curnum, dict_graph, mobility_mean)
-        del(t_curnum , dict_graph)
+        print("bp 1")
+        group_data_mat=gen_data_groups(t_curnum, nadj ,mobility_mean)
+        del(t_curnum , nadj)
+        print("bp 2")
         np.savetxt(result_file+str(i), group_data_mat)
     
 def run_simul_nth(num,nb_threads,path_graph , coeff_wk, nb_it, simul_opt ,trace_name, result_file):
@@ -108,17 +116,16 @@ def main():
     
     start_time = t.time()
     (nb_thread_max, tot, coeff_wk, nb_it, sim_opt) = (opt.nb_thread_max[0], opt.simul_tot[0], opt.coeff_walkers[0], opt.nb_iterations[0], opt.simul_opt[0])
-    output_file= opt.output_file[0
-                                 ]
+    output_file= opt.output_file[0]
     print("starting simulations, please do not remove files created by the simulation before it is done running")
-    
+    print( tot , nb_thread_max, path , coeff_wk, nb_it , sim_opt , output_file)
     run_simul_nth(tot, nb_thread_max , path , coeff_wk, nb_it,  sim_opt, "trace", output_file)
+  
     dt.mean_results(output_file, "res_mean")
     dt.clean_results(output_file)
     
     print("simulation finished in "+ str(t.time()-start_time) +" seconds\nResults are stored in res_mean")
     return 0
-
 
 if __name__=='__main__':
     main()

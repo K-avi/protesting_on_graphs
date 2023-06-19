@@ -52,7 +52,7 @@ def auto_stat():
 
     it_par = np.linspace(10, 200, num=20, dtype=int)
     gsize_par = np.linspace(200, 500, num=4 , dtype=int)
-    while(True):
+    while True:
        
         #gen_graph and options 
         graph_size = np.random.choice(gsize_par)

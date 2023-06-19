@@ -115,17 +115,15 @@ uint8_t printGraphTabVar(GraphTable * gt, FILE * stream){
     if(!gt->entries) { report_err("printGraphTab", GT_NULL); return GT_NULL;}
     
     for(uint32_t i=0; i<gt->table_size; i++){
-        fprintf(stream, "%u,%u,",i ,gt->entries[i].neighboor_num);
+        fprintf(stream, "%u,",i );
         for(uint16_t j=0; j<gt->entries[i].neighboor_num; j++){
             if(gt->entries->first_neighboor_ref){
                 if(j!=gt->entries[i].neighboor_num-1) {
 
-                    fprintf(stream, "%u:%u;", (gt->entries[i].first_neighboor_ref+j)->node_index ,
-                     gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array] );
+                    fprintf(stream, "%u,", (gt->entries[i].first_neighboor_ref+j)->node_index );
          
                 }else{
-                    fprintf(stream, "%u:%u", (gt->entries[i].first_neighboor_ref+j)->node_index, \
-                        gt->arrLine->cur_flux[gt->entries[i].first_neighboor_ref+j - gt->arrLine->array]); 
+                    fprintf(stream, "%u", (gt->entries[i].first_neighboor_ref+j)->node_index); 
                 } 
             }
         }

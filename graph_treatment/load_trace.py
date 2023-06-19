@@ -1,5 +1,7 @@
 #file containing the functions to load the traces of a simulation
 import  numpy as np
+import scipy.sparse as sp
+import scipy.sparse.csgraph as cg
 import sys
 import os
 
@@ -22,57 +24,36 @@ def load_dict_graph(path):
     really ugly
     """
     
-    dict_graph= dict()
-    
-    with open (path, "r") as file: 
-    
-        for line in list(file):
-           
-            if len(line.strip())!=0:
-                node_from=int(line.split(",")[0]) 
-                if int(line.split(",")[1]) > 0: 
-                    nodes_to=line.split(",")[2].split(";")
-                    line_array=[]
-                    for i in nodes_to:  
-                        node_to = int(i.split(":")[0])
-                        line_array.append(node_to)
-                    dict_graph.update({node_from:[line_array,0]})
-                else :
-                    dict_graph.update({node_from:[[],0]})
-    file.close
-    return dict_graph
+    with open (path, "r") as file:
+        text = file.readlines()
+        nv = len(text)
+        ne = 0
+        col = []
+        row =[]
+        for line in text :
+            match line.split(","):
+                case [node, *edges]:
+                    ne += len(edges)
+                    col += [int(node)] * len(edges)
+                    row += map(int, edges)
+                case _:
+                    nv -= 1
+    return sp.csr_array((np.ones(ne), (col, row)), dtype="int8")
 
 
-def merge_wkpos_row_dictgraph( walker_pos_row , dict_graph): 
-    """
-    np.array , dict_graph -> dict_graph
-    updates the nb_elem stored in the dict graph given a walker pos_row
-    complexity is terrible; will have to make this good at some point
-    
-    deprecated
-    
-    O(nb_walkers* nb_gentry)
-    """
-    for j in dict_graph: 
-        dict_graph[j][1]=0
-        
-    for i in walker_pos_row:
-        dict_graph[i][1]+=1
 
-    return dict_graph
 
-def merge_wknum_row_dictgraph( node_walker_num_arr , dict_graph):
+def merge_wknum_row_dictgraph(node_walker_num_arr, adj_mat):
     """
     updates the num of walkers at each entry of dict_graph
     with a row of the walker trace matrix 
     """
-  
-    for i in range(0, len(node_walker_num_arr)):
-        if not i in dict_graph: 
-            print("missing key: ," ,i)
-        dict_graph[i][1]=node_walker_num_arr[i]
-    
-    return dict_graph
+    nadj = adj_mat.copy()
+    mask = node_walker_num_arr > 0
+    nadj *= mask
+    nadj = nadj.T * mask
+    nadj.eliminate_zeros()
+    return nadj
 
 
 def load_trace(trace_name, nb_it, query=[]):

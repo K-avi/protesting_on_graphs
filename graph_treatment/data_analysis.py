@@ -1,5 +1,5 @@
-#this file contains the functions to analyze the data produced by the simulation
-#WARNING: the functions are currently prototypes / placeholders; do NOT use them 
+# this file contains the functions to analyze the data produced by the simulation
+# WARNING: the functions are currently prototypes / placeholders; do NOT use them
 import numpy as np
 from statistics import mean
 import os
@@ -26,91 +26,86 @@ def get_adj_group(node_walker_num_arr, nadj):
 
     # reevaluate stuff
     N = mask.sum()
- 
-    labels = Nun[inv]
-    return N, labels, node_walker_num_arr[labels == -1].sum()
 
-def spreading_groups(adj_mat): 
+    labels = Nun[inv]
+    return N, labels,(node_walker_num_arr[labels==-1]).sum()
+
+
+def spreading_groups(adj_mat):
     """
     cg sparce matrix -> num
-    
+
     returns the mean spread
     (number of nodes occupied)
-    of the groups of walkers in a 
+    of the groups of walkers in a
     group array
-    
+
     O(1)
     """
-    a,b,s = adj_mat
-    v,c = np.unique(b , return_counts=True)
-    trash_gp_size = np.count_nonzero(b==-1)
-    return (sum(c)- trash_gp_size)/(a)
+    a, b ,s= adj_mat
+    v, c = np.unique(b, return_counts=True)
+    trash_gp_size = np.count_nonzero(b == -1)
+    return (sum(c) - trash_gp_size) / (a)
 
 
-def get_mean_group_size(wlkr_num_arr , adj_mat):
+def get_mean_group_size(wlkr_num_arr, adj_mat):
     """
     cg sparce matrix -> num
-    
+
     given an array containing every group
-    of walkers in a simulation 
-    calculates the mean of the nb of 
+    of walkers in a simulation
+    calculates the mean of the nb of
     walkers present in the groups
     """
-    a,b,s = adj_mat
-  
-    return sum([ wlkr_num_arr[i] for i in range(0, len(wlkr_num_arr)-1) if ( b[i]>-1) ])/a
+    a, b,s = adj_mat
+    return wlkr_num_arr[b >= 0].sum() / a
 
 
-def stat_mobility(wlkr_pos_mat):
+def stat_mobility(wlkr_pos_mat, Nnodes):
     """
     np.array(2D) -> np.array(1D)
     """
     itt, Nw = wlkr_pos_mat.shape
-    N_visit = np.zeros(wlkr_pos_mat.shape)
-    for i, wlkr in enumerate(wlkr_pos_mat.T):
-        u, idx = np.unique(wlkr, return_index=True)
-        n = u.size
-        R = np.arange(1, n + 1)
-        idx = np.sort(idx)
-        ntime = list(np.diff(idx))
-        ntime.append(itt - idx[-1])
-        N_visit[:, i] = np.repeat(R, ntime)
-
-    return N_visit.mean(1)
+    pos_mat = wlkr_pos_mat.copy()
+    pos_mat += np.arange(Nw) * Nnodes
+    u, idx = np.unique(pos_mat, return_index=True)
+    mean_inst = np.bincount(idx % itt, minlength=itt) / Nw
+    return np.cumsum(mean_inst)
 
 
 def mean_results(simul_name, res_name):
     """
-    str -> file 
-    
-    reads through every file at the current dir , 
-    if they match "simul_name*" attemps to load them 
-    generate the numpy matrix corresponding to the mean of all 
-    of these results and writes it 
+    str -> file
+
+    reads through every file at the current dir ,
+    if they match "simul_name*" attemps to load them
+    generate the numpy matrix corresponding to the mean of all
+    of these results and writes it
     """
-    ret_mat=np.array([])
-    nb_file=0
+    ret_mat = np.array([])
+    nb_file = 0
     for i in os.listdir("."):
-      
+
         if simul_name in i:
-            if not ret_mat.any():      
-                ret_mat= np.loadtxt(i)
-            else: 
-                ret_mat+= np.loadtxt(i)       
-            nb_file+=1
+            if not ret_mat.any():
+                ret_mat = np.loadtxt(i)
+            else:
+                ret_mat += np.loadtxt(i)
+            nb_file += 1
     if ret_mat.any():
-        ret_mat/=nb_file
+        ret_mat /= nb_file
         np.savetxt(res_name, ret_mat)
-    del(ret_mat)
+    del ret_mat
+
 
 def clean_results(simul_name):
     """
-    str -> 
-    
-    erases the files matching starting 
-    matching "simul_name*" from the 
+    str ->
+
+    erases the files matching starting
+    matching "simul_name*" from the
     currrent directory
     """
     for i in os.listdir("."):
-        if simul_name in i :
+        if simul_name in i:
             os.remove(i)

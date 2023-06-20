@@ -5,6 +5,7 @@ the done section writes every step I did ; some of them are obsolete (for exampl
 implem of graphs multiple times) but it's a good way to track my progress
 
 done : 
+
     - graphs are kinda implemented
         - I can add stuf to them 
         - I can print them (I can't load them from a file yet though)
@@ -148,17 +149,23 @@ done :
 
 
 pending : 
+
+    Data analysis : 
+      
+      - the flux thing I forgot what it was supposed to be exactly 
  
     C Optimization : 
 
-    - evaluate meta fns with variant of other fns and stuff to try and gain performance
+      - evaluate meta fns with variant of other fns and stuff to try and gain performance
 
-    - use __builtin_prefetch
+      - use __builtin_prefetch
 
-    - do the malloc wrapper arena/mempool thingy  (YES I WANNA COME ON)
+      - do the malloc wrapper arena/mempool thingy  (YES I WANNA COME ON)
 
     Misc:    
 
-    - remove curse words from commentaries and documentation
+      - possibility to start simulation w an array of walkers 
 
-    - create a small db by randomising simul and be able to do queries on it
+      - create a small db by randomising simul and write a python script to do queries on it
+
+      - remove curse words from commentaries and documentation

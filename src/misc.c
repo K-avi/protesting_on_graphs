@@ -1,4 +1,5 @@
 #include "misc.h"
+#include "common.h"
 #include "graph_table.h"
 #include "walker.h"
 #include <stdint.h>
@@ -80,8 +81,11 @@ char * str_flag(uint8_t flag){
   case PRS_COEFF : return "coeff passed is too big";
   case AR_MALLOC : return "failed to allocate memory to the memory pool\n";
   case AR_NULL : return "the memory pool is null\n";
-  case AR_FULL : return "jesus christ you filled the memory pool???";
+  case AR_FULL : return "jesus christ you filled the memory pool???\n";
   case ERRGLAG_CANTWRITE: return "couldn't open the files to dump the trace\n";
+  case WA_NOREAD : return "path given is null\n";
+  case WA_OPEN : return "can't open file at path given\n";
+  case WA_READFAIL : return "couldn't properly read file at path given\n";
   default : return "unknown error ; how did you get here?\n";
   }
 }//ok

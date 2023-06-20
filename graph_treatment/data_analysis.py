@@ -17,19 +17,18 @@ def get_adj_group(node_walker_num_arr, nadj):
     fast
     """
     N, labels = cg.connected_components(nadj, directed=False)
-  
     uni, idx, inv, count = np.unique(labels, True, True, True)
 
     # Generation of the new unique labels steadily increasing
     # from 0 to n-1 the number of new graphs. and -1 for the removed nodes.
-    mask = (count != 1) * (node_walker_num_arr[idx] > 1)
+    mask = ~((count == 1) * (node_walker_num_arr[idx] <= 1))
     Nun = (np.cumsum(mask) * mask) - 1
 
     # reevaluate stuff
     N = mask.sum()
  
     labels = Nun[inv]
-    return N, labels
+    return N, labels, node_walker_num_arr[labels == -1].sum()
 
 def spreading_groups(adj_mat): 
     """
@@ -42,7 +41,7 @@ def spreading_groups(adj_mat):
     
     O(1)
     """
-    a,b = adj_mat
+    a,b,s = adj_mat
     v,c = np.unique(b , return_counts=True)
     trash_gp_size = np.count_nonzero(b==-1)
     return (sum(c)- trash_gp_size)/(a)
@@ -57,7 +56,7 @@ def get_mean_group_size(wlkr_num_arr , adj_mat):
     calculates the mean of the nb of 
     walkers present in the groups
     """
-    a,b = adj_mat
+    a,b,s = adj_mat
   
     return sum([ wlkr_num_arr[i] for i in range(0, len(wlkr_num_arr)-1) if ( b[i]>-1) ])/a
 

@@ -8,7 +8,7 @@ import time as t
 import argparse as args
 
 
-def gen_data_groups( nb_wk, t_curnum, adj, mobility_mean):
+def gen_data_groups( t_curnum, adj, mobility_mean):
     """
     curnum matrix , gr - finish testing dt analysisaph_dict -> array of tuples (nb_group, spread_group , group size)
     generates the data related to group for 
@@ -22,16 +22,16 @@ def gen_data_groups( nb_wk, t_curnum, adj, mobility_mean):
       
         nadj = lt.merge_wknum_adj_mat(i, adj )
         start = t.time()
-        print("pb gdg 1 ")
+        
         group_array=dt.get_adj_group(i, nadj)
-        
-        nb_gp,adj_mat = group_array
+        nb_gp, labels,s = group_array
         print("adj group generated in", t.time()-start)
-        
+        print(labels==-1)
         ret= np.append(ret , [nb_gp , dt.spreading_groups(group_array), \
-                    dt.get_mean_group_size( i , group_array), mobility_mean[it], 0])
+                    dt.get_mean_group_size( i , group_array), mobility_mean[it], s])
         it+=1
-        print("pb gdg 2")
+        
+        
         del(group_array)
         del(nadj)
     return ret.reshape(-1, 5)
@@ -54,9 +54,9 @@ def run_simul_once(nb_threads, path_graph, coeff_wk, nb_it , sim_opt ,trace_name
     for i in range (0, nb_threads):
         tr_comp_name=trace_name+str(trace_num)+str(i)
         
-        (t_curnum ,t_flux, t_wkpos, nadj)= lt.load_trace(tr_comp_name, nb_it)
+        (t_curnum ,t_flux, t_wkpos, adj)= lt.load_trace(tr_comp_name, nb_it)
         del(t_flux)
-        print("bp 0")
+        print("starting analysis n" , i)
         lt.clean_trace(tr_comp_name)
     #append the results of analysis functions to a file used to generate mean results of the 
     #simulation
@@ -64,10 +64,10 @@ def run_simul_once(nb_threads, path_graph, coeff_wk, nb_it , sim_opt ,trace_name
         mobility_mean=dt.stat_mobility(t_wkpos)
      
       
-        group_data_mat=gen_data_groups( len(t_wkpos[0]) , t_curnum, nadj ,mobility_mean)
-        del(t_curnum , nadj)
+        group_data_mat=gen_data_groups( t_curnum, adj ,mobility_mean)
+        del(t_curnum , adj)
         del(t_wkpos)
-        print("bp 2")
+        print("analysis done, saving results")
         np.savetxt(result_file+str(i), group_data_mat)
     
 def run_simul_nth(num,nb_threads,path_graph , coeff_wk, nb_it, simul_opt ,trace_name, result_file):
@@ -84,7 +84,7 @@ def run_simul_nth(num,nb_threads,path_graph , coeff_wk, nb_it, simul_opt ,trace_
         i-=nb_threads
         a+=1
     run_simul_once(num%nb_threads, path_graph , coeff_wk , nb_it, simul_opt, trace_name, a, f"{result_file}_{i}")
-    print("simulation are done running; starting data analysis")
+    print("simulation are done running; creating mean of the results")
     
   
 def main(): 

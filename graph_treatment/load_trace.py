@@ -14,14 +14,13 @@ def load_trace_elem( path, nb_it ):
     dt_arr= np.fromfile(path, dtype=np.int32)
     return dt_arr.reshape( int(nb_it), -1)
 
-def load_dict_graph(path):
+def load_adj_mat(path):
     """
-    str -> dict_graph
+    str -> scipy sparse graphe
     
-    creates a dict of the graph rep 
-    contained at path (assuming the 
-    graph is stored as the custom csv rep)
-    really ugly
+    creates and adjacency matrix with sparse 
+    scipy_sparse array from 
+    a custom csv file
     """
     
     with open (path, "r") as file:
@@ -56,7 +55,7 @@ def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     return nadj
 
 
-def load_trace(trace_name, nb_it, query=[]):
+def load_trace(trace_name, nb_it):
     """
     loads the formatted trace files corresponding to the trace name 
     given as argument from the current directory 
@@ -65,14 +64,15 @@ def load_trace(trace_name, nb_it, query=[]):
     containing the evolution of the number of walkers at each node during the simulation 
     the second one is a nb_iteration * nb_lines matrix containing the evolution 
     of the flux stored at each line during the simulation
-    the last one is a  nb_iteration * nb_walkers matrix 
+    the third one is a  nb_iteration * nb_walkers matrix 
     containing the evolution of the position of each walker during the simulation
+    the last one is the adjacency matrix of the graph
     """
   
     t_curnum = load_trace_elem( trace_name+"_curnum", nb_it)
     t_flux = load_trace_elem( trace_name+"_flux",  nb_it)
     t_wkpos = load_trace_elem( trace_name+"_wkpos", nb_it)
-    t_graph = load_dict_graph(trace_name+"_hr")
+    t_graph = load_adj_mat(trace_name+"_hr")
     
     return (t_curnum, t_flux ,t_wkpos, t_graph)
 

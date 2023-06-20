@@ -145,7 +145,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     char * trace_hrend = malloc( (8+ strnlen(trace_name,249)) * sizeof(char));
     snprintf(trace_hrend, 256, "%s_hrend", trace_name);
     
-    FILE * f_hrend = fopen(trace_hrend, "ab");
+    FILE * f_hrend = fopen(trace_hrend, "w");
     free(trace_hrend);
     if(!f_hrend){
         report_err("iterate_ntimes_dump cant write2",  ERRGLAG_CANTWRITE);
@@ -158,7 +158,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     char * trace_wkend=malloc( (8+ strnlen(trace_name,249 )) * sizeof(char)); ; 
     snprintf(trace_wkend, 256, "%s_wkend", trace_name);
     
-    FILE * f_wkend = fopen(trace_wkend, "ab");
+    FILE * f_wkend = fopen(trace_wkend, "w");
     free(trace_wkend);
     if(!f_wkend){
         report_err("iterate_ntimes_dump cant write3",  ERRGLAG_CANTWRITE);
@@ -166,7 +166,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     }
     fwrite( gtable->warray->array, sizeof(Walker), gtable->warray->size , f_wkend);
     fclose(f_wkend);
-    
+
     return MV_OK;
 }//done ; tested scaling ; seems constant (great) however 
 //tested outputs; seems ok

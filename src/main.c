@@ -31,11 +31,13 @@ int main(int argc , char ** argv){
             break;
         case 'w':
             loadset = 2; 
-            warray_name = optarg;        
+            warray_name = optarg;   
+            break;     
 
         case '?':
             if(optopt=='d'){
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+                
             }else if(optopt=='w'){
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
             }else{
@@ -109,8 +111,9 @@ int main(int argc , char ** argv){
         failure= init_pos(&gtable);
         if(failure){report_err("in main init_pos call", failure); exit(failure);}
     }else{
+     
         failure = load_warray(&gtable, warray_name);
-        if(failure){report_err("in main load_warray call", failure); exit(failure);}
+        if(failure){report_err("in main load_warray call", failure); exit(failure);}       
     }
 
     if(!optset){

@@ -4,66 +4,6 @@ import osmnx as ox
 import networkx as nx
 import numpy as np
 
-def discretise(Graph, step): 
-    """
-    nxGraph, step-> nxGraph  
-    
-    discretises a graph passed as arg with the step
-    i.e : creates new nodes when the distance between the nodes a,b in a line 
-    is bigger than step  
-    returns new graph
-    """ 
-    ret_graph=nx.Graph()
-    
-    for lines in Graph.edges(data="length"): 
-        (a,b,length)=lines
-        if(length > step ): 
-        
-            size= int(length/step)
-            new_graph= nx.Graph()
-            nx.add_path(new_graph, [a]+ [str(i)+str(a)+str(b) for i in range(0,size) ] +[b])
-            
-            ret_graph = nx.compose(ret_graph ,new_graph)      
-        else : 
-            ret_graph.add_edge(a, b)
-    
-    ret_graph= nx.convert_node_labels_to_integers(ret_graph,ordering='default', label_attribute=None)
-    return ret_graph
-
-def makeCSV(Graph, path):
-    """
-    nxGraph , str 
-    writes the custom csv corresponding to the graph passed
-    as argument in the file at path
-    """ 
-    with open (path, "w") as file: 
-     
-        file.write(f"{Graph.number_of_nodes()},{Graph.number_of_edges()*2}\n") #2 times nb of edges cuz need (a,b) and (b,a)
-        for i in Graph.nodes:
-            file.write(f'{i},{Graph.degree(i)},{":0;".join( str(i) for i in Graph.neighbors(i))+":0"}\n')
-    file.close
-
-def loadCSV(path):
-    """
-    str -> nxGraph
-    creates a networx graph from the custom csv stored at path
-    should prolly use a real csv loader but this function is somewhat 
-    trivial so it doesn't really mater I guess
-    """
-    ret_graph = nx.Graph()
-    
-    with open (path, "r") as file: 
-        next(file)
-        for line in file:
-            node_from=line.split(",")[0]
-            nodes_to=line.split(",")[2].split(";")
-            for i in nodes_to:  
-                node_to = i.split(":")[0]
-                ret_graph.add_edge(int(node_from), int(node_to))         
-    file.close
-    #ret_graph= nx.convert_node_labels_to_integers(ret_graph,ordering='default', label_attribute=None)
-    return ret_graph
-
 def discretisePA(Graph, step): 
     """
     nxGraph, step -> graph_string

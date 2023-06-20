@@ -1,4 +1,5 @@
 #this file will be used to plot the different elements 
+#highly contextual script don't use it 
 import numpy as np 
 import matplotlib.pyplot as plt
 

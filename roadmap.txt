@@ -1,6 +1,5 @@
-redesign of code structure count : 4 
-
-we gettin somewhere I'm litteraly so happy 
+redesign of code structure count : 5 
+I didn't rewrite the data analysis mind you however it was done 
 
 the done section writes every step I did ; some of them are obsolete (for example I changed 
 implem of graphs multiple times) but it's a good way to track my progress
@@ -141,32 +140,19 @@ done :
     
     - implement the nb_nodes_visited / walkers stuff (ty pacidus)
 
+    - optimize the python stuff  ( call for help)
+
+    - dt analysis was heavily optimized by https://github.com/Pacidus
+
 
 pending : 
 
     Data analysis : 
 
-    
-      - reproduce sim results to compare n plot them on a nice lil fig guy: 
-        
-        - simul for : 
-          - attra (done)
-          - noisy attra (done) 
-          - align (done)
-          - noisy align (done)
-          - attra coeff (done)
-
-        on the big paris graph w 100 iterations
-
-        them create figures for each 4 outputs of simul n plot them 
-        there 
-
-      - create the script to plot stuff 
+      - clean up the house 
 
     
-    Optimization : 
-
-    - optimize the python stuff  ( call for help)
+    C Optimization : 
 
     - evaluate meta fns with variant of other fns and stuff to try and gain performance
 
@@ -180,7 +166,4 @@ pending :
 
     - make simul db thing ???? (weird idea I just had )
 
-mobilité : nb moyen de noeuds différents que chaque marcheur a parcouru à chaque itération
-somme des flux : regarder sur qq dernieres iterations le flux total pr voir si les 
-gens se suivent ( variation du flux / nb marcheurs )
-
+    - rewrite C simul w sparse matrix ??

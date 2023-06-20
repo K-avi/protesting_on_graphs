@@ -11,7 +11,8 @@ def get_adj_group(node_walker_num_arr, nadj):
     representing the groups of walkers
     relies on the csgraph connected
     componnents function
-    fast
+    
+    function was rewritten by https://github.com/Pacidus
     """
     N, labels = cg.connected_components(nadj, directed=False)
     uni, idx, inv, count = np.unique(labels, True, True, True)
@@ -33,6 +34,8 @@ def spread_gp(nb_gp, labels):
     num , np.array[1D] -> num 
     calculates the spread of the
     node groups
+    
+    function was improved by https://github.com/Pacidus
     """
     return (labels >= 0).sum() / nb_gp
 
@@ -41,6 +44,8 @@ def size_gp(wlkr_num_arr, nb_gp, labels):
     """
     np.array[1D] , num , np.array[1D] -> num 
     calculates the size of the node groups
+    
+    function was improved by https://github.com/Pacidus
     """
     return wlkr_num_arr[labels >= 0].sum() / nb_gp
 
@@ -48,6 +53,7 @@ def size_gp(wlkr_num_arr, nb_gp, labels):
 def stat_mobility(wlkr_pos_mat, Nnodes):
     """
     np.array(2D) int -> np.array(1D)
+    function was rewritten by https://github.com/Pacidus
     """
     itt, Nw = wlkr_pos_mat.shape
     pos_mat = wlkr_pos_mat.copy() + (np.arange(Nw, dtype="int") * Nnodes)
@@ -64,6 +70,8 @@ def mean_results(simul_name, res_name):
     if they match "simul_name*" attemps to load them
     generate the numpy matrix corresponding to the mean of all
     of these results and writes it
+    
+    function was improved by https://github.com/Pacidus
     """
     ret_mat = np.array([])
     n = 0
@@ -87,6 +95,8 @@ def clean_results(simul_name):
     erases the files matching starting
     matching "simul_name*" from the
     currrent directory
+
+    function was improved by https://github.com/Pacidus 
     """
     for fname in os.listdir("."):
         if simul_name in fname:

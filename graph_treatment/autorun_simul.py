@@ -15,6 +15,8 @@ def gen_data_groups(t_curnum, adj, mobility_mean):
     
     generates the data related to group for
     one iteration
+    
+    function was rewritten by https://github.com/Pacidus
     """
     Nitt = t_curnum.shape[0]
     ret = np.zeros((Nitt, 5))
@@ -42,6 +44,8 @@ def run_simul_once(
     the main function to run a simulation
     starts it w the little shell script ,
     reads from the trace , write in result files
+    
+    function was improved by https://github.com/Pacidus
     """
 
     # start simulation
@@ -77,6 +81,8 @@ def run_simul_nth(
     """
     runs a bunch of simul w given parameters
     and calculates their mean result
+    
+    function was improved by https://github.com/Pacidus
     """
     N = num // nb_threads
     n = num % nb_threads

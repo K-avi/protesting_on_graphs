@@ -21,7 +21,8 @@ def load_adj_mat(path):
     creates a dict of the graph rep
     contained at path (assuming the
     graph is stored as the custom csv rep)
-    really ugly
+    
+    function was rewritten by https://github.com/Pacidus
     """
 
     with open(path, "r") as file:
@@ -45,6 +46,8 @@ def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     """
     updates a sp.sparse.csgraph representing an adj mat by 
     removing the nodes w/o walker
+    
+    function was rewritten by https://github.com/Pacidus
     """
     nadj = adj_mat.copy()
     mask = node_walker_num_arr > 0

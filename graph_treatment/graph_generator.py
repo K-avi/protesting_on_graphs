@@ -11,7 +11,7 @@ def discretisePA(Graph, step):
     i.e : creates new nodes when the distance between the nodes a,b in a line 
     is bigger than step  
     returns new graph
-    by https://github.com/Pacidus
+    function was rewritten by https://github.com/Pacidus
     """ 
     N = Graph.number_of_nodes()
     lengths = Graph.edges(data="length")
@@ -44,7 +44,7 @@ def makeCSVPA(Graph, path):
     graph_string , path
     writes the custom csv corresponding to the graph passed
     as argument in the file at path
-    by https://github.com/Pacidus
+    function was rewritten by https://github.com/Pacidus
     """ 
     with open(path, "w") as file: 
         file.write(Graph)

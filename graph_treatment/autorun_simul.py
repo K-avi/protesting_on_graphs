@@ -23,13 +23,13 @@ def gen_data_groups( nb_wk, t_curnum, adj, mobility_mean):
         nadj = lt.merge_wknum_adj_mat(i, adj )
         start = t.time()
         print("pb gdg 1 ")
-        group_array=dt.get_adj_group_var(i, nadj)
+        group_array=dt.get_adj_group(i, nadj)
         
         nb_gp,adj_mat = group_array
         print("adj group generated in", t.time()-start)
         
         ret= np.append(ret , [nb_gp , dt.spreading_groups(group_array), \
-                    dt.get_mean_group_size( nb_wk , group_array), mobility_mean[it], 0])
+                    dt.get_mean_group_size( i , group_array), mobility_mean[it], 0])
         it+=1
         print("pb gdg 2")
         del(group_array)

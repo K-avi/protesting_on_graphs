@@ -5,32 +5,8 @@ from statistics import mean
 import os
 import scipy.sparse.csgraph as cg
 
-def get_adj_group(node_walker_num_arr, nadj):
-    """
-    np.array[1D]  , adj_matrix -> cg.sparse.csgraph
-    
-    creates the subgraphs of graph
-    representing the groups of walkers 
-    relies on the csgraph connected
-    componnents function
-    fast
-    """
-    N, labels = cg.connected_components(nadj, directed=False, return_labels=True)
-    n = 0
-    n_labels = []
-    alone = 0
-    nb_wk=0
-    for i in range(N):
-        mask = (labels == i)
-        new_wk =  node_walker_num_arr[mask].sum()
-        if new_wk > 1:
-            n_labels += [n] * mask.sum()
-            n += 1
-            nb_wk += new_wk
-   
-    return n, np.array(n_labels) , len(labels)-nb_wk
 
-def get_adj_group_var(node_walker_num_arr, nadj):
+def get_adj_group(node_walker_num_arr, nadj):
     """
     np.array[1D]  , adj_matrix -> cg.sparse.csgraph
 
@@ -41,32 +17,19 @@ def get_adj_group_var(node_walker_num_arr, nadj):
     fast
     """
     N, labels = cg.connected_components(nadj, directed=False)
-    print("N before update", N)
+  
     uni, idx, inv, count = np.unique(labels, True, True, True)
 
     # Generation of the new unique labels steadily increasing
     # from 0 to n-1 the number of new graphs. and -1 for the removed nodes.
-    mask = (count != 1) * (node_walker_num_arr[idx] != 1)
+    mask = (count != 1) * (node_walker_num_arr[idx] > 1)
     Nun = (np.cumsum(mask) * mask) - 1
 
     # reevaluate stuff
     N = mask.sum()
-    print("mask, Nun", mask , Nun)
-    print("ms , nun.s", mask.sum(), (Nun == -1).sum())
-    print("num of con comp is : " ,N)
+ 
     labels = Nun[inv]
     return N, labels
-def count_groups(adj_mat):
-    """
-    cg sparce matrix -> num
-    
-    returns the number of walker
-    groups 
-    
-    O(1)
-    """
-    a,b = adj_mat
-    return a
 
 def spreading_groups(adj_mat): 
     """
@@ -81,11 +44,11 @@ def spreading_groups(adj_mat):
     """
     a,b = adj_mat
     v,c = np.unique(b , return_counts=True)
-    
-    return sum(c)/a
+    trash_gp_size = np.count_nonzero(b==-1)
+    return (sum(c)- trash_gp_size)/(a)
 
 
-def get_mean_group_size(nb_wk, adj_mat):
+def get_mean_group_size(wlkr_num_arr , adj_mat):
     """
     cg sparce matrix -> num
     
@@ -95,7 +58,8 @@ def get_mean_group_size(nb_wk, adj_mat):
     walkers present in the groups
     """
     a,b = adj_mat
-    return nb_wk/a
+  
+    return sum([ wlkr_num_arr[i] for i in range(0, len(wlkr_num_arr)-1) if ( b[i]>-1) ])/a
 
 
 def stat_mobility(wlkr_pos_mat):

@@ -37,12 +37,17 @@ typedef struct s_walker_num_curnext{
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size);
 void freeWalkerArray(WalkerArray * wArray);
 
-void printWKCN( WalkerCurNext * wkcn, FILE * stream);
-void printWarray(const GraphTableEntry * gt_ref,  WalkerArray *wArray, FILE * stream);
 
 uint8_t initWalkerCurNext(WalkerCurNext * wkcn , uint32_t size);
 void freeWalkerCurNext(WalkerCurNext * wkcn);
 
 uint8_t swapWalkerCurNext (WalkerCurNext * wkcn);
+
+#ifdef debug_mode
+
+void printWKCN( WalkerCurNext * wkcn, FILE * stream);
+void printWarray(const GraphTableEntry * gt_ref,  WalkerArray *wArray, FILE * stream);
+
+#endif
 
 #endif

@@ -373,7 +373,7 @@ printf("it 2\n");
 */
  // printf("%lu\n", calculate_size(367521,791312, 0, 10));
 
-  
+  /*
   GraphTable gtParis; 
   loadGraphTab(&gtParis, "test_graph/gt_test1.csv",  10 ,0);  
 
@@ -387,7 +387,7 @@ printf("it 2\n");
   printGraphTab(&gtParis, stdout);
   printWarray(gtParis.entries, gtParis.warray, stdout);
   printWKCN(gtParis.wkcn, stdout);
-  printLineArr(gtParis.arrLine, stdout);
+  (gtParis.arrLine, stdout);
   printf("-----------\n");
   iterate_ntimes(&gtParis, &t, 1);
 
@@ -398,7 +398,7 @@ printf("it 2\n");
 
   freeGraphTab(&gtParis);
  freeTactics(&t);
-/*
+
   Arena arena_test;
   
   uint8_t failure= init_arena(&arena_test, calculate_size(135525,283956, 1, 1));
@@ -412,8 +412,8 @@ printf("it 2\n");
   while (fgets(line, 256, fparis)) {
   memset(line, 0, 256*sizeof(char));
   }
-  fclose(fparis);*/
+  fclose(fparis);
 
-
+*/
   return 0;
 }

@@ -1,14 +1,5 @@
 #include "movement.h"
-#include "common.h"
-#include "graph_table.h"
 #include "misc.h"
-#include "walker.h"
-#include <stdint.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
 
 uint8_t init_pos(GraphTable * gtable){
     /*inits position of walkers on the graphs; 
@@ -28,7 +19,7 @@ uint8_t init_pos(GraphTable * gtable){
 }//tested ; ok
 
 
-uint8_t prepare_ite( GraphTable * gtable){
+static uint8_t prepare_ite( GraphTable * gtable){
     /*
     prepartion fn to call before iterating; 
     flushes the previous values of flux and position of walkers arrays and 
@@ -48,7 +39,7 @@ uint8_t prepare_ite( GraphTable * gtable){
 
 }//tested ; ok
 
-uint8_t iterate_once(GraphTable * gtable , Tactics * t){
+static uint8_t iterate_once(GraphTable * gtable , Tactics * t){
     /*
     iteration function; 
     for every walker; chooses a node ; update relevant fields for next iteration 
@@ -135,8 +126,9 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
         failure= iterate_once(gtable, tactics);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
+        
     }
-
+ 
     fclose(f_curnum); 
     fclose(f_flux);
     fclose(f_wkpos);
@@ -170,4 +162,4 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     return MV_OK;
 }//done ; tested scaling ; seems constant (great) however 
 //tested outputs; seems ok
-//updated ; not tested 
+//updated ;  tested ; seems ok

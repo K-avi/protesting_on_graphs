@@ -147,6 +147,16 @@ done :
 
     - data analysis is : done (yes. yes. yes.)
 
+    - possibility to start simulation w an array of walkers  ; this allows to "restart" a simul 
+      -d also dumps final flux state so by loading the _hrend and _wkend from a previous dump 
+      you can basically restart a simul w new parameters (nice stuff)
+    
+    - 1/n coeff to not move (ur coeff to move i 1/n where n is the number of walkers  
+      currently at your position)
+    
+    - test the move coeff thingy
+
+    - disable debug in C and make stuff static cuz cleaner n so on 
 
 pending : 
 
@@ -160,12 +170,14 @@ pending :
 
       - use __builtin_prefetch
 
+      - store flux on 16 bits ? I dunno (based thing would be to create a custom 24 bit integer w bit field 
+        but it would kill portability )
+
       - do the malloc wrapper arena/mempool thingy  (YES I WANNA COME ON)
 
-    Misc:    
+    Misc: 
 
-      - possibility to start simulation w an array of walkers 
-
-      - create a small db by randomising simul and write a python script to do queries on it
+      - create a small db by randomizing simul and write a python script to do queries on it
+        actually generate stuff fairly coherently cuz it's more usefull 
 
       - remove curse words from commentaries and documentation

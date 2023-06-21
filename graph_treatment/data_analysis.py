@@ -78,7 +78,9 @@ def mean_results(simul_name, res_name):
     for fname in os.listdir("."):
         if simul_name in fname:
             if n:
-                ret_mat += np.loadtxt(fname)
+                cur = np.loadtxt(fname)
+                ret_mat += cur
+                del(cur)
             else:
                 ret_mat = np.loadtxt(fname)
             n += 1

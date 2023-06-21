@@ -1,14 +1,10 @@
-
+//unused atm; REALLY want to get back to it at some point
 #include "arena.h"
 #include "graph_table.h"
 #include "misc.h"
 #include "tactics.h"
 #include "walker.h"
 
-
-#include <obstack.h>
-#include <stdint.h>
-//oh boy
 
 uint8_t init_arena(Arena *arena, uint64_t size){
     /*intialises the field of a non null arena*/

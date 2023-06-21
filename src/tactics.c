@@ -1,15 +1,7 @@
 #include "tactics.h"
-#include "common.h"
-#include "graph_table.h"
 #include "misc.h"
 #include "walker.h"
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <float.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 uint8_t initTactics(Tactics * t, uint32_t size){
     /*initialises a Tactics ptr */
@@ -31,7 +23,7 @@ void freeTactics( Tactics * t){
     if(t->rule_arr)free(t->rule_arr);
 }//tested ;  ok
 
-uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun fn){
+static uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun fn){
     /*adds a rule function to a tactics structure*/
     if(!t){ report_err("addRule", T_NULL); return T_NULL;}
 
@@ -53,7 +45,7 @@ uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun fn){
 }//tested ;ok
 //assumed that parameters are passed correctly ; do not call outside of parse args
 
-uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index){
+static uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index){
     /*
     chooses a random neighboor node at entry node from in a gt;
     
@@ -78,7 +70,7 @@ uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_ind
     return T_OK;
 }// new version ;tested ; seems ok
 
-uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
     /*
     chooses the neighbor with the most entry and goes there 
 
@@ -120,7 +112,7 @@ uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walk
 }//tested; seems ok
 
 
-uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t walker_index){
     /*
     calculates the sum of the number of walkers stored on the neighbor nodes 
     of node_from ; associates coefficient proportionnal to the number of 
@@ -171,7 +163,7 @@ uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32
 }//tested; 
 //seems ok
 
-uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
     /*
     where d(n) is the number of neighbors of n
     O(d(n)*a) where d(n) is the degree of neighboors and a is the 
@@ -225,7 +217,7 @@ uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walke
 }// tested; seems ok ; awful tbh
 
 
-uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
     /*
     will node move the walker 
     does so by setting it's next node to it's current node and not updating any flux.
@@ -242,7 +234,7 @@ uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_ind
 }//tested ; seems ok
 //make a metarule
 
-uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice) {
+static uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice) {
     /*the hell */
   
     if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
@@ -261,21 +253,37 @@ uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint32_t c
 
     return T_OK;
 }//tested; weird ; seems ok
-//make a metarule
 
 
-uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice ){
+static uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice ){
     /*O(1)
     returns true if the value generated is higher than the constant 
-    probability to move */
+    probability to move 
+    */
     if(!movement_choice) { report_err( "rule_speed_constant", GT_NULL ) ; return GT_NULL; }
     
 
     *movement_choice=  ((rand()%UINT32_MAX))+1 > choice_coeff ;
     return T_OK;
-}
-//tested ; seems ok
+}//tested ; seems ok
 
+static uint8_t rule_speed_crowd(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice) {
+    /*
+    kinda weird but prolly ok ; 
+    maybe shouldn't use double ? 
+    and calculate w integers instead I dunno
+    */
+  
+    if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
+    if(node_from>gtable->table_size) { report_err( "rule_speed_constant", GT_SIZE ) ; return GT_SIZE;}
+
+    double mv_chance =  1.0 /(double)gtable->wkcn->cur_num[node_from] ;
+    double mv_choice = (double)rand()/(double)RAND_MAX ;
+    
+    *movement_choice = mv_choice <= mv_chance;
+
+    return T_OK;
+}// tested ; seems ok
 
 
 uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index){
@@ -374,7 +382,7 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
     return T_OK;
 }//new version; tested;seems ok ; error prone
 
-uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fun * rule_fun_arr){
+static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fun * rule_fun_arr){
     /*parses a single rule str*/
     if(!rule_fun_arr){ report_err("parse_rule_str", PRS_NULL); return PRS_NULL;}
 
@@ -400,8 +408,8 @@ uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fu
         }else if (!strncmp(rule_str, "sleep", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_sleep;
-        }else if (!strncmp(rule_str, "mconst", 6) || !strncmp(rule_str, "mprop", 5)){
-            //hello there 
+        }else if (!strncmp(rule_str, "mconst", 6) || !strncmp(rule_str, "mprop", 5) || !strncmp(rule_str, "mcrowd", 6)){
+            //hello there :)
         }else{
             report_err("parse_rule_fn", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;
         }
@@ -447,6 +455,10 @@ static uint8_t parse_meta_rules( uint8_t argc, char ** argv, uint8_t* rule_count
                 if(end==str_coeff){ report_err("parse_meta_rules", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
 
                 t->meta_function.rule_coeff= (uint32_t) coeff;
+            }else if (!strncmp(argv[i], "mcrowd" , 6)){  //doesn't check for bad stuff 
+            //after it ; I don't think it really matters tbh
+                t->meta_function.meta_function=&rule_speed_crowd;
+                t->meta_function.rule_coeff= 0;
             }else{
                 report_err("parse_meta_rules", PRS_INVALID_FORMAT);
                 return PRS_INVALID_FORMAT;

@@ -1,9 +1,7 @@
 #include "restart_sim.h"
-#include "common.h"
-#include "graph_table.h"
 #include "misc.h"
 #include "walker.h"
-#include <stdint.h>
+
 
 
 uint8_t load_warray( GraphTable * gtable, char * path){
@@ -36,4 +34,4 @@ uint8_t load_warray( GraphTable * gtable, char * path){
     }
     fclose(f);
     return WA_OK;
-}//done ; not tested ;error prone 
+}//done ; tested ; seems ok 

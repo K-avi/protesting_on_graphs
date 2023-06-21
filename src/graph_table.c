@@ -1,7 +1,7 @@
 #include "graph_table.h"
 #include "common.h"
 #include "misc.h"
-#include <stdint.h>
+
 
 static uint8_t initGtEntry( GraphTableEntry * gentry ){
     /*

@@ -57,12 +57,12 @@ uint8_t writeGraphTab( GraphTable * gt,  char *path );
 
 uint8_t printGraphTab( GraphTable * gt, FILE * stream);
 
-
-void printLineArr( LineArray * lineArr, FILE * stream);
-
 uint8_t swap_flux_curnext(LineArray * larr );
 
+
 #ifdef debug_mode 
+void printLineArr( LineArray * lineArr, FILE * stream);
+
 
 #endif
 

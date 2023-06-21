@@ -1,9 +1,4 @@
 #include "misc.h"
-#include "common.h"
-#include "graph_table.h"
-#include "walker.h"
-#include <stdint.h>
-#include <stdio.h>
 /*
 this file contains the realloc functions for every dynamic array in the project 
 to avoid boilerplates; dynamic arrays reallocations will be handled here

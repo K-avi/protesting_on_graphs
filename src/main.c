@@ -8,13 +8,14 @@
 
 
 #include <bits/getopt_core.h>
+#include <stdint.h>
 #include <time.h>
 
 
 int main(int argc , char ** argv){
 
     int8_t c;
-    uint8_t helpset=0 , dumpset=0, loadset=0, fluxset;
+    uint8_t helpset=0 , dumpset=0, loadset=0, fluxset=0;
     uint16_t flux_dump_start = 0;
     char * trace_name =NULL, *warray_name =NULL;
     while ((c = getopt(argc, argv, "hd:w:l:")) != -1) {
@@ -71,6 +72,7 @@ int main(int argc , char ** argv){
     char * end=argv[2+optset];
 
     //parses number of walkers
+    printf("%s\n", argv[2]);
     double walker_coeff=  (double) strtod( argv[2+optset], &end );
     if(end == argv[2+optset]){
         fprintf(stderr, "2usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
@@ -91,25 +93,27 @@ int main(int argc , char ** argv){
     time( &timer);
     srand(timer);
 
-    //init graph 
-    GraphTable gtable; 
-    uint8_t failure = loadGraphTab(&gtable, path, walker_coeff, 0);
-    if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
-
-
     //init tactics
+    uint8_t prop_flag = 0 ;
     Tactics tactics; 
-    failure= initTactics(&tactics, DEFAULT_CAPA_TACTICS);
+    uint8_t failure= initTactics(&tactics, DEFAULT_CAPA_TACTICS);
     if(failure) {report_err("in main loadGraphTab call", failure); exit(failure);}
     //tries to parse the tactics arg if they are present 
     //if the program is called without it ; simply uses the rand rule
+
     if(argc>4){
-        failure=parse_args(&tactics, argc-4-optset, (argv+4+optset));
-        if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
+        failure=parse_args(&tactics, argc-4-optset, (argv+4+optset), &prop_flag);
+        if(failure){ report_err("in main parse args 1 call", failure); exit(failure);}
     }else{//hmmm
-        failure = parse_args(&tactics, 0, NULL);
-         if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
+        failure = parse_args(&tactics, 0, NULL, &prop_flag);
+         if(failure){ report_err("in main parse args 2 call", failure); exit(failure);}
     }
+
+
+    //init graph 
+    GraphTable gtable; 
+    failure = loadGraphTab(&gtable, path, walker_coeff, 0, prop_flag );
+    if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
    
     //starts the simulation w randpos or pos stored at warray_name
     if(!loadset){

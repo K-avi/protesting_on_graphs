@@ -246,27 +246,33 @@ static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t
     if(node_from>gtable->table_size) { report_err( "rule_propulsion", GT_SIZE ) ; return GT_SIZE;} 
     if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_propulsion", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;}
 
-    int64_t flux_max=INT64_MIN;
     GraphTableEntry * cur_entry = &gtable->entries[node_from];
     Line * line_to=NULL;
 
     if(cur_entry->neighboor_num==1 &&  //checks if u can't move ; sleep if it's the case 
        gtable->warray->array_prev[walker_index].index_entry==
        (cur_entry->first_neighboor_ref)->node_index){
+   
+         
         return rule_sleep(gtable, node_from, walker_index);
     }
 
-    uint32_t neighboor_chosen = rand()%gtable->entries[node_from].neighboor_num;
-    line_to = gtable->entries[node_from].first_neighboor_ref+ (neighboor_chosen%gtable->entries[node_from].neighboor_num);
-     
-    //checks that u don't go to the last seen node 
-    if(line_to->node_index == gtable->warray->array_prev[walker_index].index_entry){
-        uint32_t p_m = rand()%2;
-        if(p_m){
-            line_to = gtable->entries[node_from].first_neighboor_ref+ (neighboor_chosen+1%gtable->entries[node_from].neighboor_num);
-        }else{
-            line_to = gtable->entries[node_from].first_neighboor_ref+ (neighboor_chosen-1%gtable->entries[node_from].neighboor_num);
-        }
+    uint32_t neighbor_num =gtable->entries[node_from].neighboor_num;
+    Line * filtered_tab[neighbor_num-1];
+    uint32_t cpt=0;
+
+    //generates array of neighbor to pull from 
+    for(uint32_t i=0; i<neighbor_num ; i++){
+        line_to = (gtable->entries[node_from].first_neighboor_ref +i);
+        if( line_to->node_index != gtable->warray->array_prev[walker_index].index_entry)
+            filtered_tab[cpt++]= line_to;
+    }
+    if(cpt!=0){
+        line_to = filtered_tab[rand()%cpt];
+    }else{ //weird ass case ; happened to me bc a node had "two lines" to the same node which 
+    //like some type of multi graph
+        printf("sleepy sleep \n");
+        return rule_sleep(gtable, node_from, walker_index);
     }
     //update pos / flux
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
@@ -440,7 +446,7 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
     return T_OK;
 }//new version; tested;seems ok ; error prone
 
-static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fun * rule_fun_arr){
+static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, rule_fun * rule_fun_arr, uint8_t * prop_flag){
     /*parses a single rule str*/
     if(!rule_fun_arr){ report_err("parse_rule_str", PRS_NULL); return PRS_NULL;}
 
@@ -466,6 +472,7 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "propu", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_propulsion;
+            *prop_flag=1;
         }else if (!strncmp(rule_str, "mconst", 6) || !strncmp(rule_str, "mprop", 5) || !strncmp(rule_str, "mcrowd", 6)){
             //hello there :)
         }else{
@@ -532,7 +539,7 @@ static uint8_t parse_meta_rules( uint8_t argc, char ** argv, uint8_t* rule_count
 //new version; not tested; seems ok
 //so f***** ugly 
 
-uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
+uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv, uint8_t* prop_flag ){
     /*
     parses a list of rules to append to a tactic t 
     */
@@ -562,7 +569,7 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv ){
     if(!rule_arr) { free(coeff_arr); report_err("parse_args malloc rule", PRS_NULL); return PRS_NULL ;}
 
     
-    failure = parse_rule_fn(argc, argv, rule_count,rule_arr);
+    failure = parse_rule_fn(argc, argv, rule_count,rule_arr, prop_flag);
     if(failure) { free(coeff_arr); free(rule_arr); report_err("parse_args", failure); return failure;}
 
     failure = parse_rule_coeff(argc, argv, rule_count, coeff_arr);

@@ -172,6 +172,9 @@ done :
 
     - propulsion rule written (parsing + actual rule ) 
 
+    - test propulsion 
+
+
 
 
 pending : 
@@ -179,8 +182,6 @@ pending :
 
 
     Urgent (necessary to launch db gen ): 
-
-      - test propulsion 
 
       - load lines n calculate the mean flux on last iterations from python 
 

@@ -2,7 +2,6 @@
 #include "common.h"
 #include "misc.h"
 
-
 static uint8_t initGtEntry( GraphTableEntry * gentry ){
     /*
     initialises a non null GraphTableentry
@@ -76,7 +75,7 @@ void printLineArr( LineArray * lineArr, FILE * stream){
     }
 }
 
-uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t warray_size ,uint32_t curgen ){
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t warray_size ,uint32_t curgen , uint8_t prop_flag){
     /*
     initialises a non null graph table ; sets it's entries to default values and initialises 
     it's walker entries
@@ -105,7 +104,7 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
 
     gt->warray= malloc(sizeof(WalkerArray));
     if(!gt->warray) return WA_ALLOC;
-    failure=initWalkerArray(gt->warray, warray_size);
+    failure=initWalkerArray(gt->warray, warray_size, prop_flag);
     if(failure) return failure;
 
     gt->wkcn= malloc(sizeof(WalkerCurNext));
@@ -223,7 +222,7 @@ static bool emptyLine( char * str){
     return (*str=='\0' || *str=='\n');
 }
 
-uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t curgen){
+uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t curgen, uint8_t prop_flag){
     /*
     takes a non initialised ; non null , empty gt and loads a graph stored at path into it
     also pass walk table entry size parameter cuz it's better looking than to init w a global var
@@ -263,7 +262,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t cu
     else{fclose(f); report_err("loadGraphTab parse1", GT_PARSE); return GT_PARSE;}
 
     //initialises graph with values consumed on the first line
-    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, (uint32_t) (table_size* warray_coeff),curgen);
+    uint8_t failure= initGraphTab(gt, arrline_size,  table_size, (uint32_t) (table_size* warray_coeff),curgen, prop_flag);
     if(failure) { fclose(f);  report_err("loadGraphTab" ,failure); return failure;}
 
     uint32_t cpt=0; 

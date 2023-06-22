@@ -43,7 +43,7 @@ of the results of each rule or something
 uint8_t initTactics(Tactics * t, uint32_t size);
 void freeTactics( Tactics * t);
 
-uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv );
+uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv , uint8_t *prop_flag);
 
 uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index);
 

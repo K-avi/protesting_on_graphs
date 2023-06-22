@@ -30,7 +30,7 @@ uint8_t swap_flux_curnext(LineArray * larr ){
     memset(larr->next_flux, 0, larr->size*sizeof(uint32_t));
 
     return LARR_OK;
-}
+}//ok
 
 static uint8_t initnLineArr( LineArray * lineArr, uint32_t arrline_size){
     /*

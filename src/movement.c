@@ -1,5 +1,9 @@
 #include "movement.h"
+#include "common.h"
+#include "graph_table.h"
 #include "misc.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 uint8_t init_pos(GraphTable * gtable){
     /*inits position of walkers on the graphs; 
@@ -10,7 +14,7 @@ uint8_t init_pos(GraphTable * gtable){
     if(!gtable){ report_err("init_pos", GT_NULL); return GT_NULL;}
 
     for(uint32_t i=0; i<gtable->warray->size;i++){
-        uint32_t randval= (uint32_t) rand()%gtable->table_size;
+        uint32_t randval = (uint32_t) rand()%gtable->table_size;
         
         gtable->warray->array[i].index_entry=randval;
         gtable->wkcn->next_num[randval]++;
@@ -58,7 +62,7 @@ static uint8_t iterate_once(GraphTable * gtable , Tactics * t){
     }
     return MV_OK;
 }//tested; seems ok
-//new version relies on new implem of tactics which is being tested 
+//ok
 
 uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_num){
     /*
@@ -80,7 +84,7 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_nu
     return MV_OK;
 }//tested; ok
 
-uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num, char * trace_name){
+uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num, char * trace_name, uint16_t flux_start){
     /*
     O(w*i)
     clone of iterate_ntimes that dumps the graph after each iteration
@@ -100,16 +104,21 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     char * trace_walkerpos=malloc( (8+ strnlen(trace_name,249 )) * sizeof(char)); ; 
     snprintf(trace_walkerpos, 256, "%s_wkpos", trace_name);
 
-    FILE * f_hr = fopen(trace_human_readable, "ab");
-    FILE * f_flux = fopen(trace_flux, "ab");
-    FILE * f_curnum = fopen(trace_curnum, "ab");
-    FILE * f_wkpos = fopen(trace_walkerpos, "ab");
+    char * trace_lines=malloc( (7+ strnlen(trace_name,250 )) * sizeof(char)); ; 
+    snprintf(trace_lines, 256, "%s_lines", trace_name);
+
+    FILE * f_hr = fopen(trace_human_readable, "w");
+    FILE * f_flux = fopen(trace_flux, "wb");
+    FILE * f_curnum = fopen(trace_curnum, "wb");
+    FILE * f_wkpos = fopen(trace_walkerpos, "wb");
+    FILE * f_lines = fopen(trace_lines, "w");
     
     free(trace_human_readable);free(trace_flux); 
-    free(trace_curnum); free(trace_walkerpos);
+    free(trace_curnum); free(trace_walkerpos); free(trace_lines);
 
     //dumps human readable info once
-    if(!(f_hr && f_flux && f_curnum && f_wkpos)){
+
+    if(!(f_hr && f_flux && f_curnum && f_wkpos && f_lines)){
         //printf("%p %p %p %p\n%s %s %s %s\n", f_hr , f_flux , f_curnum , f_wkpos, trace_human_readable, trace_flux, trace_curnum , trace_walkerpos);
         report_err("iterate_ntimes_dump",  ERRGLAG_CANTWRITE);
         return ERRGLAG_CANTWRITE;
@@ -117,12 +126,21 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     printGraphTabVar(gtable, f_hr);
     fclose(f_hr);
 
+    write_lines( gtable , f_lines );
+    fclose(f_lines);
+
     uint8_t failure;
 
     for(uint32_t i=0; i<iter_num; i++){
         
         failure= prepare_ite(gtable);
-        dump_trace(gtable, f_curnum, f_flux, f_wkpos);
+       
+        if( flux_start >= i){ //dumps flux only if reached 
+            dump_trace(gtable, f_curnum, f_flux, f_wkpos);
+        }else{
+             dump_trace(gtable, f_curnum, NULL, f_wkpos);
+        }   
+
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
         failure= iterate_once(gtable, tactics);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
@@ -136,7 +154,6 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     //dumps final graph state 
     char * trace_hrend = malloc( (8+ strnlen(trace_name,249)) * sizeof(char));
     snprintf(trace_hrend, 256, "%s_hrend", trace_name);
-    
     FILE * f_hrend = fopen(trace_hrend, "w");
     free(trace_hrend);
     if(!f_hrend){
@@ -149,7 +166,6 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     //dumps final position of wk
     char * trace_wkend=malloc( (8+ strnlen(trace_name,249 )) * sizeof(char)); ; 
     snprintf(trace_wkend, 256, "%s_wkend", trace_name);
-    
     FILE * f_wkend = fopen(trace_wkend, "w");
     free(trace_wkend);
     if(!f_wkend){
@@ -158,7 +174,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     }
     fwrite( gtable->warray->array, sizeof(Walker), gtable->warray->size , f_wkend);
     fclose(f_wkend);
-
+    
     return MV_OK;
 }//done ; tested scaling ; seems constant (great) however 
 //tested outputs; seems ok

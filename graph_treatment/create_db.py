@@ -14,9 +14,9 @@ def gen_opt():
     """
     str_ret=""
     nb_opt= r.randint(1,3)
-    meta_opt= r.randint(0,1)
+    meta_opt= r.randint(0,2)
     opt_strarr= [ "rand:", "attra:", "align:", "attco:"]
-    meta_strarr= ["mconst:", "mprop:"]
+    meta_strarr= ["mconst:", "mprop:", "mcrowd"]
     
     #builds the options
     for i in range (0, nb_opt):
@@ -27,8 +27,10 @@ def gen_opt():
     #builds the meta option    
     if meta_opt==0:
         str_ret+=meta_strarr[0]+str(r.randrange(0,1))+" "
-    else: 
+    elif meta_opt==1: 
         str_ret+=meta_strarr[1]+str(r.randint(1,100))+" "
+    else: 
+        str_ret += meta_strarr[2]
     
     return str_ret
 
@@ -49,15 +51,17 @@ def gen_db():
     #constants
     
     #coordinates from geohack
-    cities= [ ["paris",[48.856667, 2.352222]] , 
-              ["barcelona" [41.363333, 2.166944]], 
-              ["kolkata" ,[22.5726459, 88.3638953]],
-              ["chicago", [41.86777778,-87.66500000]] #except for chicago cuz I couldn't find it
-              ["teheran", [35.696111, 51.423056]]
+    cities= [
+              ["paris", [48.856667, 2.352222] ] , 
+              ["barcelona", [41.363333, 2.166944] ], 
+              ["kolkata" ,[22.5726459, 88.3638953] ],
+              ["chicago", [41.86777778, -87.66500000] ], #except for chicago cuz I couldn't find it
+              ["teheran", [35.696111, 51.423056]],
             ]
     #fixed at 2000
-    it_par = np.linspace(10, 200, num=20, dtype=int)
-    gsize_par = np.linspace(200, 5000, num=49 , dtype=int)
+    it_par = 2000
+    gsize_par = np.linspace(500, 5000, num=46 , dtype=int)
+    
     while True:
         
         
@@ -69,37 +73,63 @@ def gen_db():
         print(f"simul {nb_sim_ran} started with parameters:\nit: {nb_it_gen}\nopt: {simul_opt}\ngsize: {graph_size}\ncity : {city[0]}")
        
         #generates graph and retrieves number of nodes 
-        gg.gen_graph(city[1][0] city[1][1], graph_size , 10 , "tmp_graph")
+        gg.gen_graph(city[1][0], city[1][1], graph_size , 10 , "tmp_graph")
         with open("tmp_graph","r") as tgc:
             nb_nodes = tgc.readline().split(",")[0]
-        tgc.close()
         
         #writes the parameters of nth simul
-        with open("sim_par", "a") as param_file:
-            param_file.write(f"{nb_sim_ran},{nb_it_gen},{simul_opt},{graph_size},{nb_nodes},{city[0]}\n")
-        param_file.close()
+        with open("index_base.csv", "a") as param_file:
+            param_file.write(f"{nb_sim_ran},{nb_it_gen},{simul_opt},{graph_size},{nb_nodes},{city[0]}")
+        
         print(f"generated graph with {nb_nodes} nodes\n")   
            
         #runs simul and produces a result file
         start = t.time()
-        ars.run_simul_nth(8,8,"tmp_graph",1, nb_it_gen, sim_opt ,"trace", "res_sim")
+        ars.run_simul_nth(1,1,"tmp_graph",1, nb_it_gen, sim_opt ,"trace", "res_sim")
         print(f"finished simul in {t.time()-start} seconds, starting data analysis\n")
         
         #analyze the data of the simul and cleans the directory
-        dt.mean_results(f"ressim_{nb_sim_ran}")
+        dt.mean_results("res_sim", f"base/{nb_sim_ran}_simul")
         dt.clean_results("res_sim")
-        print(f"finished data analysis results are stored at ressim{nb_sim_ran}\n")
+        print(f"finished data analysis results are stored at base/{nb_sim_ran}_simul\n")
         
         nb_sim_ran+=1
         
-def query(string):
+def gen_db_var(graph_path, nb_it):
+    """ 
+    generates the db w iterations instead of 
+    randomly pulling graphs
+    """
+    
+    coeff = np.linspace(0, 1, 10)
+    rdcoeff = np.linspace(0, 0.5 , 5)
+    
+def query(query, db_name):
     """
     parses a simple query string 
     currently not done 
     placeholder
     """
-
-    return 0
+    ret=[]
+    if query.startwith("or_select"):
+        args = query.split(" ")[1::]
+        with open(f"{db_name}/index_base.txt") as index:
+            for line in index : 
+               if any( arg in line for arg in args ):
+                   ret+=int(line.split(",")[0])
+    
+    elif query.startwith("and_select"):     
+        a=1
+    elif string.startwith("plot"): 
+        
+        for file in os.listdir(db_name):
+            args = query.split(" ")[1::]
+            if(file.split("_")[1] in  args):
+                ret.append(file)
+        print(ret)
+    else : 
+        print("invalid query please print a valid query")
+    return 0 
     
         
 if __name__=='__main__':

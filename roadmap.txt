@@ -158,12 +158,45 @@ done :
 
     - disable debug in C and make stuff static cuz cleaner n so on 
 
+    - density of groups -> done 
+
+    - number of occupied nodes ->  done 
+
+    - option to dump flux from a certain it onward  
+
 pending : 
+
+
+
+    Urgent (necessary to launch db gen ): 
+
+      - implement flux thingy in c
+
+      - propulsion rule 
+
+      - generate db function 
+
+      
+
 
     Data analysis : 
       
-      - the flux thing I forgot what it was supposed to be exactly 
- 
+      - the flux thing I forgot what it was supposed to be exactly :
+        during the last 10 iteratiosn ; the sum of flux from a to b 
+        minus the sum of flux from b to a 
+        then sum all of that ; divide it by the nb of walkers 
+        times the nb of iteration the flux has been dumped for 
+
+      - function to generate db ( see meeting notes )
+
+      - write a clean plot script 
+        
+      - write a clean dt analysis script 
+
+    C features :
+
+      - the propulsion rule 
+        
     C Optimization : 
 
       - evaluate meta fns with variant of other fns and stuff to try and gain performance
@@ -177,7 +210,36 @@ pending :
 
     Misc: 
 
-      - create a small db by randomizing simul and write a python script to do queries on it
-        actually generate stuff fairly coherently cuz it's more usefull 
-
       - remove curse words from commentaries and documentation
+    
+      - opti then do some other stuff 
+
+
+notes of the Wednesday's meeting : 
+
+
+implement the propulsion thing (don't go to the last seen node ) (don't move if u have no other choice)
+(choose a random one among the ones remaining)
+
+
+
+how to generate the db :
+
+step of 0.1
+
+coeff4 (random) between 0 and 0.5
+not Attract and Attco at the same time 
+
+coeff1 * Attract + coeff2 * Align + coeff3 * Propulsion + coeff4 * Random
+
+coeff1 * Attco + coeff2 * Align + coeff3 * Propulsion + coeff4 * Random
+
+clean plot script 
+
+
+will dump every line of the array in a clean way 
+
+like a bin arr of 32 bis integers that looks like and so on 
+will load this w python and then use it to understand which 
+flux is from which line 
+a0,b0,a1,b1,a2,b2

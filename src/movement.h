@@ -8,13 +8,15 @@
 #include "walker.h"
 
 
+
 uint8_t init_pos(GraphTable * gtable); //call before iterating 
 
 
 uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_num); 
 /*main iteration function O(w*i) w number of walkers, i number of iterations*/
 
-uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num, char * trace_name);
+uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num,
+                             char * trace_name, uint16_t flux_start);
 //same as iterate_ntimes but also dumps graph
 
 uint8_t printGraphTabVar(GraphTable * gt, FILE * stream);

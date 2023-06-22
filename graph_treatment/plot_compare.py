@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 
 plt.figure(1)
 
-dt_align = np.loadtxt("res_200_paris_align")
-dt_attra = np.loadtxt("res_200_paris_attra")
-dt_attco = np.loadtxt("res_200_paris_attco")
-dt_noisy_align = np.loadtxt("res_200_paris_noisy_align")
-dt_noisy_attra = np.loadtxt("res_200_paris_noisy_attra")
+dt_align = np.loadtxt("res_100_paris_align_var")
+dt_attra = np.loadtxt("res_100_paris_attra_var")
+dt_attco = np.loadtxt("res_100_paris_attra_coeff_var")
+dt_noisy_align = np.loadtxt("res_100_paris_noisy_align_var")
+dt_noisy_attra = np.loadtxt("res_100_paris_noisy_attra_var")
 
 plt.plot(dt_align.T[0], color='r', label='align')
 plt.plot(dt_attra.T[0], color='y', label='attra')
@@ -71,5 +71,29 @@ plt.plot(dt_noisy_attra.T[4], color='purple', label='noisy attra')
 
 plt.legend()
 plt.title("evolution of the number of 'groupless walkers'")
+
+
+plt.figure(6)
+
+plt.plot(dt_align.T[5], color='r', label='align')
+plt.plot(dt_attra.T[5], color='y', label='attra')
+plt.plot(dt_attco.T[5], color='g', label='attra coeff')
+plt.plot(dt_noisy_align.T[5], color='blue', label='noisy align')
+plt.plot(dt_noisy_attra.T[5], color='purple', label='noisy attra')
+
+plt.legend()
+plt.title("evolution of the mean density of the groups")
+
+
+plt.figure(7)
+
+plt.plot(dt_align.T[6], color='r', label='align')
+plt.plot(dt_attra.T[6], color='y', label='attra')
+plt.plot(dt_attco.T[6], color='g', label='attra coeff')
+plt.plot(dt_noisy_align.T[6], color='blue', label='noisy align')
+plt.plot(dt_noisy_attra.T[6], color='purple', label='noisy attra')
+
+plt.legend()
+plt.title("evolution of the number of occupied nodes")
 
 plt.show()

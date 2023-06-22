@@ -8,29 +8,6 @@ import time as t
 import argparse as args
 
 
-def gen_data_groups(t_curnum, adj, mobility_mean):
-    """
-    np.array[1D], scipy.sparse.csgraph , np.array[2D] ->
-    array[4] nb_group, spread_group , group size, nb lonely wk
-    
-    generates the data related to group for
-    one iteration
-    
-    function was rewritten by https://github.com/Pacidus
-    """
-    Nitt = t_curnum.shape[0]
-    ret = np.zeros((Nitt, 5))
-    ret[:, 3] = mobility_mean
-    for itt, cur in enumerate(t_curnum):
-        nadj = lt.merge_wknum_adj_mat(cur, adj)
-        nb_gp, labels = dt.get_adj_group(cur, nadj)
-
-        ret[itt, 0] = nb_gp
-        ret[itt, 1] = dt.spread_gp(nb_gp, labels)
-        ret[itt, 2] = dt.size_gp(cur, nb_gp, labels)
-        ret[itt, 4] = cur[labels == -1].sum()
-    return ret
-
 
 def run_simul_once(
     nb_threads, path_graph,
@@ -57,20 +34,19 @@ def run_simul_once(
     # loads the trace
     for i in range(nb_threads):
         tr_comp_name = f"{trace_name}{trace_num}{i}"
-
-        (t_curnum, t_flux, t_wkpos, adj) = lt.load_trace(tr_comp_name, nb_it)
-        del t_flux
       
-        lt.clean_trace(tr_comp_name)
         # append the results of analysis functions to a file used to generate mean results of the
         # simulation
-
+        t_curnum = lt.load_trace_elem(tr_comp_name+"_curnum", nb_it)
+        t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
         mobility_mean = dt.stat_mobility(t_wkpos, t_curnum.shape[1])
-
-        group_data_mat = gen_data_groups(t_curnum, adj, mobility_mean)
-        del (t_curnum, adj)
         del t_wkpos
+
+        adj = lt.load_adj_mat(tr_comp_name+"_hr")
+        group_data_mat = dt.gen_data_groups(t_curnum, adj, mobility_mean)
+        del (t_curnum, adj)
         
+        lt.clean_trace(tr_comp_name)
         np.savetxt(f"{result_file}{i}", group_data_mat)
 
 

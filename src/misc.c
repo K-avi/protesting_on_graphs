@@ -1,4 +1,9 @@
 #include "misc.h"
+#include "common.h"
+#include "graph_table.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/types.h>
 /*
 this file contains the realloc functions for every dynamic array in the project 
 to avoid boilerplates; dynamic arrays reallocations will be handled here
@@ -90,15 +95,37 @@ void report_err( char * msg , uint8_t flag){ //could be a macro
 }
 
 
+uint8_t write_lines( GraphTable * gt ,FILE * stream ){
+  /*
+  writes the lines in the order they appear in the linearr 
+  in order for the python script to be able to make sense of the flux 
+  */
+  if(!gt){report_err("dump_lines", GT_NULL); return GT_NULL;}
+  if(!stream){ report_err("dump_lines", ERRFLAG_NOFILE); return ERRFLAG_NOFILE;}
+
+  for(uint32_t i =0 ; i<gt->table_size; i++){
+    for(uint32_t j =0 ; j<gt->entries[i].neighboor_num; j++){
+     
+      fprintf(stream, "%u %u\n", i, (gt->entries[i].first_neighboor_ref+j)->node_index);
+    }
+  }
+
+  return GT_OK;
+}
+
+
 void dump_trace(GraphTable * gt, FILE * stream_curnum , FILE * stream_flux, FILE * stream_walker ){
   //the trace function to dump graph after it
 
    //dumps the bin array of the walker's position in the file for curnum trace
-   fwrite(gt->wkcn->cur_num, sizeof(uint32_t), gt->wkcn->size, stream_curnum);
+   if(stream_curnum)
+    fwrite(gt->wkcn->cur_num, sizeof(uint32_t), gt->wkcn->size, stream_curnum);
    //dumps the binary array of the flux at each line in the file for flux trace
-   fwrite(gt->arrLine->cur_flux, sizeof(uint32_t), gt->arrLine->size, stream_flux);  
+   if(stream_flux)
+    fwrite(gt->arrLine->cur_flux, sizeof(uint32_t), gt->arrLine->size, stream_flux);  
    //dumps the bin array of walkers
-   fwrite(gt->warray->array, sizeof(Walker), gt->warray->size , stream_walker);
+   if(stream_walker)
+    fwrite(gt->warray->array, sizeof(Walker), gt->warray->size , stream_walker);
 }//tested; ok 
 //might be an issue if the walkers have more fields added 
 //if it happens separate their immutable states from their mutable ones 

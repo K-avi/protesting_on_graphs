@@ -1,4 +1,5 @@
 #include "tactics.h"
+#include "common.h"
 #include "misc.h"
 #include "walker.h"
 

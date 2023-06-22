@@ -7,15 +7,17 @@
 #include "restart_sim.h"
 
 
+#include <bits/getopt_core.h>
 #include <time.h>
 
 
 int main(int argc , char ** argv){
 
     int8_t c;
-    uint8_t helpset=0 , dumpset=0, loadset=0;
+    uint8_t helpset=0 , dumpset=0, loadset=0, fluxset;
+    uint16_t flux_dump_start = 0;
     char * trace_name =NULL, *warray_name =NULL;
-    while ((c = getopt(argc, argv, "hd:w:")) != -1) {
+    while ((c = getopt(argc, argv, "hd:w:l:")) != -1) {
         
         switch (c) {
         case 'h':
@@ -29,6 +31,10 @@ int main(int argc , char ** argv){
         case 'w':
             loadset = 2; 
             warray_name = optarg;   
+            break;
+        case 'l':
+            fluxset = 2; 
+            flux_dump_start = atoi(optarg);   
             break;     
 
         case '?':
@@ -36,6 +42,8 @@ int main(int argc , char ** argv){
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
                 
             }else if(optopt=='w'){
+                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+            }else if(optopt=='l'){
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
             }else{
                 fprintf(stderr, "Unknown option character `\\x%x'.", optopt);
@@ -57,7 +65,7 @@ int main(int argc , char ** argv){
         return ERRFLAG_NOFILE;
     }
 
-    uint8_t optset = dumpset + loadset; //number of args to remove 
+    uint8_t optset = dumpset + loadset + fluxset; //number of args to remove 
 
     char * path = argv[1+optset]; 
     char * end=argv[2+optset];
@@ -113,12 +121,12 @@ int main(int argc , char ** argv){
         if(failure){report_err("in main load_warray call", failure); exit(failure);}       
     }
 
-    if(!optset){
+    if(!dumpset){
         failure=iterate_ntimes(&gtable, &tactics, iteration_num);
         if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
     }else{
 
-        failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, trace_name);
+        failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, trace_name, flux_dump_start);
         if(failure){report_err("in main iterate_ntimes_dump call", failure); exit(failure);}
 
     }

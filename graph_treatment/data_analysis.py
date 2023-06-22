@@ -1,7 +1,9 @@
 # this file contains the functions to analyze the data produced by the simulation
 import os
 import numpy as np
+import load_trace as lt
 import scipy.sparse.csgraph as cg
+import argparse as arg
 
 def get_adj_group(node_walker_num_arr, nadj):
     """
@@ -103,3 +105,49 @@ def clean_results(simul_name):
     for fname in os.listdir("."):
         if simul_name in fname:
             os.remove(fname)
+            
+
+def gen_data_groups(t_curnum, adj, mobility_mean):
+    """
+    np.array[1D], scipy.sparse.csgraph , np.array[2D] ->
+    array[4] nb_group, spread_group , group size, nb lonely wk
+    
+    generates the data related to group for
+    one iteration
+    
+    function was rewritten by https://github.com/Pacidus
+    """
+    Nitt = t_curnum.shape[0]
+    ret = np.zeros((Nitt,7  ))
+    ret[:, 3] = mobility_mean
+    for itt, cur in enumerate(t_curnum):
+        nadj = lt.merge_wknum_adj_mat(cur, adj)
+        nb_gp, labels = get_adj_group(cur, nadj)
+
+        ret[itt, 0] = nb_gp
+        ret[itt, 1] = spread_gp(nb_gp, labels)
+        ret[itt, 2] = size_gp(cur, nb_gp, labels)
+        ret[itt, 4] = cur[labels == -1].sum()
+        ret[itt, 5] = ret[itt, 2]/ ret[itt, 1]      
+        ret[itt, 6] = (cur > 0).sum()
+        
+    return ret
+
+
+def main():
+    """
+    placeholder; just call 
+    analysis on sim name given in stdin
+    """
+    
+    print("parsing arguments")
+    parser = args.ArgumentParser(
+        prog="sim_analyzer",
+        description="analyzes the results of an already already ran \
+        simulation"
+    )
+    return 0
+    
+    
+if __name__=='__main__':
+    main()

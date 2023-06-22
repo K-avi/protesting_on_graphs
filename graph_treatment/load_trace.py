@@ -42,6 +42,17 @@ def load_adj_mat(path):
     return sp.csr_array((np.ones(ne), (col, row)), dtype="int8")
 
 
+def load_lines(path): 
+    """
+    str -> np.array[2D]
+    
+    reads the human readable trace
+    corresponding to the line 
+    from file at given path 
+    """
+    
+    return np.loadtxt(path, dtype=np.uint32)
+
 def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     """
     updates a sp.sparse.csgraph representing an adj mat by 
@@ -57,7 +68,7 @@ def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     return nadj
 
 
-def load_trace(trace_name, nb_it, query=[]):
+def load_trace(trace_name, nb_it):
     """
     loads the formatted trace files corresponding to the trace name
     given as argument from the current directory
@@ -71,11 +82,11 @@ def load_trace(trace_name, nb_it, query=[]):
     """
 
     t_curnum = load_trace_elem(trace_name + "_curnum", nb_it)
-    t_flux = load_trace_elem(trace_name + "_flux", nb_it)
+   # t_flux = load_trace_elem(trace_name + "_flux", nb_it)
     t_wkpos = load_trace_elem(trace_name + "_wkpos", nb_it)
     graph = load_adj_mat(trace_name + "_hr")
 
-    return (t_curnum, t_flux, t_wkpos, graph)
+    return (t_curnum, 0, t_wkpos, graph)
 
 
 def clean_trace(trace_name):

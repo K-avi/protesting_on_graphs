@@ -29,7 +29,7 @@ typedef struct s_warray{
 typedef struct s_walker_num_curnext{
     //structure to store the number of walker at each node ;updated to keep track of where 
     //walkers came in and stuff 
-    uint32_t size;
+    uint32_t size; //size of number of nodes
     uint32_t *cur_num;
     uint32_t *next_num; 
 }WalkerCurNext;

@@ -18,9 +18,8 @@ def load_adj_mat(path):
     """
     str -> sp.sparse.csgraph
 
-    creates a dict of the graph rep
-    contained at path (assuming the
-    graph is stored as the custom csv rep)
+    creates a sparse csgraphs matrix
+    of the graph stored at path
     
     function was rewritten by https://github.com/Pacidus
     """
@@ -51,8 +50,10 @@ def load_lines(path):
     from file at given path 
     """
     
-    return np.loadtxt(path, dtype=np.uint32)
+    return np.reshape(np.loadtxt(path, dtype=np.uint32))
 
+
+def 
 def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     """
     updates a sp.sparse.csgraph representing an adj mat by 
@@ -66,28 +67,6 @@ def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     nadj *= nadj.transpose()
     nadj.eliminate_zeros()
     return nadj
-
-
-def load_trace(trace_name, nb_it):
-    """
-    loads the formatted trace files corresponding to the trace name
-    given as argument from the current directory
-    and returns it as a tuple of numpy matrixes.
-    the first element of the tuple is a nb_iteration * nb_nodes matrix
-    containing the evolution of the number of walkers at each node during the simulation
-    the second one is a nb_iteration * nb_lines matrix containing the evolution
-    of the flux stored at each line during the simulation
-    the last one is a  nb_iteration * nb_walkers matrix
-    containing the evolution of the position of each walker during the simulation
-    """
-
-    t_curnum = load_trace_elem(trace_name + "_curnum", nb_it)
-   # t_flux = load_trace_elem(trace_name + "_flux", nb_it)
-    t_wkpos = load_trace_elem(trace_name + "_wkpos", nb_it)
-    graph = load_adj_mat(trace_name + "_hr")
-
-    return (t_curnum, 0, t_wkpos, graph)
-
 
 def clean_trace(trace_name):
     os.remove(trace_name + "_curnum")

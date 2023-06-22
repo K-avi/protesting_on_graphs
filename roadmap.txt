@@ -183,7 +183,22 @@ pending :
 
     Urgent (necessary to launch db gen ): 
 
-      - load lines n calculate the mean flux on last iterations from python 
+      - load lines n calculate the mean flux on last iterations from python : 
+      HOW : 
+            - load the flux trace -> reshape as np arr of np arr t if need be 
+
+            - load the line trace as an array 
+
+            - create an empty sparse csr array or smtg 
+
+            - iterate on the nb of "iterations" of the flux trace 
+            - for each one retrieves the value w flux_trace[i] n line_trace[i]=[a,b]
+              store it in the sparse csr array at [a][b] and 
+
+              at the end of the iteration calculate  like 
+              sum(|sparse[a][b]-sparse[b][a]|)
+            - sum these values 
+            - divide them by nb_waklers * nb_iterations of trace dump 
 
 
     Data analysis : 
@@ -198,13 +213,7 @@ pending :
         
       - write a clean dt analysis script 
 
-    C features :
-
-      - the propulsion rule 
-        
     C Optimization : 
-
-      - evaluate meta fns with variant of other fns and stuff to try and gain performance
 
       - use __builtin_prefetch
 
@@ -219,32 +228,3 @@ pending :
     
       - opti then do some other stuff 
 
-
-notes of the Wednesday's meeting : 
-
-
-implement the propulsion thing (don't go to the last seen node ) (don't move if u have no other choice)
-(choose a random one among the ones remaining)
-
-
-
-how to generate the db :
-
-step of 0.1
-
-coeff4 (random) between 0 and 0.5
-not Attract and Attco at the same time 
-
-coeff1 * Attract + coeff2 * Align + coeff3 * Propulsion + coeff4 * Random
-
-coeff1 * Attco + coeff2 * Align + coeff3 * Propulsion + coeff4 * Random
-
-clean plot script 
-
-
-will dump every line of the array in a clean way 
-
-like a bin arr of 32 bis integers that looks like and so on 
-will load this w python and then use it to understand which 
-flux is from which line 
-a0,b0,a1,b1,a2,b2

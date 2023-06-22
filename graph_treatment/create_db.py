@@ -110,9 +110,9 @@ def gen_db_var(graph_path, nb_it):
             for j in range(0 , 1-r-i, step = 0.1): #align loop 
                 for k in range (0, 1-r-i-k , step = 0.1): #propulsion loop
                     ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
-                                      f"rand:{r} attra:{i} align:{j} propulsion:{k}"
+                                      f"rand:{r} attra:{i} align:{j} propu:{k}"
                                       tmp_trace, f"base/{cpt}_simul")
-                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propulsion:{k}")
+                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propu:{k}")
                     cpt+=1           
     
     for r in range (0 ,0.5 , step=0.1): #rand loop
@@ -120,9 +120,9 @@ def gen_db_var(graph_path, nb_it):
             for j in range(0 , 1-r-i, step = 0.1): #align loop 
                 for k in range (0, 1-r-i-j , step = 0.1): #propulsion loop
                     ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
-                                      f"rand:{r} attco:{i} align:{j} propulsion:{k}"
+                                      f"rand:{r} attco:{i} align:{j} propun:{k}"
                                       tmp_trace, f"base/{cpt}_simul")
-                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propulsion:{k}")
+                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propu:{k}")
                     cpt+=1
     close(index)
     

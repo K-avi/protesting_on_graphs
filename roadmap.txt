@@ -164,19 +164,25 @@ done :
 
     - option to dump flux from a certain it onward  
 
+    - implement flux thingy in c
+
+    - function to generate db ( see meeting notes )
+
+    - generate db function 
+
+    - propulsion rule written (parsing + actual rule ) 
+
+
+
 pending : 
 
 
 
     Urgent (necessary to launch db gen ): 
 
-      - implement flux thingy in c
+      - test propulsion 
 
-      - propulsion rule 
-
-      - generate db function 
-
-      
+      - load lines n calculate the mean flux on last iterations from python 
 
 
     Data analysis : 
@@ -186,8 +192,6 @@ pending :
         minus the sum of flux from b to a 
         then sum all of that ; divide it by the nb of walkers 
         times the nb of iteration the flux has been dumped for 
-
-      - function to generate db ( see meeting notes )
 
       - write a clean plot script 
         

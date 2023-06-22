@@ -4,7 +4,7 @@
 
 /* RAW WALKER ARRAY MANIPULATION */
 
-uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){
+uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset){
     /*
     initialises a non null wArray
     will memleak if called on an already initialised wArray
@@ -16,8 +16,14 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){
     wArray->array=NULL;
     wArray->array = (Walker*) GROW_ARRAY(Walker, wArray->array, 0, size);
     if(!wArray->array) { report_err( "initWalkerArray", WA_ALLOC ) ; return WA_ALLOC;} 
-
     memset(wArray->array, 0, wArray->size*sizeof(Walker));
+
+    wArray->array_prev=NULL;
+    if(prevset){
+        wArray->array_prev = (Walker*) GROW_ARRAY(Walker, wArray->array_prev, 0, size);
+        if(!wArray->array_prev) { report_err( "initWalkerArray", WA_ALLOC ) ; return WA_ALLOC;} 
+        memset(wArray->array_prev, 0, wArray->size*sizeof(Walker));
+    }
 
     return WA_OK;
 }//ok
@@ -26,6 +32,7 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size){
 void freeWalkerArray(WalkerArray * wArray){
     /*yes*/
     free(wArray->array);
+    if(wArray->array_prev) free(wArray->array_prev);
 }//ok
 
 void printWarray(const GraphTableEntry * gt_ref,  WalkerArray *wArray, FILE * stream){

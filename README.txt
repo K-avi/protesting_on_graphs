@@ -1,9 +1,9 @@
-this branch won't stay up for long ; I'll use it while I implement the possibility to 
-restart a simul from a certain state with different rules 
-
-the anonymous walker branch's version of the simul will NOT know which 
-walkers are in a certain node at a certain time ; however it will 
-keep HOW many of them there are in memory 
+this is the propulsion branch ; a subbranch of the anonymous walkers branch 
+which will implement the "propulsion" rule. 
+I don't like the way I'll implement this rule. 
+I think it's ugly; weird looking and that it kinda sucks. 
+So I will never merge it with the anonymous walkers 
+or at least I don't plan to 
 
 This repo contains the code written during my internship at the Lip6 lab. 
 

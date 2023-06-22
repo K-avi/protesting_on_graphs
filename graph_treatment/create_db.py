@@ -101,8 +101,30 @@ def gen_db_var(graph_path, nb_it):
     randomly pulling graphs
     """
     
+    f_index = open("index_base.csv")
     coeff = np.linspace(0, 1, 10)
     rdcoeff = np.linspace(0, 0.5 , 5)
+    cpt=0
+    for r in range (0 ,0.5 , step=0.1): #no mo loop
+        for i in range(0, 1-r , step=0.1): #attra loop 
+            for j in range(0 , 1-r-i, step = 0.1): #align loop 
+                for k in range (0, 1-r-i-k , step = 0.1): #propulsion loop
+                    ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
+                                      f"rand:{r} attra:{i} align:{j} propulsion:{k}"
+                                      tmp_trace, f"base/{cpt}_simul")
+                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propulsion:{k}")
+                    cpt+=1           
+    
+    for r in range (0 ,0.5 , step=0.1): #rand loop
+        for i in range(0, 1-r , step=0.1): #attra coeff  loop 
+            for j in range(0 , 1-r-i, step = 0.1): #align loop 
+                for k in range (0, 1-r-i-j , step = 0.1): #propulsion loop
+                    ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
+                                      f"rand:{r} attco:{i} align:{j} propulsion:{k}"
+                                      tmp_trace, f"base/{cpt}_simul")
+                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propulsion:{k}")
+                    cpt+=1
+    close(index)
     
 def query(query, db_name):
     """

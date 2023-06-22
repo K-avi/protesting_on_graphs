@@ -1,7 +1,10 @@
 #include "tactics.h"
 #include "common.h"
+#include "graph_table.h"
 #include "misc.h"
 #include "walker.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 
 uint8_t initTactics(Tactics * t, uint32_t size){
@@ -235,6 +238,48 @@ static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t wal
 }//tested ; seems ok
 //make a metarule
 
+static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker_index){
+    /*the propulsion itself */
+
+    if(!gtable) { report_err( "rule_propulsion", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_propulsion", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_propulsion", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;}
+
+    int64_t flux_max=INT64_MIN;
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_to=NULL;
+
+    if(cur_entry->neighboor_num==1 &&  //checks if u can't move ; sleep if it's the case 
+       gtable->warray->array_prev[walker_index].index_entry==
+       (cur_entry->first_neighboor_ref)->node_index){
+        return rule_sleep(gtable, node_from, walker_index);
+    }
+
+    uint32_t neighboor_chosen = rand()%gtable->entries[node_from].neighboor_num;
+    line_to = gtable->entries[node_from].first_neighboor_ref+ (neighboor_chosen%gtable->entries[node_from].neighboor_num);
+     
+    //checks that u don't go to the last seen node 
+    if(line_to->node_index == gtable->warray->array_prev[walker_index].index_entry){
+        uint32_t p_m = rand()%2;
+        if(p_m){
+            line_to = gtable->entries[node_from].first_neighboor_ref+ (neighboor_chosen+1%gtable->entries[node_from].neighboor_num);
+        }else{
+            line_to = gtable->entries[node_from].first_neighboor_ref+ (neighboor_chosen-1%gtable->entries[node_from].neighboor_num);
+        }
+    }
+    //update pos / flux
+    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
+    gtable->wkcn->next_num[line_to->node_index]++;
+    gtable->warray->array[walker_index].index_entry= line_to->node_index;
+
+    
+    return T_OK;
+}//not tested ;might be wrong i dunno
+
+
+
+
 static uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice) {
     /*the hell */
   
@@ -303,15 +348,27 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
     if(failure){ report_err("choose_node", failure); return failure;}
 
     if(!mv_check){   
+        
+        uint32_t prev_index= gtable->warray->array[walker_index].index_entry;
         return rule_sleep(gtable,  node_from,  walker_index);
+
+        if(gtable->warray->array_prev)//only used when propulsion is active
+            gtable->warray->array_prev[walker_index].index_entry=prev_index;
     }
 
     for(uint32_t i=0; i<t->numb ; i++){
      
         if( uint_coeff<= t->rule_arr[i].rule_coeff){
-             failure= t->rule_arr[i].rule_function(gtable, node_from, walker_index);
-             if(failure) report_err("choose_node err1", failure);
-             return failure;
+
+            uint32_t prev_index= gtable->warray->array[walker_index].index_entry;
+
+            failure= t->rule_arr[i].rule_function(gtable, node_from, walker_index);  
+            if(failure) report_err("choose_node err1", failure);
+
+            if(gtable->warray->array_prev)//only used when propulsion is active
+             gtable->warray->array_prev[walker_index].index_entry=prev_index;
+
+            return failure;
         }
     }  
 
@@ -406,9 +463,9 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "attco", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_attraction_proba;
-        }else if (!strncmp(rule_str, "sleep", 5)){
+        }else if (!strncmp(rule_str, "propu", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
-            rule_fun_arr[app_index++]= &rule_sleep;
+            rule_fun_arr[app_index++]= &rule_propulsion;
         }else if (!strncmp(rule_str, "mconst", 6) || !strncmp(rule_str, "mprop", 5) || !strncmp(rule_str, "mcrowd", 6)){
             //hello there :)
         }else{

@@ -24,6 +24,7 @@ typedef struct s_walker{
 typedef struct s_warray{
     uint32_t size; 
     Walker *array;
+    Walker *array_prev; 
 }WalkerArray ; //where the actual walkers will be stored and initialised and so on
 
 typedef struct s_walker_num_curnext{
@@ -34,7 +35,7 @@ typedef struct s_walker_num_curnext{
     uint32_t *next_num; 
 }WalkerCurNext;
 
-uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size);
+uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset);
 void freeWalkerArray(WalkerArray * wArray);
 
 

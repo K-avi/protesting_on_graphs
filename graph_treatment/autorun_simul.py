@@ -13,7 +13,8 @@ def run_simul_once(
     nb_threads, path_graph,
     coeff_wk, nb_it,
     sim_opt, trace_name,
-    trace_num, result_file
+    trace_num, result_file, 
+    nb_it_flux
 ):
     """
     bunch of simul args -> simul_file
@@ -27,18 +28,22 @@ def run_simul_once(
 
     # start simulation
     sb.run(
-        f'bash batch_launch.sh "{nb_threads}" "{path_graph}" "{coeff_wk}" "{nb_it}" "{sim_opt}" "{trace_name}{str(trace_num)}"',
+        f'bash batch_launch.sh "{nb_threads}" "{path_graph}" "{coeff_wk}" "{nb_it}" "{sim_opt}" \
+        "{trace_name}{str(trace_num)}" "{nb_it_flux}"',
         shell=True,
     )
 
     # loads the trace
+    nb_wk, nb_lines = lt.load_nbwk_nblines(path_graph)
     for i in range(nb_threads):
         tr_comp_name = f"{trace_name}{trace_num}{i}"
       
         # append the results of analysis functions to a file used to generate mean results of the
         # simulation
         t_curnum = lt.load_trace_elem(tr_comp_name+"_curnum", nb_it)
+        
         t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
+
         mobility_mean = dt.stat_mobility(t_wkpos, t_curnum.shape[1])
         del t_wkpos
 
@@ -48,11 +53,22 @@ def run_simul_once(
         
         lt.clean_trace(tr_comp_name)
         np.savetxt(f"{result_file}{i}", group_data_mat)
+    
+        t_flux = lt.load_trace_elem(tr_comp_name+"_flux", nb_it - nb_it_flux )
+        lines = lt.load_line_trace(tr_comp_name+"_lines", nb_lines)
+        lt.clean_var(tr_comp_name)
+        
+        n = dt.mean_flux( lines, t_flux,nb_wk )
+        del(t_flux , lines)
+        
+        print(n)
+        np.savetxt( tr_comp_name+"flux_mean", np.array([n]))
 
 
 def run_simul_nth(
     num, nb_threads, path_graph, coeff_wk,
-    nb_it, simul_opt, trace_name, result_file
+    nb_it, simul_opt, trace_name, result_file, 
+    nb_it_flux
 ):
     """
     runs a bunch of simul w given parameters
@@ -69,12 +85,14 @@ def run_simul_nth(
             coeff_wk, nb_it,
             simul_opt, trace_name,
             i, f"{result_file}_{i * nb_threads}",
+            nb_it_flux
         )
     run_simul_once(
         n, path_graph,
         coeff_wk, nb_it,
         simul_opt, trace_name,
         N, f"{result_file}_{N * nb_threads}",
+        nb_it_flux
     )
     print("simulation are done running; starting data analysis")
 
@@ -140,6 +158,13 @@ def main():
         "simul_opt", metavar="simul parameters", type=str,
         nargs=1, help="string to specify options of the simul",
     )
+    
+    parser.add_argument(
+        "nb_it_flux", metavar="nb_it_flux", type=int,
+        help=" iteration where the dump of \
+        the flux start",
+        nargs="?",
+    )
     # doesn't parse the fucking options of the simulation
     # which is kinda fucking stupid
     opt = parser.parse_args()
@@ -158,6 +183,11 @@ def main():
         opt.simul_opt[0],
     )
     output_file = opt.output_file[0]
+    
+    flux_start = nb_it - 10
+    if opt.nb_it_flux is not None : 
+        flux_start = int(opt.nb_it_flux[0])
+        
     print(
         "starting simulations, please do not remove files created by the simulation before it is done running",
         tot, nb_thread_max, path, coeff_wk, nb_it, sim_opt, output_file,
@@ -166,6 +196,7 @@ def main():
     run_simul_nth(
         tot, nb_thread_max, path, coeff_wk,
         nb_it, sim_opt, "trace", output_file,
+        flux_start
     )
 
     dt.mean_results(output_file, "res_mean")

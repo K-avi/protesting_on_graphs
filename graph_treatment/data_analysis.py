@@ -156,23 +156,34 @@ def adj_from_flux(lines, flux):
 
 def mean_flux( lines, flux_mat, nb_wk ): 
     """
-    shite 
+    np.array[1D] , np.array[2D] , int -> int 
+    
+    calculates the mean flux of the simul between 0
+    and 1 or something idk 
     """
     s = 0
     
-    sa = sparce_array((np.arange(len(lines)),(A,B)))
-    Idab = []
-    Idba = []
-    for a, b in lines:
-        if a < b:
-            Idab.append(sa[a,b])
-            Idba.append(sa[b,a])
+    N = len(lines)
+    Idab, Idba = np.zeros((2, N//2), dtype=np.int32)
+    Dab = dict()
+    itt = 0
+    for i, (a, b) in enumerate(lines):
+        ba = b < a
+        if ba:
+            a, b = b, a
+        if (a, b) not in Dab:
+            Dab[(a,b)] = itt
+            itt += 1
+        if ba:
+            
+            Idba[Dab[(a,b)]] = int(i)
+        else:
+            Idab[Dab[(a,b)]] = int(i) 
     
-   
-    s = sum( [ np.abs(flux[Idab] - flux[Idba]).mean(0).sum() 
-              for flux in flux_mat] )
+
+    s =  np.abs(flux_mat[:,Idab] - flux_mat[:,Idba]).sum(1).mean() 
         
-    return s/(nb_wk*len(flux_mat))
+    return s/(nb_wk)
 
 def main():
     """

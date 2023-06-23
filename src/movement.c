@@ -137,7 +137,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
         
         failure= prepare_ite(gtable);
        
-        if( flux_start >= i){ //dumps flux only if reached 
+        if( flux_start <= i){ //dumps flux only if reached 
             dump_trace(gtable, f_curnum, f_flux, f_wkpos);
         }else{
              dump_trace(gtable, f_curnum, NULL, f_wkpos);

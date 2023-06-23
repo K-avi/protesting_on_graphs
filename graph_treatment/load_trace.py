@@ -23,8 +23,18 @@ def load_line_trace(path, nb_lines):
     (used to build adj mat with flux)
     """
     arr = np.loadtxt(path, dtype=np.int32)
-    return dt_arr.reshape(int(nb_lines), -1 )
+    return arr.reshape(int(nb_lines), -1 )
 
+def load_nbwk_nblines( path):
+    """
+    simple helper fn to read nbwk 
+    and nblines
+    """
+    with open(path,"r") as f: 
+        line = f.readline()
+      
+        a,b = line.split(",")[0:2]
+        return (int(a),int(b))
 
 def load_adj_mat(path):
     """
@@ -69,9 +79,13 @@ def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
 
 def clean_trace(trace_name):
     os.remove(trace_name + "_curnum")
-    os.remove(trace_name + "_flux")
     os.remove(trace_name + "_wkpos")
     os.remove(trace_name + "_hr")
     os.remove(trace_name + "_hrend")
-    os.remove(trace_name + "_lines")
+    
     os.remove(trace_name + "_wkend")
+    
+    
+def clean_var(trace_name):
+    os.remove(trace_name + "_flux")
+    os.remove(trace_name + "_lines")

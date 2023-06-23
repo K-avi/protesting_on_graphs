@@ -65,14 +65,13 @@ int main(int argc , char ** argv){
         fprintf(stderr, "1usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
         return ERRFLAG_NOFILE;
     }
-
+    
     uint8_t optset = dumpset + loadset + fluxset; //number of args to remove 
 
     char * path = argv[1+optset]; 
     char * end=argv[2+optset];
 
     //parses number of walkers
-    printf("%s\n", argv[2]);
     double walker_coeff=  (double) strtod( argv[2+optset], &end );
     if(end == argv[2+optset]){
         fprintf(stderr, "2usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
@@ -88,6 +87,9 @@ int main(int argc , char ** argv){
         return ERRFLAG_INVALID_ARG;
     }
 
+    if(!fluxset){
+        flux_dump_start= iteration_num - 10;   
+    }
     //init timer
     time_t timer;
     time( &timer);

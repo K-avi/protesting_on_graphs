@@ -82,7 +82,7 @@ def clean_trace(trace_name):
     os.remove(trace_name + "_wkpos")
     os.remove(trace_name + "_hr")
     os.remove(trace_name + "_hrend")
-    
+   
     os.remove(trace_name + "_wkend")
     
     

@@ -182,14 +182,14 @@ done :
       minus the sum of flux from b to a 
       then sum all of that ; divide it by the nb of walkers 
       times the nb of iteration the flux has been dumped for 
+
+    - write the mean simul thing for the flux value  ( might need more testing )
         
 
 
 pending : 
 
     Data analysis : 
-
-      - write the mean simul thing for the flux value 
 
       - launch db generation on server if everything is ok 
 

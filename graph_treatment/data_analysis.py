@@ -4,6 +4,7 @@ import numpy as np
 import load_trace as lt
 import scipy.sparse.csgraph as cg
 import argparse as arg
+from statistics import mean
 
 def get_adj_group(node_walker_num_arr, nadj):
     """
@@ -76,19 +77,27 @@ def mean_results(simul_name, res_name):
     function was improved by https://github.com/Pacidus
     """
     ret_mat = np.array([])
+    flux_mean = []
     n = 0
     for fname in os.listdir("."):
         if simul_name in fname:
+           
             if n:
                 cur = np.loadtxt(fname)
                 ret_mat += cur
                 del(cur)
             else:
                 ret_mat = np.loadtxt(fname)
-            n += 1
+                n += 1
+     
+        elif "_fluxmean" in fname:
+            flux_mean += [(np.loadtxt(fname)).item()]
+                
     if n:
         ret_mat /= n
         np.savetxt(res_name, ret_mat)
+    if flux_mean:
+        np.savetxt(res_name+"fluxmean",[mean(flux_mean)])
 
 
 

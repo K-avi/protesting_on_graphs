@@ -110,8 +110,10 @@ def clean_results(simul_name):
 def gen_data_groups(t_curnum, adj, mobility_mean):
     """
     np.array[1D], scipy.sparse.csgraph , np.array[2D] ->
-    array[4] nb_group, spread_group , group size, nb lonely wk
-    
+    array[6] 
+    nb_group, spread_group , group size, nb lonely wk,
+    density of groups (nb walkers / nodes / groups)
+    nb occupied nodes
     generates the data related to group for
     one iteration
     
@@ -133,6 +135,44 @@ def gen_data_groups(t_curnum, adj, mobility_mean):
         
     return ret
 
+
+def adj_from_flux(lines, flux):
+    """
+    np.array[2D] -> scipy.sparse.csgraph 
+    returns the sparse matrix of flux 
+    given an array of flux and an 
+    array of lines indexed the same way
+    (ie : flux[i] is the flux at lines[i])
+    """
+    
+    size = int(lines/2)
+    mat = np.array((size,size), dtype=int)
+    
+    for i,j in enumerate(lines):
+        (a,b) = i #i is a line so it SHOULD be of len 2 
+        mat[a][b] = j
+    
+    return ret 
+
+def mean_flux( lines, flux_mat, nb_wk ): 
+    """
+    shite 
+    """
+    s = 0
+    
+    sa = sparce_array((np.arange(len(lines)),(A,B)))
+    Idab = []
+    Idba = []
+    for a, b in lines:
+        if a < b:
+            Idab.append(sa[a,b])
+            Idba.append(sa[b,a])
+    
+   
+    s = sum( [ np.abs(flux[Idab] - flux[Idba]).mean(0).sum() 
+              for flux in flux_mat] )
+        
+    return s/(nb_wk*len(flux_mat))
 
 def main():
     """

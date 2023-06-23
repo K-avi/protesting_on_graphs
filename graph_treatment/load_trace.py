@@ -14,6 +14,18 @@ def load_trace_elem(path, nb_it):
     return dt_arr.reshape(int(nb_it), -1)
 
 
+def load_line_trace(path, nb_lines):
+    """
+    str , int -> np.array[2D]
+    
+    loads the human readable 
+    trace for the lines 
+    (used to build adj mat with flux)
+    """
+    arr = np.loadtxt(path, dtype=np.int32)
+    return dt_arr.reshape(int(nb_lines), -1 )
+
+
 def load_adj_mat(path):
     """
     str -> sp.sparse.csgraph
@@ -41,19 +53,6 @@ def load_adj_mat(path):
     return sp.csr_array((np.ones(ne), (col, row)), dtype="int8")
 
 
-def load_lines(path): 
-    """
-    str -> np.array[2D]
-    
-    reads the human readable trace
-    corresponding to the line 
-    from file at given path 
-    """
-    
-    return np.reshape(np.loadtxt(path, dtype=np.uint32))
-
-
-def 
 def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
     """
     updates a sp.sparse.csgraph representing an adj mat by 
@@ -73,3 +72,6 @@ def clean_trace(trace_name):
     os.remove(trace_name + "_flux")
     os.remove(trace_name + "_wkpos")
     os.remove(trace_name + "_hr")
+    os.remove(trace_name + "_hrend")
+    os.remove(trace_name + "_lines")
+    os.remove(trace_name + "_wkend")

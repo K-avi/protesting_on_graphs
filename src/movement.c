@@ -17,7 +17,8 @@ uint8_t init_pos(GraphTable * gtable){
         uint32_t randval = (uint32_t) rand()%gtable->table_size;
         
         gtable->warray->array[i].index_entry=randval;
-        gtable->warray->array_prev[i].index_entry=randval;
+        if(gtable->warray->array_prev)
+            gtable->warray->array_prev[i].index_entry=randval;
         gtable->wkcn->next_num[randval]++;
     }
     return MV_OK;

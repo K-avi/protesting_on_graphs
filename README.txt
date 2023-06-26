@@ -1,9 +1,3 @@
-this is the propulsion branch ; a subbranch of the anonymous walkers branch 
-which will implement the "propulsion" rule. 
-I don't like the way I'll implement this rule. 
-I think it's ugly; weird looking and that it kinda sucks. 
-So I will never merge it with the anonymous walkers 
-or at least I don't plan to 
 
 This repo contains the code written during my internship at the Lip6 lab. 
 

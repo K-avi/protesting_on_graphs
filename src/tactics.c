@@ -271,7 +271,7 @@ static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t
         line_to = filtered_tab[rand()%cpt];
     }else{ //weird ass case ; happened to me bc a node had "two lines" to the same node which 
     //like some type of multi graph
-        printf("sleepy sleep \n");
+        
         return rule_sleep(gtable, node_from, walker_index);
     }
     //update pos / flux
@@ -411,9 +411,10 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
     double sum=0;
     double * index_arr = malloc( rule_count* sizeof(double));
     uint8_t arr_append_index=0;
-
+   
     for(uint8_t i=0 ; i< argc; i++){
         if(argv[i][0]!='m'){ //ignores meta rules
+          
             char * cur_coeff_string= strstr(argv[i], ":");
             if(!cur_coeff_string) { report_err("parse_rule_coeff format err1", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             cur_coeff_string++;
@@ -429,7 +430,7 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
         }
     }
     uint32_t casted_sum= 0;
-    if(!sum){report_err("parse_rule_coeff format err3", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+    if(!sum){report_warning("parse_rule_coeff", PRS_NOSUM); coeff_arr[0]=UINT16_MAX; return T_OK;}
 
     for(uint8_t i=0; i<rule_count ; i++){
         if(casted_sum>UINT16_MAX) { fprintf(stderr,"casted sum %u\n", casted_sum); report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
@@ -440,7 +441,7 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
        
     }
     free(index_arr);
-    coeff_arr[rule_count-1]= 255; //bc of rounding last value often ends up beneath 255 so I'm 
+    coeff_arr[rule_count-1]= UINT16_MAX; //bc of rounding last value often ends up beneath 255 so I'm 
     //hardcoding it just in case 
 
     return T_OK;

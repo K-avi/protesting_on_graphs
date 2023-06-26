@@ -6,6 +6,7 @@ import data_analysis as dt
 import random as r
 import time as t
 import numpy as np
+import networkx as nx 
 
 def gen_opt(): 
     """
@@ -97,33 +98,49 @@ def gen_db():
         
 def gen_db_var(graph_path, nb_it):
     """ 
+    graphml_path , nb_it -> db of simul results
+    
     generates the db w iterations instead of 
     randomly pulling graphs
     """
     
-    f_index = open("index_base.csv")
+    GG = nx.read_graphml(graph_path) 
+
+    DG = gg.discretisePA(GG,10)
+    gg.makeCSVPA(DG, "tmp_graph.csv")
+    
+  
     coeff = np.linspace(0, 1, 10)
     rdcoeff = np.linspace(0, 0.5 , 5)
     cpt=0
-    for r in range (0 ,0.5 , step=0.1): #no mo loop
-        for i in range(0, 1-r , step=0.1): #attra loop 
-            for j in range(0 , 1-r-i, step = 0.1): #align loop 
-                for k in range (0, 1-r-i-k , step = 0.1): #propulsion loop
-                    ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
-                                      f"rand:{r} attra:{i} align:{j} propu:{k}"
-                                      tmp_trace, f"base/{cpt}_simul")
-                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propu:{k}")
+    for c,h in  enumerate(np.linspace(0 ,0.5 , 6)): #no mo loop
+        for d,i in enumerate(np.linspace(0 ,1-h , 11-c)): #attra loop 
+            for e,j in enumerate(np.linspace(0 ,1-h-i , 11-c-d)): #align loop 
+                for f,k in  enumerate(np.linspace(0 ,1-h-i-j , 11-c-d-e)): #propulsion loop
+                    print(f"simul running with par :\nrand:{h} attra:{i} align:{j} propu:{k}")
+                                     
+                    ars.run_simul_nth(4,4, "tmp_graph.csv", 1 , nb_it,
+                                      f"rand:{h} attra:{i} align:{j} propu:{k}",
+                                      "tmp_trace", f"{cpt}_run", nb_it - 10)
+                    dt.mean_results( f"{cpt}_run", f"base/{cpt}_res")
+                    dt.clean_results( f"{cpt}_run")
+                    with open("index_base.csv", "a") as f:
+                        f.write(f"{cpt},rand:{h},attra:{i},align:{j},propu:{k}\n")
                     cpt+=1           
     
-    for r in range (0 ,0.5 , step=0.1): #rand loop
-        for i in range(0, 1-r , step=0.1): #attra coeff  loop 
-            for j in range(0 , 1-r-i, step = 0.1): #align loop 
-                for k in range (0, 1-r-i-j , step = 0.1): #propulsion loop
-                    ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
-                                      f"rand:{r} attco:{i} align:{j} propun:{k}"
-                                      tmp_trace, f"base/{cpt}_simul")
-                    f_index.write("{cpt},rand:{r},attra:{i},align:{j},propu:{k}")
-                    cpt+=1
+    for c,h in  enumerate(np.linspace(0 ,0.5 , 6)): #no mo loop
+        for d,i in enumerate(np.linspace(0 ,1-h , 11-c)): #attra loop 
+            for e,j in enumerate(np.linspace(0 ,1-h-i , 11-c-d)): #align loop 
+                for f,k in enumerate(np.linspace(0 ,1-h-i-j , 11-c-d-e)): #propulsion loop
+                    print(f"simul running with par :\nrand:{h} attra:{i} align:{j} propu:{k}")
+                    ars.run_simul_nth(4,4, "tmp_graph.csv", 1 , nb_it,
+                                      f"rand:{h} attco:{i} align:{j} propu:{k}",
+                                      "tmp_trace", f"base/{cpt}_simul", nb_it - 10)
+                    dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+                    dt.clean_results( f"{cpt}_run")
+                    with open("index_base.csv", "a") as f:
+                        f.write(f"{cpt},rand:{h},attra:{i},align:{j},propu:{k}\n")
+                    cpt+=1  
     close(index)
     
 def query(query, db_name):
@@ -155,4 +172,4 @@ def query(query, db_name):
     
         
 if __name__=='__main__':
-    gen_db()
+    gen_db_var("Paris_drive_directed_False_discretized_10m_no_woods.graphml",2000)

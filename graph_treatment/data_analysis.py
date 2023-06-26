@@ -80,7 +80,7 @@ def mean_results(simul_name, res_name):
     flux_mean = []
     n = 0
     for fname in os.listdir("."):
-        if simul_name in fname:
+        if simul_name in fname and "fluxmean" not in fname:
            
             if n:
                 cur = np.loadtxt(fname)

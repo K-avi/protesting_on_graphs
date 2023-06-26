@@ -86,12 +86,18 @@ char * str_flag(uint8_t flag){
   case WA_NOREAD : return "path given is null\n";
   case WA_OPEN : return "can't open file at path given\n";
   case WA_READFAIL : return "couldn't properly read file at path given\n";
+  case ERRFLAG_WARNING : return "default warning flag\n";
+  case PRS_NOSUM : return "sum of coefficients of arguments is 0; first argument set to 1\n";
   default : return "unknown error ; how did you get here?\n";
   }
 }//ok
 
 void report_err( char * msg , uint8_t flag){ //could be a macro 
   fprintf(stderr, "error : %s at %s\n", str_flag(flag), msg);
+}
+
+void report_warning( char * msg , uint8_t flag){ //could be a macro 
+  fprintf(stderr, "warning : %s at %s\n", str_flag(flag), msg);
 }
 
 

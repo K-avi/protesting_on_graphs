@@ -23,6 +23,7 @@
 
 void* reallocate(void* pointer, size_t oldSize, size_t newSize);
 void report_err( char * msg , uint8_t flag);
+void report_warning( char * msg , uint8_t flag);
 
 void dump_trace(GraphTable * gt, FILE * stream_curnum , FILE * stream_flux, FILE * stream_walker );
 uint8_t write_lines( GraphTable * gt ,FILE * stream );

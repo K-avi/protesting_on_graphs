@@ -144,9 +144,9 @@ static uint8_t appNodeGt (GraphTable * gt, uint32_t node_index , uint32_t neighb
 
     O(1)
     */
-    if(!gt) return GT_NULL;
+    if(!gt) { report_err("appNodeGt", GT_NULL); return GT_NULL;}
 
-    if( (gt->table_size-1 < node_index) ) return GT_INDEX;
+    if( (gt->table_size-1 < node_index) ){ report_err("appNodeGt", GT_INDEX); return GT_INDEX;}
 
     gt->entries[node_index].first_neighboor_ref=first_neighboor_ref;
     gt->entries[node_index].neighboor_num=neighboor_num;

@@ -89,3 +89,4 @@ def clean_trace(trace_name):
 def clean_var(trace_name):
     os.remove(trace_name + "_flux")
     os.remove(trace_name + "_lines")
+  

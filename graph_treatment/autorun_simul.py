@@ -61,8 +61,7 @@ def run_simul_once(
         n = dt.mean_flux( lines, t_flux,nb_wk )
         del(t_flux , lines)
         
-        print(n)
-        np.savetxt( f"{tr_comp_name}_fluxmean{i}", np.array([n]))
+        np.savetxt( f"{result_file}_{i}_fluxmean", np.array([n]))
 
 
 def run_simul_nth(

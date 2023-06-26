@@ -21,7 +21,7 @@ def discretisePA(Graph, step):
     gd = [0] * N
     Ne = Graph.number_of_edges()
     for a, b, length in lengths:
-        ns = int(length/step)
+        ns = int(float(length)/step)
         Ne += ns
         new_ed = [id_nodes[a], *list(range(N, N + ns)), id_nodes[b]]
         al += [""] * ns
@@ -48,6 +48,19 @@ def makeCSVPA(Graph, path):
     """ 
     with open(path, "w") as file: 
         file.write(Graph)
+        
+def makeCSV(Graph, path):
+    """
+    nxGraph , path -> custom csv graph file 
+    writes the custom csv corresponding to the graph passed
+    as argument in the file at path
+    """ 
+    with open (path, "w") as file: 
+     
+        file.write(f"{Graph.number_of_nodes()},{Graph.number_of_edges()*2}\n") #2 times nb of edges cuz need (a,b) and (b,a)
+        for i in Graph.nodes:
+            file.write(f'{i},{Graph.degree(i)},{":0;".join( str(i) for i in Graph.neighbors(i))+":0"}\n')
+    file.close
 
 def gen_graph(latt, long , rad, step, path):
     """

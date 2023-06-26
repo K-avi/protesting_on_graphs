@@ -1,0 +1,52 @@
+to use the program ; you must pass it an input file for it to load a graph from. 
+
+You must then pass a integer representing the number of iterations and an integer 
+representing a number of walker 
+
+the other arguments are not necessary and are options and tactics arguments. 
+
+the options supported are -h to print out help and return and -d to dump the graph at each iteration. 
+
+the rules arguments are passed as formatted string : 
+
+RuleName:coeff 
+
+the coeffs passed can be any floating point number as it will be renormalized before
+running the simulation
+
+the rules currently supported are : 
+rand (random movement) 
+align ( alignement rule)
+attra (attraction rule)
+sleep (doesn't do anything) deprecated 
+attco (attraction coeff rule)
+
+
+example of a string of rule argument : 
+
+attra:3 align:2 rand:1
+
+there are three special "meta" arguments : 
+
+mconst , mprop , mcrowd 
+
+mconst takes a double from 1 to 0 (any value over or under it will be floored to 1/0) it decides of 
+the probability that a walker will not move. if given 
+mconst:1 the walker will remain static; 
+if given mconst:0 the walker will always move. 
+
+the second one is mprop ; mprom takes a double as argument. 
+if the double given is lower than the total number of neighbor of a walker; 
+it will not moove , otherwise, it will move.
+
+mcrowd doesn't take any arguments. The probability for a walker to move is 
+inversly proportionnal to the number of walkers on the node it currently
+is in. In other words : the more crowded a node is the 'slower' the walker on this 
+node are. (1/n chance to move where n is the number of walkers)
+
+warning: mprop and mconst cancel eachothers and if both are given as arguments only the last one 
+will be used.
+
+the program will load this and make it so there's ~16% of chances that a walker will sleep 
+~33% of chances that it will align and ~50% of chances it will be attracted.
+(the numbers are casted as integers so the probabilities aren't exact)

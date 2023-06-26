@@ -1,0 +1,12 @@
+the annexes directory contains secondary parts of the project.
+
+the subdirs in annexes are:
+
+-  archives : contains various tar.gz archives storing
+              data analysis results, perftests plots and old 
+              binaries
+
+- infinite simul : where I ran various analysis / simulation scripts and that 
+                   I'll use if (when) I will generate a database of simulations
+
+- perftest : where the actual perftest scripts are stored

@@ -184,25 +184,29 @@ done :
       times the nb of iteration the flux has been dumped for 
 
     - write the mean simul thing for the flux value  ( might need more testing )
+
+    - launch db generation on server if everything is ok 
+
+    - write a clean dt analysis script (will have to improve it at some point)
+
+     - do the query / plot thingy for db (not tested)
         
 
 
 pending : 
 
+    documentation : 
+
+      - my biggest challenge yet.... write an html docu......
+        god have mercy on my poor poor soul ....
+
     Data analysis : 
 
-      - launch db generation on server if everything is ok 
+      - db currently being generated 
 
-      - write a clean dt analysis script 
-
-      - do the query / plot thingy for db 
-
-    C Optimization : 
+    C Optimization : (optionnal)
 
       - use __builtin_prefetch
-
-      - store flux on 16 bits ? I dunno (based thing would be to create a custom 24 bit integer w bit field 
-        but it would kill portability )
 
       - do the malloc wrapper arena/mempool thingy  (YES I WANNA COME ON)
 

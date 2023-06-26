@@ -1,0 +1,5 @@
+a GraphTableEntry stores the information needed to store the adjacency list of a node in the graph. 
+
+in order to do so , it stores the reference to the first neighbor of the node in
+the array of adjacency lists (cf LineAray docu) as well as the number of neighbors of the node
+this makes it possible to know when the adjacency list of the entry stops.

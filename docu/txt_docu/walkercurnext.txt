@@ -1,0 +1,12 @@
+the WalkerCurNext is a simple wrapper around two arrays of walker of the 
+same size.
+
+the size field of the structure is the number of elements in the arrays.
+
+the arrays store the number of walker in a node of the graph. To retrieve the number 
+of walker currently occupying a node n in the graph you have to 
+
+check the nth index of the cur_num array. (cur_num[n])
+
+to calculate the number of walkers in a node n at the iteration i+1 you increment 
+the next_num array.

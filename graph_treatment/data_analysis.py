@@ -86,6 +86,7 @@ def mean_results(simul_name, res_name):
                 cur = np.loadtxt(fname)
                 ret_mat += cur
                 del(cur)
+                n += 1
             else:
                 ret_mat = np.loadtxt(fname)
                 n += 1
@@ -201,11 +202,89 @@ def main():
     """
     
     print("parsing arguments")
-    parser = args.ArgumentParser(
+    parser = arg.ArgumentParser(
         prog="sim_analyzer",
         description="analyzes the results of an already already ran \
         simulation"
     )
+    
+    parser.add_argument(
+        "trace_name", metavar="trace_name", type=str,
+        nargs=1, help="string to specify the name of the trace to load",
+    )
+    
+    parser.add_argument(
+        "nb_sim", metavar="nb_sim", type=int,
+        nargs=1, help="the number of sim ran",
+    )
+    
+    parser.add_argument(
+        "nb_it", metavar="nb_it", type=int,
+        nargs=1, help="the number of iterations of the sim ran",
+    )
+    
+    parser.add_argument(
+        "nb_it_flux", metavar="nb_it_flux", type=int,
+        nargs=1, help="the number of iterations the flux has been dumped",
+    )
+    
+    parser.add_argument(
+        "nb_lines", metavar="nb_lines", type=int,
+        nargs=1, help="the number of lines in the graph",
+    )
+    
+    parser.add_argument(
+        "nb_wk", metavar="nb_wk", type=int,
+        nargs=1, help="the number of walkers in the graph",
+    )
+    
+
+    parser.add_argument(
+        "output_name", metavar="output_name", type=str,
+        nargs="?", help="facultative arg to specify the name of the output ; \
+        default name is res_mean",
+    )
+    
+    opt = parser.parse_args()
+    
+    nb_sim, trace_name, nb_it= int(opt.nb_sim[0]) , opt.trace_name[0], int(opt.nb_it[0])
+    nb_it_flux, nb_lines, nb_wk  = int(opt.nb_it_flux[0]), int(opt.nb_lines[0]),int(opt.nb_wk[0])
+    res_name = "res_mean"
+    
+    if opt.output_name is not None : 
+        res_name = opt.output_name[0]
+        
+    
+    for i in range(nb_sim):
+        tr_comp_name = f"{trace_name}"
+      
+        # append the results of analysis functions to a file used to generate mean results of the
+        # simulation
+        t_curnum = lt.load_trace_elem(tr_comp_name+"_curnum", nb_it)
+        
+        t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
+
+        mobility_mean = stat_mobility(t_wkpos, t_curnum.shape[1])
+        del t_wkpos
+
+        adj = lt.load_adj_mat(tr_comp_name+"_hr")
+        group_data_mat = gen_data_groups(t_curnum, adj, mobility_mean)
+        del (t_curnum, adj)
+        
+        lt.clean_trace(tr_comp_name)
+        np.savetxt(f"tmpres_{i}", group_data_mat)
+    
+        t_flux = lt.load_trace_elem(tr_comp_name+"_flux", nb_it - nb_it_flux )
+        lines = lt.load_line_trace(tr_comp_name+"_lines", nb_lines)
+        lt.clean_var(tr_comp_name)
+        
+        n = mean_flux( lines, t_flux,nb_wk )
+        del(t_flux , lines)
+        
+        np.savetxt( f"tmpres_{i}_fluxmean", np.array([n]))
+    mean_results("tmpres",res_name)
+    clean_results("tmpres")
+    
     return 0
     
     

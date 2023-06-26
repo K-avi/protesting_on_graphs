@@ -371,8 +371,10 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
             failure= t->rule_arr[i].rule_function(gtable, node_from, walker_index);  
             if(failure) report_err("choose_node err1", failure);
 
-            if(gtable->warray->array_prev)//only used when propulsion is active
-             gtable->warray->array_prev[walker_index].index_entry=prev_index;
+            if(gtable->warray->array_prev){//only used when propulsion is active
+
+                gtable->warray->array_prev[walker_index].index_entry=prev_index;
+            }
 
             return failure;
         }

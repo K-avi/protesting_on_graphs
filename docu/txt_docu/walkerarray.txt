@@ -1,0 +1,7 @@
+the WalkerArray is a simple wrapper structure around the array containing every 
+walker in the graph. 
+
+the size field corresponds to the size of the array and the array field to the array itself.
+
+at the moment ; a walker only stored the reference of the node it occupies
+

@@ -1,0 +1,15 @@
+the graph_table is the structure representing the graph and the thing it contains. 
+
+it contains a size field to keep track of the number of entries in it 
+
+a GraphTableEntry pointer field containing the graph's entry (see docu of GraphTableEntry)
+
+a LineArray pointer field where the adjacency lists of the graph are stored (see docu of LineAray)
+
+a WalkerArray pointer field containing the walkers present in the graph
+(see docu of WalkerArray)
+
+a WalkerCurNext field to keep track of the position of the walkers (see docu of WalkerCurNext)
+
+a cur_gen field which is an integer used to keep track of the number of iterations since 
+the beginning of a simulation

@@ -7,6 +7,7 @@ import random as r
 import time as t
 import numpy as np
 import networkx as nx 
+import simp_plot as sp
 
 def gen_opt(): 
     """
@@ -119,7 +120,7 @@ def gen_db_var(graph_path, nb_it):
                 for f,k in  enumerate(np.linspace(0 ,1-h-i-j , 11-c-d-e)): #propulsion loop
                     print(f"simul running with par :\nrand:{h} attra:{i} align:{j} propu:{k}")
                                      
-                    ars.run_simul_nth(4,4, "tmp_graph.csv", 1 , nb_it,
+                    ars.run_simul_nth(1,1, "tmp_graph.csv", 1 , nb_it,
                                       f"rand:{h} attra:{i} align:{j} propu:{k}",
                                       "tmp_trace", f"{cpt}_run", nb_it - 10)
                     dt.mean_results( f"{cpt}_run", f"base/{cpt}_res")
@@ -133,7 +134,7 @@ def gen_db_var(graph_path, nb_it):
             for e,j in enumerate(np.linspace(0 ,1-h-i , 11-c-d)): #align loop 
                 for f,k in enumerate(np.linspace(0 ,1-h-i-j , 11-c-d-e)): #propulsion loop
                     print(f"simul running with par :\nrand:{h} attra:{i} align:{j} propu:{k}")
-                    ars.run_simul_nth(4,4, "tmp_graph.csv", 1 , nb_it,
+                    ars.run_simul_nth(1,1, "tmp_graph.csv", 1 , nb_it,
                                       f"rand:{h} attco:{i} align:{j} propu:{k}",
                                       "tmp_trace", f"base/{cpt}_simul", nb_it - 10)
                     dt.mean_results( f"{cpt}_run", f"{cpt}_res")
@@ -149,27 +150,43 @@ def query(query, db_name):
     currently not done 
     placeholder
     """
-    ret=[]
     if query.startwith("or_select"):
+        
+        ret=""
         args = query.split(" ")[1::]
-        with open(f"{db_name}/index_base.txt") as index:
+        
+        with open(f"index_base.csv") as index:
             for line in index : 
                if any( arg in line for arg in args ):
-                   ret+=int(line.split(",")[0])
+                   ret+= f"{line}\n"
+        print("sim matching query are :\n",ret)
     
-    elif query.startwith("and_select"):     
-        a=1
-    elif string.startwith("plot"): 
+    elif query.startwith("and_select"): 
         
+        ret=""    
+        args = query.split(" ")[1::]
+        
+        with open(f"index_base.csv") as index:
+            for line in index : 
+               if all( arg in line for arg in args ):
+                   ret+= f"{line}\n"
+        print("sim matching query are :\n",ret)
+   
+    elif string.startwith("plot"):   
+        
+        ret=[]
         for file in os.listdir(db_name):
             args = query.split(" ")[1::]
             if(file.split("_")[1] in  args):
                 ret.append(file)
         print(ret)
+        sp.plot_list(ret)
+        
     else : 
         print("invalid query please print a valid query")
+        
     return 0 
     
         
 if __name__=='__main__':
-    gen_db_var("Paris_drive_directed_False_discretized_10m_no_woods.graphml",2000)
+    gen_db_var("Paris_drive_directed_False_discretized_10m_no_woods.graphml",100)

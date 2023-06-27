@@ -6,8 +6,6 @@
 #include "tactics.h"
 #include "restart_sim.h"
 
-
-#include <bits/getopt_core.h>
 #include <stdint.h>
 #include <time.h>
 

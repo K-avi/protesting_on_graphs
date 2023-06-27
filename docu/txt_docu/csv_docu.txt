@@ -1,4 +1,4 @@
-The CSV format used to write / read graphs will be as follows :
+The CSV format used to write / read graphs is as follows :
 
 the first line of the csv contains the number of nodes / lines in the graph
 

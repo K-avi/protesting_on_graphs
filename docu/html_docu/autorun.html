@@ -21,9 +21,40 @@
             </div>
             <div class="card-body">
                         <ul>
-                            <li><a href="#p1" class="text-justify">I: Introduction</a></li>                       
+                            <li><a href="#p1" class="text-justify">I: Introduction</a></li>  
+                            <li><a href="#p1" class="text-justify">II: Usage</a></li>                            
                         </ul>                
             </div>
+        </div>
+
+        <div id="p1">
+            <h2><u>I: Introduction</u></h2>
+            <p>
+            The autorun script allows to pull a real world graph from OSM, run a simulation on it 
+            and then analyze the trace of the simulation. The python file autorun.py also contains various functions 
+            that are used to analyze graphs.
+            </p>
+            <br/>
+        </div>
+
+        <div id="p2">
+            <h2><u>II: Usage</u></h2>
+            <p>
+                To use the script you will need the walking_on_graphs binary as well as the batch_launch.sh script 
+                present in your directory. <br/>
+
+                The required arguments of the program are (in order):<br/>
+                python autorun_simul.py [lattitude of point] [longitude of point] [radius around point] [discretisation step] [path of graph created] [output file]
+                                        [number of simulation to run] [max num of threads to run the simuls on] [walker coefficient] [iteration number]
+                                        [simulation rules]<br/>
+                That's a lot of args. The first 5 ones are used when generating a graph with OSMNX and pretreating it. The output file is fairly self explainatory. 
+                The number of sim is used to create mean stats of multiple simulation with the same rules.<br/>
+                The num of threads is self explainatory. The last arguments are the simulation parameters. See the walking_on_graphs docu for more information. 
+                <br/>
+                The autorun_simul.py takes an optionnal argument : [flux start] 
+                specifying the first iteration where the flux will start to be dumped. It's default value is [iteration number] - 10
+            </p>
+            <br/>
         </div>
     </body>
 </html>

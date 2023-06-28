@@ -191,6 +191,8 @@ done :
     - redo the flux correctly ; current flux thing is bad 
 
     - relabel the first 200 runs of the db (shite)
+
+    - corrected typos in docu
         
 
 
@@ -200,20 +202,31 @@ pending :
       
       - write a db gen variant just to recalculate the flux mean with the updated version
 
+        - modify the autorun funtions to do it ( just need to NOT do any dt analysis and NOT load 
+          the traces not related to calculating the flux mean stuff)
+        
+        - almost ready ; wait for db to finish running before relaunching stuff 
+
       - db currently being generated 
 
-    documentation : 
+    
+
+    Documentation : 
 
       - upload docu as a github site lol 
 
-    C Optimization : (optionnal)
-
-      - use __builtin_prefetch
-
-      - do the malloc wrapper arena/mempool thingy
 
     Misc: 
 
       - remove curse words from commentaries and documentation
 
       - put the GPL warning things everywhere 
+
+      - I dunno what else to do maybe prepare a release or smtg 
+
+
+    C Optimization : (optionnal)
+
+      - use __builtin_prefetch
+
+      - do the malloc wrapper arena/mempool thingy

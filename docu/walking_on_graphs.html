@@ -50,16 +50,16 @@
         <div id="p1">
             <h2><u>I: Introduction</u></h2>
             <p>
-            Walking on graphs is a program used to simulate the movement 
-            of "Walker" like entities on small to medium sized 
-            graphs (the biggest graph the program can theoretically load has 4.3*10e9 nodes,
-            lines and walkers but I don't recommend loading something that big).
-            The graphs used during the project had sizes varying from a few thousands to 
-            ~3*10e6 nodes.<br/>
-            Simulation are launched by passing the path to a graph file, a coefficient of walkers 
-            (the number of walkers is proportionnal to the number of nodes), and a number of 
-            iterations of the simulation (how many times will each walker move). 
-            Every other argument (rule arguments, trace argument , ...) is optionnal.
+                Walking on graphs is a program used to simulate the movement 
+                of "Walker" like entities on small to medium sized 
+                graphs (the biggest graph the program can theoretically load has 4.3*10e9 nodes,
+                lines and walkers but I don't recommend loading something that big).
+                The graphs used during the project had sizes varying from a few thousands to 
+                ~3*10e6 nodes.<br/>
+                Simulation are launched by passing the path to a graph file, a coefficient of walkers 
+                (the number of walkers is proportional to the number of nodes), and a number of 
+                iterations of the simulation (how many times will each walker move). 
+                Every other argument (rule arguments, trace argument , ...) is optional.
             </p>
             <br/>
         </div>
@@ -134,7 +134,7 @@
                             <li>the proportion of walkers compared to the number of nodes (1 is as many walkers as nodes 0.5 twice as less walkers than nodes,...)</li>
                             <li>the number of iterations</li>
                         </ul>
-                        every other argument is optionnal however, you will want to customize the behavior of walkers. In order to do so you can pass rules 
+                        every other argument is optional however, you will want to customize the behavior of walkers. In order to do so you can pass rules 
                         to the program.<br/>
                         Every rule (except mcrowd MUST be passed with a coefficient)
                         The different rules supported by WOG are : 
@@ -177,13 +177,13 @@
                                         <tr>
                                             <td style="text-align:center"><code>rand</code></td>
                                             <td>
-                                                every walker chooses a random node amongst their neighbor nodes.
+                                                every walker chooses a random node amongst their neighbor nodes (moves randomly).
                                             </td>
                                         </tr>
                                         <tr>
                                             <td style="text-align:center"><code>mconst</code></td>
                                             <td>
-                                                there is a fixed propability (given as argument) 
+                                                there is a constant propability (passed as argument) 
                                                 for a walker to not move.
                                             </td>
                                         </tr>
@@ -196,35 +196,25 @@
                                         <tr>
                                             <td style="text-align:center"><code>mprop</code></td>
                                             <td>
-                                                the Tactics are stored in the s_tactics structure .
-
-                                                it is currently implemented as a dynamic array but will be changed to a static one soon.
-                                                
-                                                the size/ capa fields stores it's current size and max size.
-                                                
-                                                the Rule * rule_arr is the actual array containing the rules present in a tactic.
-                                                
-                                                an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
-                                                flooring the numbers given as argument to the program and a function pointer to the rule associated 
+                                                The Tactics are stored in the s_tactics structure . It is currently implemented as a dynamic array.
+                                                The size/ capa fields stores it's current size and max size. The Rule * rule_arr is the actual array containing the rules present in a tactic.                                               
+                                                an entry in the array contains a coeff represented as an 8 bit integer that is calculated by flooring the numbers given as argument to the program and a function pointer to the rule associated 
                                                 with this coeff. When calculating the movement of a Walker , a random number is generated and 
-                                                the rule corresponding to this number is used to determine the node a walker will go to.           every walker has a 1/n ,where n is the 
-                                                number of walkers on it's current node, 
-                                                chance to move.
+                                                the rule corresponding to this number is used to determine the node a walker will go to. every walker has a 1/n ,where n is the 
+                                                number of walkers on it's current node, chance to move.
                                             </td>
                                         </tr>
-                              
                             </tbody>
                         </table> 
                         every rule (except for) mprop MUST be passed with a coefficient. The syntax to parse a 
                         rule is : "rule:COEFF" where coeff is a floating point number. <br/>
                         The mcrowd, mconst and mcrowd rules are mutually exclusive and independant from the other rules. 
                         If multiple "mrules" are passed only the last one will be used by the simulation. 
-                        They also are independant of the other rules.<br/>
+                        They also are independent of the other rules.<br/>
                         When passing normal rules their coefficients will be normalised. This allows for more flexibility with arguments. 
                         for example if you pass "rand:1 align:3" , "rand:0.1 align:0.3", "rand:100 align:300" you can expect the same results. <br/>
-                        The "mrules" are NOT normalised. The mconst rule takes a floating point number between 0 and 1 whith 0 meaning 
-                        walker will always move and one meaning they'll never move. 
-                        "mprop" takes an integer as argument.
+                        The "mrules" are NOT normalized. The mconst rule takes a floating point number between 0 and 1 with 0 meaning 
+                        Walkers will always move and one meaning they'll never move. "mprop" takes an integer as argument.
                     </p>
                     </div>
                 <div id="p42">
@@ -241,18 +231,7 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align:center"><code>-h</code></td>
-                                    <tthe Tactics are stored in the s_tactics structure .
-
-                                    it is currently implemented as a dynamic array but will be changed to a static one soon.
-                                    
-                                    the size/ capa fields stores it's current size and max size.
-                                    
-                                    the Rule * rule_arr is the actual array containing the rules present in a tactic.
-                                    
-                                    an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
-                                    flooring the numbers given as argument to the program and a function pointer to the rule associated 
-                                    with this coeff. When calculating the movement of a Walker , a random number is generated and 
-                                    the rule corresponding to this number is used to determine the node a walker will go to. d>
+                                    <td>
                                         prints help and exits
                                     </td>
                                 </tr>
@@ -286,18 +265,7 @@
                 <div id="p43">
                     <h4><em>IV.2: Error Messages</em></h4>
                     <p>
-                        walking on grathe Tactics are stored in the s_tactics structure .
-
-                        it is currently implemented as a dynamic array but will be changed to a static one soon.
-                        
-                        the size/ capa fields stores it's current size and max size.
-                        
-                        the Rule * rule_arr is the actual array containing the rules present in a tactic.
-                        
-                        an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
-                        flooring the numbers given as argument to the program and a function pointer to the rule associated 
-                        with this coeff. When calculating the movement of a Walker , a random number is generated and 
-                        the rule corresponding to this number is used to determine the node a walker will go to. phs has a custom error system. When catching an error the program will print error traces 
+                        Walking on Graphs has a custom error system. When catching an error the program will print error traces 
                         allowing to understand which function calls caused the simulation to fail. These error are not the clearest
                         but I think they're better than random segfaults (and they make the program easier to debug). 
                         The error flags are stored in an enum in the <a href="../src/common.h">src/common.h file</a>. 
@@ -316,18 +284,7 @@
                     <p>
                     This section will be used for 
                     various parts of the more "technical" side 
-                    of the docu. You dothe Tactics are stored in the s_tactics structure .
-
-                    it is currently implemented as a dynamic array but will be changed to a static one soon.
-                    
-                    the size/ capa fields stores it's current size and max size.
-                    
-                    the Rule * rule_arr is the actual array containing the rules present in a tactic.
-                    
-                    an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
-                    flooring the numbers given as argument to the program and a function pointer to the rule associated 
-                    with this coeff. When calculating the movement of a Walker , a random number is generated and 
-                    the rule corresponding to this number is used to determine the node a walker will go to. n't have to 
+                    of the docu. You don't have to 
                     check it out to understand what Walking on Graphs 
                     is and how it's used. But feel free 
                     to give it a read if you're interrested in 
@@ -338,7 +295,7 @@
                     <h4><em>V.2: custom CSV rep</em></h4>
                     <p>
                         The CSV format used to write / read graphs is as follows :<br/>
-                        the first line of the csv contains the number of nodes / lines in the graph<br/>
+                        the first line of the CSV contains the number of nodes / lines in the graph<br/>
                         the next lines represent the adjacency lists of the nodes <br/>
                         the fields are separated by a comma. Inside the line field,<br/> 
                         the lines are separated by a colon.<br/>
@@ -398,7 +355,7 @@
                         list of a node in the graph. 
                         in order to do so , it stores the reference to the first neighbor of the
                         node in
-                        the array of adjacency lists (cf LineAray docu) as well as the number of
+                        the array of adjacency lists (cf LineAray documentation) as well as the number of
                         neighbors of the node
                         this makes it possible to know when the adjacency list of the entry stops.
                     </p>

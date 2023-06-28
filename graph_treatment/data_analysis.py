@@ -99,6 +99,27 @@ def mean_results(simul_name, res_name):
         np.savetxt(res_name, ret_mat)
     if flux_mean:
         np.savetxt(res_name+"fluxmean",[mean(flux_mean)])
+        
+
+def mean_results_flux(simul_name, res_name):
+    """
+    str, str -> writes file
+
+    variant of mean resutl used to calculate the correct flux
+    
+    function was improved by https://github.com/Pacidus
+    """
+    ret_mat = np.array([])
+    flux_mean = []
+    n = 0
+    for fname in os.listdir("."):
+        
+        if "_fluxmean" in fname:
+            flux_mean += [(np.loadtxt(fname)).item()]
+                
+
+    if flux_mean:
+        np.savetxt(res_name+"fluxmean",[mean(flux_mean)])
 
 
 

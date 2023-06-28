@@ -1,6 +1,0 @@
-the WalkerArray is a simple wrapper structure around the basic C array containing every 
-walker in the graph. 
-
-the size field corresponds to the size of the array and the array field to the array itself.
-at the moment ; a walker stores the reference of the node it occupies and it's previous position 
-(the previous position is only used in the propulsion rule but)

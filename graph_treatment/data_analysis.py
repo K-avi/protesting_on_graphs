@@ -195,6 +195,37 @@ def mean_flux( lines, flux_mat, nb_wk ):
         
     return s/(nb_wk)
 
+def mean_flux_correct( lines, flux_mat, nb_wk ): 
+    """
+    np.array[1D] , np.array[2D] , int -> int 
+    
+    the previous one didn't do the right calculation ; 
+    I'll rerun simuls with this one instead (oops I guess)
+    """
+    s = 0
+    
+    N = len(lines)
+    Idab, Idba = np.zeros((2, N//2), dtype=np.int32)
+    Dab = dict()
+    itt = 0
+    for i, (a, b) in enumerate(lines):
+        ba = b < a
+        if ba:
+            a, b = b, a
+        if (a, b) not in Dab:
+            Dab[(a,b)] = itt
+            itt += 1
+        if ba:
+            
+            Idba[Dab[(a,b)]] = int(i)
+        else:
+            Idab[Dab[(a,b)]] = int(i) 
+    
+
+    s =  np.abs(flux_mat[:,Idab].sum (1) - flux_mat[:,Idba].sum(1)).mean() 
+        
+    return s/(nb_wk)
+
 def main():
     """
     placeholder; just call 

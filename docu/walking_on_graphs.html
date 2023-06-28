@@ -39,7 +39,8 @@
                                     <li><a href="#p53">3: LineArray </a></li>
                                     <li><a href="#p54">4: WalkerCurnext</a></li> 
                                     <li><a href="#p55">5: GraphTableEntry</a></li>  
-                                    <li><a href="#p56">6: Trace Format</a></li>                                                                  
+                                    <li><a href="#p56">6: Tactics rep</a></li>  
+                                    <li><a href="#p57">7: Trace Format</a></li>                                                                  
                                 </ul>
                             </li>                         
                         </ul>                
@@ -195,7 +196,18 @@
                                         <tr>
                                             <td style="text-align:center"><code>mprop</code></td>
                                             <td>
-                                                every walker has a 1/n ,where n is the 
+                                                the Tactics are stored in the s_tactics structure .
+
+                                                it is currently implemented as a dynamic array but will be changed to a static one soon.
+                                                
+                                                the size/ capa fields stores it's current size and max size.
+                                                
+                                                the Rule * rule_arr is the actual array containing the rules present in a tactic.
+                                                
+                                                an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
+                                                flooring the numbers given as argument to the program and a function pointer to the rule associated 
+                                                with this coeff. When calculating the movement of a Walker , a random number is generated and 
+                                                the rule corresponding to this number is used to determine the node a walker will go to.           every walker has a 1/n ,where n is the 
                                                 number of walkers on it's current node, 
                                                 chance to move.
                                             </td>
@@ -229,7 +241,18 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align:center"><code>-h</code></td>
-                                    <td>
+                                    <tthe Tactics are stored in the s_tactics structure .
+
+                                    it is currently implemented as a dynamic array but will be changed to a static one soon.
+                                    
+                                    the size/ capa fields stores it's current size and max size.
+                                    
+                                    the Rule * rule_arr is the actual array containing the rules present in a tactic.
+                                    
+                                    an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
+                                    flooring the numbers given as argument to the program and a function pointer to the rule associated 
+                                    with this coeff. When calculating the movement of a Walker , a random number is generated and 
+                                    the rule corresponding to this number is used to determine the node a walker will go to. d>
                                         prints help and exits
                                     </td>
                                 </tr>
@@ -263,11 +286,22 @@
                 <div id="p43">
                     <h4><em>IV.2: Error Messages</em></h4>
                     <p>
-                        walking on graphs has a custom error system. When catching an error the program will print error traces 
+                        walking on grathe Tactics are stored in the s_tactics structure .
+
+                        it is currently implemented as a dynamic array but will be changed to a static one soon.
+                        
+                        the size/ capa fields stores it's current size and max size.
+                        
+                        the Rule * rule_arr is the actual array containing the rules present in a tactic.
+                        
+                        an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
+                        flooring the numbers given as argument to the program and a function pointer to the rule associated 
+                        with this coeff. When calculating the movement of a Walker , a random number is generated and 
+                        the rule corresponding to this number is used to determine the node a walker will go to. phs has a custom error system. When catching an error the program will print error traces 
                         allowing to understand which function calls caused the simulation to fail. These error are not the clearest
                         but I think they're better than random segfaults (and they make the program easier to debug). 
-                        The error flags are stored in an enum in the <a href="../../src/common.h">src/common.h file</a>. 
-                        The function to print error is stored in <a href="../../src/misc.c">src/misc.c</a> , feel free to check them out 
+                        The error flags are stored in an enum in the <a href="../src/common.h">src/common.h file</a>. 
+                        The function to print error is stored in <a href="../src/misc.c">src/misc.c</a> , feel free to check them out 
                         if you want more info on errors.
                     </p>
                 </div>
@@ -282,7 +316,18 @@
                     <p>
                     This section will be used for 
                     various parts of the more "technical" side 
-                    of the docu. You don't have to 
+                    of the docu. You dothe Tactics are stored in the s_tactics structure .
+
+                    it is currently implemented as a dynamic array but will be changed to a static one soon.
+                    
+                    the size/ capa fields stores it's current size and max size.
+                    
+                    the Rule * rule_arr is the actual array containing the rules present in a tactic.
+                    
+                    an entry in the array contains a coeff represented as an 8 bit integer that is calculated by 
+                    flooring the numbers given as argument to the program and a function pointer to the rule associated 
+                    with this coeff. When calculating the movement of a Walker , a random number is generated and 
+                    the rule corresponding to this number is used to determine the node a walker will go to. n't have to 
                     check it out to understand what Walking on Graphs 
                     is and how it's used. But feel free 
                     to give it a read if you're interrested in 
@@ -361,12 +406,28 @@
                 <div id="p56">
                     <h4><em>V.6 : Trace Format</em></h4>
                     <p>
+                        the Tactics are stored in the s_tactics structure. "Tactics" is the name given to a 
+                        combination of Rules (for example "rand:1 align:3" is a tactic)<br/>
+                        it is currently implemented as a dynamic array.  
+                        the size/capa fields stores it's current size and max size. <br/>
+                        the Rule * rule_arr is the actual array containing the rules present in a tactic.
+                        an entry in the array contains a coeff represented as an 16 bit integer that is calculated by 
+                        flooring the numbers given as argument to the program<br/> and a function pointer to the rule associated 
+                        with this coeff. When calculating the movement of a Walker , a random number is generated and 
+                        the rule corresponding to this number is used to determine the rule a walker will choose 
+                        which calculates the node a walker will go to.
+                    </p>
+                
+                <div id="p57">
+                    <h4><em>V.7 : Trace Format</em></h4>
+                    <p>
                         When running fairly big simulations on fairly big graphs , 
                         producing a trace without it taking a while to be generated 
                         can be an issue.<br/> 
                         The solution used in the program to fix this issue is to heavily rely on dumping 
                         the binary arrays of the graphs. 
-                        v>         and end of the simul.
+                        At the beginning and end of the simulation the CSV graph is dumped in a human readable CSV 
+                        format. They're stored on the [trace name]_hr and [trace name]_hrend files.
                         <br/>The other human readable file produced is [trace name]_lines containing two 
                         integers on each line , corresponding to the lines (edges).<br/>
                         Every other files contain binary data. They can be loaded in python with the numpy fromfile function.<br/>

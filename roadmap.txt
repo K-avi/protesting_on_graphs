@@ -110,7 +110,7 @@ done :
       causes me to break in perftest. I'm really confused
 
     - perftest another 20000walker * 1000 it simul cuz the last result was fucked up 
-      done; results are what were expected but kinda disapointing
+      done; results are what were expected but kinda disapointing- redo the flux correctly ; current flux thing is bad 
     
     - wrote + tested most of the dt analysis functions ; haven't tested 
       the nb nodes visited by walkers yet 
@@ -126,20 +126,17 @@ done :
       they can be given as a single beeg string to bash and it will then 
       be read correctly by the C program (cool)
     
-    - implement rule parsing 
+    - implement rule parsing - redo the flux correctly ; current flux thing is bad 
 
     - finish the shell / python wrapper for the program 
       wire up the different sections of the prgm smtg like : 
       python retriever -> C simulation -> python trace loader -> python dt analysis 
                         (possibility to run the simulation a bunch of times to get avg of simul)
-    
+    - relabel the first 200 runs of the db (shite)
     - start simulations in batch on multiple CPUs (the idea is that 1 simulation is too fast to 
       benefit of multithread so just start a bunch of them on a bunch of threads)
     
-    - implemented / tested a script to start simulations w random parameters to generate a LOT 
-      of data will run it during the week end
-    
-    - implement the nb_nodes_visited / walkers stuff (ty pacidus)
+    - implemented / tested a script to start simulations w random parameters to gener- redo the flux correctly ; current flux thing is bad 
 
     - optimize the python stuff  ( call for help)
 
@@ -162,9 +159,7 @@ done :
 
     - number of occupied nodes ->  done 
 
-    - option to dump flux from a certain it onward  
-
-    - implement flux thingy in c
+    - option to dump flux from a certain it onward  - redo the flux correctly ; current flux thing is bad 
 
     - function to generate db ( see meeting notes )
 
@@ -192,30 +187,33 @@ done :
      - do the query / plot thingy for db (not tested)
 
     - did docu ; there's prolly a bunch of typos in it that I'll have to fix at some point
+
+    - redo the flux correctly ; current flux thing is bad 
+
+    - relabel the first 200 runs of the db (shite)
         
 
 
 pending : 
 
+    Data analysis : 
+      
+      - write a db gen variant just to recalculate the flux mean with the updated version
+
+      - db currently being generated 
+
     documentation : 
 
       - upload docu as a github site lol 
-
-    Data analysis : 
-
-      - redo the flux correctly ; current flux thing is bad 
-
-      - db currently being generated 
 
     C Optimization : (optionnal)
 
       - use __builtin_prefetch
 
-      - do the malloc wrapper arena/mempool thingy  (YES I WANNA COME ON)
+      - do the malloc wrapper arena/mempool thingy
 
     Misc: 
 
       - remove curse words from commentaries and documentation
-    
-      - opti then do some other stuff 
 
+      - put the GPL warning things everywhere 

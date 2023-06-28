@@ -22,7 +22,7 @@
                         <ul>
                             <li><a href="#p1" class="text-justify">I: Introduction</a></li>
                             <li><a href="#p2">II: What are Graphs? (as far as WOG is concerned)</a></li>
-                            <li><a href="#p3">III: What are walkers?(spoiler : 32bit integers)</a></li>
+                            <li><a href="#p3">III: What are walkers?</a></li>
                             <li>
                                 <a href="#p4">IV: How to use WOG?</a>
                                 <ul>
@@ -39,7 +39,7 @@
                                     <li><a href="#p53">3: LineArray </a></li>
                                     <li><a href="#p54">4: WalkerCurnext</a></li> 
                                     <li><a href="#p55">5: GraphTableEntry</a></li>  
-                                    <li><a href="#p56">5: Trace Format</a></li>                                                                  
+                                    <li><a href="#p56">6: Trace Format</a></li>                                                                  
                                 </ul>
                             </li>                         
                         </ul>                
@@ -58,7 +58,7 @@
             Simulation are launched by passing the path to a graph file, a coefficient of walkers 
             (the number of walkers is proportionnal to the number of nodes), and a number of 
             iterations of the simulation (how many times will each walker move). 
-            Every other argument (rule arguments, trace argument , ...) are optionnal.
+            Every other argument (rule arguments, trace argument , ...) is optionnal.
             </p>
             <br/>
         </div>
@@ -68,15 +68,13 @@
             <h2><u>II: What are Graphs? (as far as WOG is concerned)</u></h2>
             <p>
                 Graphs are represented with adjacency lists in the program
-                these adjacency lists (amond other stuff) are stored in the 
-                graph_table structure of the C code.
+                these adjacency lists (as well as other stuff) are stored in the 
+                GraphTable structure of the C code.
                 it contains a size field to keep track of the number of entries in it 
-                a GraphTableEntry pointer field containing the graph's entry (see docu of GraphTableEntry)
-                a LineArray pointer field where the adjacency lists of the graph are stored
-                (see txt docu of LineAray)
-                a WalkerArray pointer field containing the walkers present in the graph
-                (see docu of WalkerArray)
-                a WalkerCurNext field to keep track of the position of the walkers (see txt docu of WalkerCurNext)
+                a <a href=#p55>GraphTableEntry</a> pointer field containing the graph's entry
+                a <a href=#p53>LineArray</a> pointer field where the adjacency lists of the graph are stored
+                a <a href=#p3>WalkerArray</a> pointer field containing the walkers present in the graph
+                a <a href=#p54>WalkerCurNext</a> field to keep track of the position of the walkers
                 a cur_gen field which is an integer used to keep track of the number of iterations since 
                 the beginning of a simulation
             </p>
@@ -96,7 +94,9 @@
                 (or their previous position in the case of the propulsion rule)
                 The walkers are stored in the WalkerArray, a simple wrapper around the C 
                 array that contains a size field , an array of "Walkers" and an array containing 
-                the previous position of the walkers.
+                the previous position of the walkers.<br/>
+                The "id" of the walkers doesn't have to be "stored". Since they are stored in an 
+                array you can already identify them with their index when moving them around. 
             </p>
             <br/>
         </div>  
@@ -106,7 +106,27 @@
        
                 <div id="p41">
                     <h4><em>IV.1: Basic usage</em></h4>
-                    <p>
+                    <p><table class="table table-bordered table-light">
+                        <tbody>
+                            <tr>
+                                <th>Rule</th>
+                                <th>Description</th>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>align</code></td>
+                                <td>
+                                    every walker will move to their neighbor node where the flux difference (a,b) - (b,a) 
+                                    where a is the node they're currently at is the highest. If every flux difference is 
+                                    the same they will move to a random node 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:center"><code>attco</code></td>
+                                <td>
+                                    the more walkers are on a node the more likely a walker is to 
+                                    move there.
+                                </td>
+                            </tr>
                         to call the program you must pass it: 
                         <ul>
                             <li>the Path to a custom CSV file representing a graph</li>
@@ -117,28 +137,7 @@
                         to the program.<br/>
                         Every rule (except mcrowd MUST be passed with a coefficient)
                         The different rules supported by WOG are : 
-                        <table class="table table-bordered table-light">
-                            <tbody>
-                                <tr>
-                                    <th>Rule</th>
-                                    <th>Description</th>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"><code>align</code></td>
-                                    <td>
-                                        every walker will move to their neighbor node where the flux difference (a,b) - (b,a) 
-                                        where a is the node they're currently at is the highest. If every flux difference is 
-                                        the same they will move to a random node 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center"><code>attco</code></td>
-                                    <td>
-                                        the more walkers are on a node the more likely a walker is to 
-                                        move there.
-                                    </td>
-                                </tr>
-                                <tr><table class="table table-bordered table-light">
+                        <tr><table class="table table-bordered table-light">
                                     <tbody>
                                         <tr>
                                             <th>Rule</th>
@@ -267,8 +266,8 @@
                         walking on graphs has a custom error system. When catching an error the program will print error traces 
                         allowing to understand which function calls caused the simulation to fail. These error are not the clearest
                         but I think they're better than random segfaults (and they make the program easier to debug). 
-                        The error flags are stored in an enum in the src/common.h file. 
-                        The function to print error is stored in src/misc.c , feel free to check them out 
+                        The error flags are stored in an enum in the <a href="../../src/common.h">src/common.h file</a>. 
+                        The function to print error is stored in <a href="../../src/misc.c">src/misc.c</a> , feel free to check them out 
                         if you want more info on errors.
                     </p>
                 </div>
@@ -299,8 +298,8 @@
                         the fields are separated by a comma. Inside the line field,<br/> 
                         the lines are separated by a colon.<br/>
                         node_index,number_of_lines,line1:flux1;line2:flux2...lineN:fluxN<br/>
-                        this representation allows to store a graph with custom flux<br/> (usefull to
-                        dump a trace from a certain generation)  
+                        this representation allows to store a graph with custom flux<br/> (useful to
+                        dump/load a trace from a certain generation)  
                     </p>
                 </div>
                 <div id="p53">
@@ -340,10 +339,7 @@
                         the 'size' field of the structure is the number of elements in the arrays.
                         <br/>
                         the arrays store the number of walker in a node of the graph. To retrieve the number 
-                        of walker currently occupying a node n in the graph you have to 
-                        <br/>
-                        check the nth index of the cur_num array. (cur_num[n])
-                        <br/>
+                        of <br/>
                         to calculate the number of walkers in a node n at the iteration i+1 you increment 
                         the next_num array.<br/>
                         Using two arrays allows to swap the two arrays like I do with the LineArray 
@@ -362,7 +358,7 @@
                         this makes it possible to know when the adjacency list of the entry stops.
                     </p>
                 </div>
-                <div id="p55">
+                <div id="p56">
                     <h4><em>V.6 : Trace Format</em></h4>
                     <p>
                         When running fairly big simulations on fairly big graphs , 
@@ -370,25 +366,23 @@
                         can be an issue.<br/> 
                         The solution used in the program to fix this issue is to heavily rely on dumping 
                         the binary arrays of the graphs. 
-                        When -d is active, human readable files caleled [trace name]_hr and [trace name]_hrend will 
-                        be dumped at the beginning and end of the simul. They contain the CSV rep of the graphs at the start 
-                        and end of the simul. The other human readable file produced is [trace name]_lines containing two 
-                        integers on each line , corresponding to the lines (edges).
+                        v>         and end of the simul.
+                        <br/>The other human readable file produced is [trace name]_lines containing two 
+                        integers on each line , corresponding to the lines (edges).<br/>
+                        Every other files contain binary data. They can be loaded in python with the numpy fromfile function.<br/>
 
-                        The files produced during the simulation are : <br/>
+                        These files are : <br/>
                         <ul>
                         <li>[trace name]_curnum keeping track of 
                         the number of walker at each nodes (the WalkerCurNext.cur array is added to the file after each iteration).</li>
-                        <li>[trace name]_flux if the start of flux dump has been reached, the LineArray.cur array will be added to the 
-                            file at each iteration (by default the flux starts to be dumped from iteration 1)
-                        </li>
+                        <li>[trace name]_flux if the start of flux dump 
+                        </body>
                         <li>[trace name]_wkpos keeping track of the position of the walkers (the WalkerArrat.array is added to the file after each iteration) </li>
                         </ul>
-
                     </p>
                 </div>
             <br/>
         </div>  
-        <br/><hr/><br/>
     </body>
+    <footer><hr/><i>documentation written by Ivan MULOT-RADOJCIC</i><br/><a href="index.html">index</a></footer>
 </html>

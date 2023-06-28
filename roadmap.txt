@@ -190,6 +190,8 @@ done :
     - write a clean dt analysis script (will have to improve it at some point)
 
      - do the query / plot thingy for db (not tested)
+
+    - did docu ; there's prolly a bunch of typos in it that I'll have to fix at some point
         
 
 
@@ -197,10 +199,11 @@ pending :
 
     documentation : 
 
-      - my biggest challenge yet.... write an html docu......
-        god have mercy on my poor poor soul ....
+      - upload docu as a github site lol 
 
     Data analysis : 
+
+      - redo the flux correctly ; current flux thing is bad 
 
       - db currently being generated 
 

@@ -193,7 +193,14 @@ done :
     - relabel the first 200 runs of the db (shite)
 
     - corrected typos in docu
-        
+    
+    - db generated 
+
+    - do the measures plot for bigisim w the new rules  
+
+    - do the script to retrieve the mean flux and the last "density" of group and 
+        plot them for every sim
+
 
 
 pending : 
@@ -207,9 +214,9 @@ pending :
         
         - almost ready ; wait for db to finish running before relaunching stuff 
 
-      - db currently being generated 
 
-    
+      - create db for london, seatle , teheran , custom generated graphs
+   
 
     Documentation : 
 
@@ -221,8 +228,6 @@ pending :
       - remove curse words from commentaries and documentation
 
       - put the GPL warning things everywhere 
-
-      - I dunno what else to do maybe prepare a release or smtg 
 
 
     C Optimization : (optionnal)

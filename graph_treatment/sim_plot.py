@@ -44,7 +44,7 @@ def plot(simul_name):
         plt.legend()
     plt.show()
     
-def plot_list(simul_files):
+def plot_list(simul_files, index=False):
     """
     creates figures for 
     the list of files
@@ -69,14 +69,22 @@ def plot_list(simul_files):
     plt.title("evolution of the number of occupied nodes")
     
     for name in simul_files:
-             
+          
         dt = np.loadtxt(name)
         c = next(color)
-        for i,j in range(1,7),range(0,6):       
-            plt.figure(i)
-            plt.plot(dt.T[j], color=c, label=name)
+        cusname = name 
+        if(index):
+            with open("index_base.csv", "r") as f: 
+                for line in f:
+                   
+                    if( name.split("/")[1].split("_")[0]== line.split(",")[0]):
+                        cusname = "".join([ i+" " for i in line.split(",")[1::] ])
+                        break 
+        for i,j in enumerate(range(1,8)):       
+            plt.figure(j)
+            plt.plot(dt.T[i], color=c, label=cusname)
     
-    for i in range(1,7):
+    for i in range(1,8):
         plt.figure(i)
         plt.legend()
     plt.show()
@@ -85,11 +93,10 @@ def main():
     
     
     parser = arg.ArgumentParser(description='plots the simul name given')
-    parser.add_argument('name', type=str,
-                    help='name of simul to plot')
+    parser.add_argument('name', type=str, nargs="+", help='name of simul files to plot')
     args = parser.parse_args()
     
-    plot(args.name) 
+    plot_list(args.name, index=True) 
     return 0 
 
 if __name__=='__main__':

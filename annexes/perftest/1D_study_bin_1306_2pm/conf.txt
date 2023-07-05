@@ -1,1 +1,0 @@
-bin w number of wk set to 2*10e4 ; rest of the bin is normal

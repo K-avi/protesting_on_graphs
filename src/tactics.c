@@ -348,7 +348,7 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
     //if(!line_ref) return LINEREF_NULL;
 
     double randval= (double)rand() / (double)RAND_MAX ;
-    uint16_t uint_coeff = (uint8_t) (UINT16_MAX / randval);
+    uint16_t uint_coeff = (uint16_t) (UINT16_MAX / randval);
     bool mv_check ;
     uint8_t failure = t->meta_function.meta_function(gtable, node_from, t->meta_function.rule_coeff ,&mv_check);
     if(failure){ report_err("choose_node", failure); return failure;}

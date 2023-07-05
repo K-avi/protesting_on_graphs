@@ -67,6 +67,8 @@ def plot_list(simul_files, index=False):
     plt.title("evolution of the mean density of the groups")
     plt.figure(7)
     plt.title("evolution of the number of occupied nodes")
+    plt.figure(8)
+    plt.title("evolution of the number of groups / number of nodes in the graphs in permille ")
     
     for name in simul_files:
           
@@ -80,11 +82,11 @@ def plot_list(simul_files, index=False):
                     if( name.split("/")[1].split("_")[0]== line.split(",")[0]):
                         cusname = "".join([ i+" " for i in line.split(",")[1::] ])
                         break 
-        for i,j in enumerate(range(1,8)):       
+        for i,j in enumerate(range(1,9)):       
             plt.figure(j)
             plt.plot(dt.T[i], color=c, label=cusname)
     
-    for i in range(1,8):
+    for i in range(1,9):
         plt.figure(i)
         plt.legend()
     plt.show()

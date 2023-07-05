@@ -39,6 +39,25 @@ def discretisePA(Graph, step):
 
     return ret_graph
 
+def read_degrees(Path): 
+    """ 
+    path of csv graph -> list 
+    returns the list of degrees 
+    of the custom csv of a graph 
+    stored at path
+    """
+    
+    with open(Path,"r") as f:
+        l = []
+        for i in f: 
+            if not i.strip(): 
+                continue 
+            
+            l.append(int(i.split(",")[1]))
+    return l
+                
+        
+
 def makeCSVPA(Graph, path):
     """
     graph_string , path
@@ -59,8 +78,11 @@ def makeCSV(Graph, path):
      
         file.write(f"{Graph.number_of_nodes()},{Graph.number_of_edges()*2}\n") #2 times nb of edges cuz need (a,b) and (b,a)
         for i in Graph.nodes:
+         
             file.write(f'{i},{Graph.degree(i)},{":0;".join( str(i) for i in Graph.neighbors(i))+":0"}\n')
     file.close
+
+
 
 def gen_graph(latt, long , rad, step, path):
     """

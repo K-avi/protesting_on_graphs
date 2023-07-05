@@ -200,23 +200,36 @@ done :
 
     - do the script to retrieve the mean flux and the last "density" of group and 
         plot them for every sim
+    
+    - write a db gen variant just to recalculate the flux mean with the updated version
+	
+    - corrected the flux for paris ; generated bases for hong kong , lyon , manhattan
 
+    - started simul for 100*100 discretised lattice  
+      (wait until one of the simuls is done before launching)
 
+    - add the percentile of group over nb nodes to traces
+
+    - add rand to plot 
+          plot good sims instead of noisy 
+    
+    - add a turn of "noise" during a run ; doesn't do shit; should prolly add 50~100 turns of propu to spread groups 
+
+    - run simuls with slow down rule (on paris)
 
 pending : 
 
     Data analysis : 
-      
-      - write a db gen variant just to recalculate the flux mean with the updated version
 
-        - modify the autorun funtions to do it ( just need to NOT do any dt analysis and NOT load 
-          the traces not related to calculating the flux mean stuff)
-        
-        - almost ready ; wait for db to finish running before relaunching stuff 
+      - propu 10 turns 
 
+      Need other simulations to finish before starting : 
 
-      - create db for london, seatle , teheran , custom generated graphs
+        - rerun Paris 
+        - rerun Paris w mcrowd 
    
+    C : 
+      - implement movement together (Paris)
 
     Documentation : 
 
@@ -228,7 +241,6 @@ pending :
       - remove curse words from commentaries and documentation
 
       - put the GPL warning things everywhere 
-
 
     C Optimization : (optionnal)
 

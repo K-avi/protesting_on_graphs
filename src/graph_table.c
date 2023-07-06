@@ -75,7 +75,7 @@ void printLineArr( LineArray * lineArr, FILE * stream){
     }
 }
 
-uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t warray_size ,uint32_t curgen , uint8_t prop_flag){
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t nb_walker ,uint32_t curgen , uint8_t prop_flag){
     /*
     initialises a non null graph table ; sets it's entries to default values and initialises 
     it's walker entries
@@ -102,11 +102,13 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     uint8_t failure= initnLineArr(gt->arrLine, arrline_size);
     if(failure) return failure;
 
+    /*
     gt->warray= malloc(sizeof(WalkerArray));
     if(!gt->warray) return WA_ALLOC;
     failure=initWalkerArray(gt->warray, warray_size, prop_flag);
     if(failure) return failure;
-
+    */
+    gt->wknum= nb_walker;
     gt->wkcn= malloc(sizeof(WalkerCurNext));
     if(!gt->wkcn) return GT_MALLOC;
 
@@ -124,8 +126,8 @@ void freeGraphTab( GraphTable * gt){
     if(!gt) return;
 
     free(gt->entries);
-    freeWalkerArray(gt->warray);
-    free(gt->warray);
+    //freeWalkerArray(gt->warray);
+    //free(gt->warray);
     freeLineArr(gt->arrLine);
     free(gt->arrLine);
 

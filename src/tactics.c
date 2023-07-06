@@ -27,7 +27,7 @@ void freeTactics( Tactics * t){
     if(t->rule_arr)free(t->rule_arr);
 }//tested ;  ok
 
-static uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun fn){
+static uint8_t addRule( Tactics * t , uint16_t rule_coeff, rule_fun fn){
     /*adds a rule function to a tactics structure*/
     if(!t){ report_err("addRule", T_NULL); return T_NULL;}
 
@@ -49,7 +49,7 @@ static uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun fn){
 }//tested ;ok
 //assumed that parameters are passed correctly ; do not call outside of parse args
 
-static uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index){
+static uint8_t rule_rand( GraphTable * gtable , uint32_t node_from){
     /*
     chooses a random neighboor node at entry node from in a gt;
     
@@ -67,14 +67,13 @@ static uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t wal
 
     Line * line_to = gtable->entries[node_from].first_neighboor_ref+ rand()%gtable->entries[node_from].neighboor_num;
    
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
-    gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
+    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+    gtable->wkcn->next_num[line_to->node_index]+= gtable->wkcn->cur_num[node_from];
 
     return T_OK;
 }// new version ;tested ; seems ok
 
-static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from ){
     /*
     chooses the neighbor with the most entry and goes there 
 
@@ -105,18 +104,17 @@ static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32
         }
     }   
     if(!line_to)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from,  walker_index); //goes to random node if no diff num
+    if(!diff) return rule_rand(gtable,  node_from); //goes to random node if no diff num
 
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
-    gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
+    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+    gtable->wkcn->next_num[line_to->node_index]+= gtable->wkcn->cur_num[node_from];
 
     return T_OK;
 
 }//tested; seems ok
 
 
-static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from ){
     /*
     calculates the sum of the number of walkers stored on the neighbor nodes 
     of node_from ; associates coefficient proportionnal to the number of 
@@ -144,7 +142,7 @@ static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from ,
     }
 
     if(tot==0){ //selects random node if all of the neighbors are empty
-        return rule_rand(gtable, node_from, walker_index);
+        return rule_rand(gtable, node_from);
     }
 
     //makes the choice 
@@ -155,10 +153,8 @@ static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from ,
             line_cur= cur_entry->first_neighboor_ref+i; //retrieves the line 
 
             //moves and updates fields 
-            gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
-            gtable->wkcn->next_num[line_cur->node_index]++;
-            gtable->warray->array[walker_index].index_entry= line_cur->node_index;
-
+            gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+            gtable->wkcn->next_num[line_cur->node_index]+= gtable->wkcn->cur_num[node_from];
             return T_OK;
         }
     }  
@@ -167,7 +163,7 @@ static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from ,
 }//tested; 
 //seems ok
 
-static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from){
     /*
     where d(n) is the number of neighbors of n
     O(d(n)*a) where d(n) is the degree of neighboors and a is the 
@@ -212,16 +208,15 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_
     }   
 
     if(!line_to)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from, walker_index);
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
-    gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
+    if(!diff) return rule_rand(gtable,  node_from);
+    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+    gtable->wkcn->next_num[line_to->node_index]+= gtable->wkcn->cur_num[node_from];
 
     return T_OK;
 }// tested; seems ok ; awful tbh
 
 
-static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
+static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from ){
     /*
     will node move the walker 
     does so by setting it's next node to it's current node and not updating any flux.
@@ -238,9 +233,9 @@ static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t wal
 }//tested ; seems ok
 //make a metarule
 
-static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker_index){
+static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from){
     /*the propulsion itself */
-
+/*
     if(!gtable) { report_err( "rule_propulsion", GT_NULL ) ; return GT_NULL;} 
   
     if(node_from>gtable->table_size) { report_err( "rule_propulsion", GT_SIZE ) ; return GT_SIZE;} 
@@ -254,7 +249,7 @@ static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t
        (cur_entry->first_neighboor_ref)->node_index){
    
          
-        return rule_sleep(gtable, node_from, walker_index);
+        return rule_sleep(gtable, node_from);
     }
 
     uint32_t neighbor_num =gtable->entries[node_from].neighboor_num;
@@ -272,15 +267,14 @@ static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t
     }else{ //weird ass case ; happened to me bc a node had "two lines" to the same node which 
     //like some type of multi graph
         
-        return rule_sleep(gtable, node_from, walker_index);
+        return rule_sleep(gtable, node_from);
     }
     //update pos / flux
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
-    gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
-
+    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+    gtable->wkcn->next_num[line_to->node_index]+= gtable->wkcn->cur_num[node_from];
+*/
     
-    return T_OK;
+    return rule_sleep(gtable, node_from);
 }//not tested ;might be wrong i dunno
 
 
@@ -338,7 +332,7 @@ static uint8_t rule_speed_crowd(GraphTable * gtable, uint32_t node_from , uint32
 }// tested ; seems ok
 
 
-uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index){
+uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from){
     /*
     chooses a rule from tactics t to use to select a node to move to
     O(c+t) where c is the complexity of the tactic chosen and t the number of tactics to choose from 
@@ -353,28 +347,17 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
     uint8_t failure = t->meta_function.meta_function(gtable, node_from, t->meta_function.rule_coeff ,&mv_check);
     if(failure){ report_err("choose_node", failure); return failure;}
 
-    if(!mv_check){   
-        
-        uint32_t prev_index= gtable->warray->array[walker_index].index_entry;
-        return rule_sleep(gtable,  node_from,  walker_index);
-
-        if(gtable->warray->array_prev)//only used when propulsion is active
-            gtable->warray->array_prev[walker_index].index_entry=prev_index;
+    if(!mv_check){         
+        return rule_sleep(gtable,  node_from);
+     
     }
 
     for(uint32_t i=0; i<t->numb ; i++){
-     
+      
         if( uint_coeff<= t->rule_arr[i].rule_coeff){
 
-            uint32_t prev_index= gtable->warray->array[walker_index].index_entry;
-
-            failure= t->rule_arr[i].rule_function(gtable, node_from, walker_index);  
-            if(failure) report_err("choose_node err1", failure);
-
-            if(gtable->warray->array_prev){//only used when propulsion is active
-
-                gtable->warray->array_prev[walker_index].index_entry=prev_index;
-            }
+            failure= t->rule_arr[i].rule_function(gtable, node_from);  
+            if(failure) report_err("choose_node err1", failure); 
 
             return failure;
         }
@@ -437,13 +420,13 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
     for(uint8_t i=0; i<rule_count ; i++){
         if(casted_sum>UINT16_MAX) { fprintf(stderr,"casted sum %u\n", casted_sum); report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
 
-        coeff_arr[i]= (uint16_t)( ( (double)((double)index_arr[i]/(double)sum)* (double)255 )+casted_sum );
+        coeff_arr[i]= (uint16_t)( ( (double)((double)index_arr[i]/(double)sum)* (double)UINT16_MAX )+casted_sum );
         //printf("i:%u coeffarri:%u\n", i, coeff_arr[i]);
         casted_sum=coeff_arr[i];
        
     }
     free(index_arr);
-    coeff_arr[rule_count-1]= UINT16_MAX; //bc of rounding last value often ends up beneath 255 so I'm 
+    coeff_arr[rule_count-1]= UINT16_MAX; //bc of rounding last value often ends up beneath uint16max
     //hardcoding it just in case 
 
     return T_OK;
@@ -549,7 +532,7 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv, uint8_t* prop_flag )
     if(!t) {report_err("in parse_args", T_NULL); return T_NULL;}
 
     if(argc ==0 ){ //default behavior when no optionnal arguments are given
-        addRule(t, 255, &rule_rand);
+        addRule(t, UINT16_MAX, &rule_rand);
         t->meta_function.meta_function=&rule_speed_constant;
         t->meta_function.rule_coeff=0;
         return T_OK;
@@ -561,7 +544,7 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv, uint8_t* prop_flag )
 
 
     if(rule_count == 0){ //if only meta rules are given defaults to rand
-        addRule(t, 255, &rule_rand);
+        addRule(t,UINT16_MAX, &rule_rand);
         return T_OK;
     }
 

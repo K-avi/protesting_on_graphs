@@ -14,7 +14,7 @@ struct s_graph_table_entry{
     uint16_t neighboor_num; //Might store on one byte
 };
 
-
+/*
 typedef struct s_walker{
    
     uint32_t index_entry; //gte of the node where the where the walker currently is
@@ -26,7 +26,7 @@ typedef struct s_warray{
     Walker *array;
     Walker *array_prev; 
 }WalkerArray ; //where the actual walkers will be stored and initialised and so on
-
+*/
 typedef struct s_walker_num_curnext{
     //structure to store the number of walker at each node ;updated to keep track of where 
     //walkers came in and stuff 
@@ -35,8 +35,8 @@ typedef struct s_walker_num_curnext{
     uint32_t *next_num; 
 }WalkerCurNext;
 
-uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset);
-void freeWalkerArray(WalkerArray * wArray);
+//uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset);
+//void freeWalkerArray(WalkerArray * wArray);
 
 
 uint8_t initWalkerCurNext(WalkerCurNext * wkcn , uint32_t size);

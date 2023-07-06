@@ -42,13 +42,13 @@ def run_simul_once(
         # simulation
         t_curnum = lt.load_trace_elem(tr_comp_name+"_curnum", nb_it)
         
-        t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
+        #t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
 
-        mobility_mean = dt.stat_mobility(t_wkpos, t_curnum.shape[1])
-        del t_wkpos
+      #  mobility_mean = dt.stat_mobility(t_wkpos, t_curnum.shape[1])
+       # del t_wkpos
 
         adj = lt.load_adj_mat(tr_comp_name+"_hr")
-        group_data_mat = dt.gen_data_groups(t_curnum, adj, mobility_mean)
+        group_data_mat = dt.gen_data_groups(t_curnum, adj)
         del (t_curnum, adj)
         
         lt.clean_trace(tr_comp_name)
@@ -58,42 +58,9 @@ def run_simul_once(
         lines = lt.load_line_trace(tr_comp_name+"_lines", nb_lines)
         lt.clean_var(tr_comp_name)
         
-        n = dt.mean_flux( lines, t_flux,nb_wk )
-        del(t_flux , lines)
-        
-        np.savetxt( f"{result_file}_{i}_fluxmean", np.array([n]))
-
-def run_simul_once_flux(
-    nb_threads, path_graph,
-    coeff_wk, nb_it,
-    sim_opt, trace_name,
-    trace_num, result_file, 
-    nb_it_flux
-):
-    """
-    bunch of simul args -> simul_file
-    
-    variant of run_simul_once to only calculate the 
-    correct version of flux mean
-    function was improved by https://github.com/Pacidus
-    """
-
-    # start simulation
-    sb.run(
-        f'bash batch_launch.sh "{nb_threads}" "{path_graph}" "{coeff_wk}" "{nb_it}" "{sim_opt}" \
-        "{trace_name}{str(trace_num)}" "{nb_it_flux}"',
-        shell=True,
-    )
-
-    # loads the trace
-    nb_wk, nb_lines = lt.load_nbwk_nblines(path_graph)
-    for i in range(nb_threads):
-        #dassit
-        t_flux = lt.load_trace_elem(tr_comp_name+"_flux", nb_it - nb_it_flux )
-        lines = lt.load_line_trace(tr_comp_name+"_lines", nb_lines)
-        lt.clean_var(tr_comp_name)
-        
+       
         n = dt.mean_flux_correct( lines, t_flux,nb_wk )
+
         del(t_flux , lines)
         
         np.savetxt( f"{result_file}_{i}_fluxmean", np.array([n]))

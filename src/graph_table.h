@@ -39,18 +39,19 @@ typedef struct s_graph_table{ //the main table structure
     uint32_t table_size ;
     uint32_t curgen ; //generation of the simulation stored in the table cache and updated at
     // the end of an iteration in the simul
+    uint32_t wknum;
 
     GraphTableEntry * entries; //the entries of the table storing adjacency lists 
     //and other stuff
 
     LineArray* arrLine; //the big array containing the adjacency lists
 
-    WalkerArray * warray; //the big array containing the walkers
+  //  WalkerArray * warray; //the big array containing the walkers
     WalkerCurNext * wkcn;//wrapper array to acces and update the walker position 
 
 }GraphTable ;
 
-uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t warray_size ,uint32_t curgen , uint8_t prop_flag);
+uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t walker_num ,uint32_t curgen , uint8_t prop_flag);
 void freeGraphTab(GraphTable * gt);
 
 uint8_t loadGraphTab(GraphTable *gt, char *path,  double warray_coeff,uint32_t curgen, uint8_t prop_flag);

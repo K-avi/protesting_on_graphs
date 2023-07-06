@@ -3,12 +3,12 @@
 #include "misc.h"
 
 /* RAW WALKER ARRAY MANIPULATION */
-
+/*
 uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset){
-    /*
+    
     initialises a non null wArray
     will memleak if called on an already initialised wArray
-    */
+    
     if(!wArray) { report_err( "initWalkerArray", WA_NULL ) ; return WA_NULL;} 
 
     wArray->size=size;
@@ -28,23 +28,21 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset){
     return WA_OK;
 }//ok
 
-
 void freeWalkerArray(WalkerArray * wArray){
-    /*yes*/
+   
     free(wArray->array);
     if(wArray->array_prev) free(wArray->array_prev);
 }//ok
 
 void printWarray(const GraphTableEntry * gt_ref,  WalkerArray *wArray, FILE * stream){
-    /*
-    */
+    
     if(!wArray) {fprintf(stream,"warray is null\n"); return;}
     fprintf(stream, "walker array of size %u\n", wArray->size);
     for(uint32_t i=0 ; i<wArray->size; i++){
         fprintf(stream,"%u,%u\n", i,  wArray->array[i].index_entry  );
     }
 }
-
+*/
 uint8_t initWalkerCurNext(WalkerCurNext * wkcn , uint32_t size){
     /*init non null wkcn to sizes */
 

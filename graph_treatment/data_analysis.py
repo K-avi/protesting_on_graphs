@@ -138,7 +138,7 @@ def clean_results(simul_name):
             os.remove(fname)
             
 
-def gen_data_groups(t_curnum, adj, mobility_mean):
+def gen_data_groups(t_curnum, adj):
     """
     np.array[1D], scipy.sparse.csgraph , np.array[2D] ->
     array[6] 
@@ -152,7 +152,7 @@ def gen_data_groups(t_curnum, adj, mobility_mean):
     """
     Nitt = t_curnum.shape[0]
     ret = np.zeros((Nitt,7  ))
-    ret[:, 3] = mobility_mean
+    #ret[:, 3] = mobility_mean
     for itt, cur in enumerate(t_curnum):
         nadj = lt.merge_wknum_adj_mat(cur, adj)
         nb_gp, labels = get_adj_group(cur, nadj)
@@ -160,9 +160,9 @@ def gen_data_groups(t_curnum, adj, mobility_mean):
         ret[itt, 0] = nb_gp
         ret[itt, 1] = spread_gp(nb_gp, labels)
         ret[itt, 2] = size_gp(cur, nb_gp, labels)
-        ret[itt, 4] = cur[labels == -1].sum()
-        ret[itt, 5] = ret[itt, 2]/ ret[itt, 1]      
-        ret[itt, 6] = (cur > 0).sum()
+        ret[itt, 3] = cur[labels == -1].sum()
+        ret[itt, 4] = ret[itt, 2]/ ret[itt, 1]      
+        ret[itt, 5] = (cur > 0).sum()
         
     return ret
 
@@ -224,10 +224,11 @@ def mean_flux_correct( lines, flux_mat, nb_wk ):
     I'll rerun simuls with this one instead (oops I guess)
     """
     s = 0
-    
     N = len(lines)
     Idab, Idba = np.zeros((2, N//2), dtype=np.int32)
     Dab = dict()
+    m,n = np.shape(flux_mat)
+    flux_arr = sum(flux_mat)
     itt = 0
     for i, (a, b) in enumerate(lines):
         ba = b < a
@@ -242,10 +243,11 @@ def mean_flux_correct( lines, flux_mat, nb_wk ):
         else:
             Idab[Dab[(a,b)]] = int(i) 
     
+    nb_not_zer = np.nonzero( np.array(flux_arr[Idab]+ np.array(flux_arr[Idba])))
+    s =  sum((np.abs(flux_arr[Idab] - flux_arr[Idba])))
+    print( s/(nb_wk*m))
+    return s/(nb_wk*m)
 
-    s =  np.abs(flux_mat[:,Idab].sum (1) - flux_mat[:,Idba].sum(1)).mean() 
-        
-    return s/(nb_wk)
 
 def main():
     """

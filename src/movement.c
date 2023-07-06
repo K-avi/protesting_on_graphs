@@ -13,12 +13,10 @@ uint8_t init_pos(GraphTable * gtable){
     */
     if(!gtable){ report_err("init_pos", GT_NULL); return GT_NULL;}
 
-    for(uint32_t i=0; i<gtable->warray->size;i++){
+    for(uint32_t i=0; i<gtable->wknum;i++){
         uint32_t randval = (uint32_t) rand()%gtable->table_size;
         
-        gtable->warray->array[i].index_entry=randval;
-        if(gtable->warray->array_prev)
-            gtable->warray->array_prev[i].index_entry=randval;
+        gtable->wkcn->cur_num[randval]++;
         gtable->wkcn->next_num[randval]++;
     }
     return MV_OK;
@@ -57,10 +55,12 @@ static uint8_t iterate_once(GraphTable * gtable , Tactics * t){
     O(w) where w is the number of walkers 
     */
 
-    for(uint32_t i=0; i<gtable->warray->size;i++){
+    for(uint32_t i=0; i<gtable->wkcn->size;i++){
 
-        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].index_entry, i);
-        if(failure)return failure;      
+        if(gtable->wkcn->cur_num[i]){
+            uint8_t failure= choose_node(t, gtable, i);
+            if(failure)return failure;    
+        } 
     }
     return MV_OK;
 }//tested; seems ok
@@ -165,18 +165,6 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     printGraphTab(gtable, f_hrend);
     fclose(f_hrend);
 
-    //dumps final position of wk
-    char * trace_wkend=malloc( (8+ strnlen(trace_name,249 )) * sizeof(char)); ; 
-    snprintf(trace_wkend, 256, "%s_wkend", trace_name);
-    FILE * f_wkend = fopen(trace_wkend, "w");
-    free(trace_wkend);
-    if(!f_wkend){
-        report_err("iterate_ntimes_dump cant write3",  ERRGLAG_CANTWRITE);
-        return ERRGLAG_CANTWRITE;
-    }
-    fwrite( gtable->warray->array, sizeof(Walker), gtable->warray->size , f_wkend);
-    fclose(f_wkend);
-    
     return MV_OK;
 }//done ; tested scaling ; seems constant (great) however 
 //tested outputs; seems ok

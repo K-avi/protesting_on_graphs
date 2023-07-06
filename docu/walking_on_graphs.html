@@ -196,11 +196,7 @@
                                         <tr>
                                             <td style="text-align:center"><code>mprop</code></td>
                                             <td>
-                                                The Tactics are stored in the s_tactics structure . It is currently implemented as a dynamic array.
-                                                The size/ capa fields stores it's current size and max size. The Rule * rule_arr is the actual array containing the rules present in a tactic.                                               
-                                                an entry in the array contains a coeff represented as an 8 bit integer that is calculated by flooring the numbers given as argument to the program and a function pointer to the rule associated 
-                                                with this coeff. When calculating the movement of a Walker , a random number is generated and 
-                                                the rule corresponding to this number is used to determine the node a walker will go to. every walker has a 1/n ,where n is the 
+                                                every walker has a 1/n ,where n is the 
                                                 number of walkers on it's current node, chance to move.
                                             </td>
                                         </tr>

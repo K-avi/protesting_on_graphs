@@ -230,24 +230,29 @@ pending :
 
       Need other simulations to finish before starting : 
 
-        - rerun Paris w mcrowd 
+        - rerun Paris w mcrowd (running)
+
+        - run simul with collective movement (gonna start now )
+
+        - run simuls on smaller latices 
    
     C : 
-      - implement movement together (Paris)
+      
+      - fix the mprop mcrowd confusion 
 
     Documentation : 
 
       - upload docu as a github site lol 
+      - need my github page first 
 
 
     Misc: 
 
       - remove curse words from commentaries and documentation
-
       - put the GPL warning things everywhere 
 
-    C Optimization : (optionnal)
+    C : (optionnal)
 
+      - implement a propulsion equivalent in collective movement (god please no)
       - use __builtin_prefetch
-
       - do the malloc wrapper arena/mempool thingy

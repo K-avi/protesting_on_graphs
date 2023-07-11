@@ -50,73 +50,6 @@ uint8_t addRule( Tactics * t , uint16_t rule_coeff, rule_fun fn){
 }//tested ;ok
 //assumed that parameters are passed correctly ; do not call outside of parse args
 
-uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index){
-    /*
-    chooses a random neighboor node at entry node from in a gt;
-    
-    WARNING : in order to repport errors the node chosen is
-    returned by reference in the index_node_to argument
-
-    WARNING : will update the flux field of gtable ; position 
-    of walker and wkcn->next_num;
-    O(1)
-    */
-    if(!gtable) { report_err( "rule_rand", GT_NULL ) ; return GT_NULL;} 
-  
-    if(node_from>gtable->table_size) { report_err( "rule_rand", GT_SIZE ) ; return GT_SIZE;} 
-    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_rand", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-
-    Line * line_to = gtable->entries[node_from].first_neighboor_ref+ rand()%gtable->entries[node_from].neighboor_num;
-   
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
-    gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
-
-    return T_OK;
-}// new version ;tested ; seems ok
-
-static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
-    /*
-    chooses the neighbor with the most entry and goes there 
-
-    WARNING : will update the flux field of gtable 
-
-    O(d(node_from)) ~ constant 
-    */
-    if(!gtable) { report_err( "rule_attraction", GT_NULL ) ; return GT_NULL;} 
-  
-    if(node_from>gtable->table_size) { report_err( "rule_atrraction", GT_SIZE ) ; return GT_SIZE;} 
-    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_attraction", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-
-    int64_t max=INT64_MIN; 
-    uint8_t diff=0;
-    GraphTableEntry * cur_entry = &gtable->entries[node_from];
-    Line * line_to=NULL;
-    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
-        
-        Line * cur_line = cur_entry->first_neighboor_ref +i;
-        uint32_t cur_val = gtable->wkcn->cur_num[cur_line->node_index];
-       
-        if( gtable->wkcn->cur_num[cur_line->node_index] > max ) {
-            line_to = cur_line; 
-            max= gtable->wkcn->cur_num[cur_line->node_index];
-            diff++;
-        }else if (cur_val != max){
-            diff++;
-        }
-    }   
-    if(!line_to)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from,  walker_index); //goes to random node if no diff num
-
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
-    gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
-
-    return T_OK;
-
-}//tested; seems ok
-//not ok ; fix 
-
 static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t walker_index){
     /*
     calculates the sum of the number of walkers stored on the neighbor nodes 
@@ -168,6 +101,95 @@ static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from ,
 }//tested; 
 //seems ok
 
+uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index){
+    /*
+    chooses a random neighboor node at entry node from in a gt;
+    
+    WARNING : in order to repport errors the node chosen is
+    returned by reference in the index_node_to argument
+
+    WARNING : will update the flux field of gtable ; position 
+    of walker and wkcn->next_num;
+    O(1)
+    */
+    if(!gtable) { report_err( "rule_rand", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_rand", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_rand", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+
+    Line * line_to = gtable->entries[node_from].first_neighboor_ref+ rand()%gtable->entries[node_from].neighboor_num;
+   
+    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
+    gtable->wkcn->next_num[line_to->node_index]++;
+    gtable->warray->array[walker_index].index_entry= line_to->node_index;
+
+    return T_OK;
+}// new version ;tested ; seems ok
+
+static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
+    /*
+    chooses the neighbor with the most entry and goes there 
+
+    WARNING : will update the flux field of gtable 
+
+    O(d(node_from)) ~ constant 
+    */
+    if(!gtable) { report_err( "rule_attraction", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_atrraction", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_attraction", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+
+    int64_t max=INT64_MIN; 
+    uint8_t diff=0;
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_to=NULL;
+
+    Line * arr_max[cur_entry->neighboor_num]; 
+    memset(arr_max, 0, sizeof(Line *)* cur_entry->neighboor_num);
+    uint32_t cur_arr_max = 0 ;
+
+    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
+        
+        Line * cur_line = cur_entry->first_neighboor_ref +i;
+        uint32_t cur_val = gtable->wkcn->cur_num[cur_line->node_index];
+
+
+         if(( gtable->wkcn->cur_num[cur_line->node_index] != max) && max != INT64_MIN) { 
+            if(diff < UINT8_MAX) diff++;
+        }
+
+        if(gtable->wkcn->cur_num[cur_line->node_index] > max){
+            line_to= cur_line;
+            cur_arr_max = 0 ; 
+            arr_max[cur_arr_max++] = line_to ;
+
+            max= gtable->wkcn->cur_num[cur_line->node_index]; 
+            
+        }else if ( gtable->wkcn->cur_num[cur_line->node_index] == max){
+            line_to = cur_line ; 
+            arr_max[cur_arr_max++] = line_to ;
+        }
+    }   
+    
+    if(cur_arr_max == 0)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    if(!diff) return rule_rand(gtable,  node_from, walker_index);
+    if(cur_arr_max == 1) { 
+        gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_max[0]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_max[0]->node_index;
+    }else{
+        uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
+
+        gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_max[r]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
+    }
+
+    return T_OK;
+
+}
+//fixed ; not tested 
+
 static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
     /*
     where d(n) is the number of neighbors of n
@@ -208,7 +230,7 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_
         }
 
         if((flux_from_to - flux_to_from != flux_max) && flux_max != INT64_MIN) { 
-            diff++;
+            if(diff < UINT8_MAX) diff++;
         }
 
         if(flux_from_to - flux_to_from > flux_max){
@@ -238,10 +260,8 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_
         gtable->wkcn->next_num[arr_max[r]->node_index]++;
         gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
     }
-    
-
     return T_OK;
-}// tested; seems ok ; awful tbh
+}//fixed; seems ok ; awful tbh 
 
 static uint8_t rule_align_propa(GraphTable * gtable, uint32_t node_from , uint32_t walker_index){
     /**/
@@ -390,9 +410,7 @@ static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t
 
     
     return T_OK;
-}//not tested ;might be wrong i dunno
-
-
+}// tested ;ok ; hate it
 
 
 static uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice) {

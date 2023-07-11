@@ -27,7 +27,7 @@ void freeTactics( Tactics * t){
     if(t->rule_arr)free(t->rule_arr);
 }//tested ;  ok
 
-static uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun fn){
+uint8_t addRule( Tactics * t , uint16_t rule_coeff, rule_fun fn){
     /*adds a rule function to a tactics structure*/
     if(!t){ report_err("addRule", T_NULL); return T_NULL;}
 
@@ -49,7 +49,7 @@ static uint8_t addRule( Tactics * t , uint8_t rule_coeff, rule_fun fn){
 }//tested ;ok
 //assumed that parameters are passed correctly ; do not call outside of parse args
 
-static uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index){
+uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index){
     /*
     chooses a random neighboor node at entry node from in a gt;
     
@@ -162,8 +162,8 @@ static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from ,
             return T_OK;
         }
     }  
-    
-    return T_CANTCHOOSE;
+     
+    return rule_rand(gtable,node_from,walker_index);
 }//tested; 
 //seems ok
 
@@ -171,6 +171,7 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_
     /*
     where d(n) is the number of neighbors of n
     O(d(n)*a) where d(n) is the degree of neighboors and a is the 
+        print("simul done running") 
     the average of the sum of the degrees of the neighboors of 
     n
     */
@@ -178,8 +179,7 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_
   
     if(node_from>gtable->table_size) { report_err( "rule_alignement", GT_SIZE ) ; return GT_SIZE;} 
     if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    
-    
+        
     int64_t flux_max=INT64_MIN;
     GraphTableEntry * cur_entry = &gtable->entries[node_from];
     Line * line_to=NULL;
@@ -277,6 +277,7 @@ static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t
     //update pos / flux
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
+   //printf("%u \n",walker_index);
     gtable->warray->array[walker_index].index_entry= line_to->node_index;
 
     
@@ -307,7 +308,7 @@ static uint8_t rule_speed_reaction(GraphTable * gtable, uint32_t node_from , uin
 }//tested; weird ; seems ok
 
 
-static uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice ){
+uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice ){
     /*O(1)
     returns true if the value generated is higher than the constant 
     probability to move 
@@ -348,7 +349,7 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
     //if(!line_ref) return LINEREF_NULL;
 
     double randval= (double)rand() / (double)RAND_MAX ;
-    uint16_t uint_coeff = (uint16_t) (UINT16_MAX / randval);
+    uint16_t uint_coeff = (uint16_t)  ( (double)UINT16_MAX * randval);
     bool mv_check ;
     uint8_t failure = t->meta_function.meta_function(gtable, node_from, t->meta_function.rule_coeff ,&mv_check);
     if(failure){ report_err("choose_node", failure); return failure;}
@@ -363,19 +364,20 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
     }
 
     for(uint32_t i=0; i<t->numb ; i++){
-     
         if( uint_coeff<= t->rule_arr[i].rule_coeff){
 
             uint32_t prev_index= gtable->warray->array[walker_index].index_entry;
 
             failure= t->rule_arr[i].rule_function(gtable, node_from, walker_index);  
-            if(failure) report_err("choose_node err1", failure);
-
-            if(gtable->warray->array_prev){//only used when propulsion is active
-
-                gtable->warray->array_prev[walker_index].index_entry=prev_index;
+            if(failure){ report_err("choose_node err1", failure); return failure;
             }
-
+            if(gtable->warray->array_prev+walker_index > gtable->warray->array_prev+gtable->warray->size){
+                 report_err("choose_node err weird", failure); return failure;
+            }
+           if(gtable->warray->array_prev!=NULL){
+            ((Walker*)(gtable->warray->array_prev+walker_index))->index_entry=prev_index;
+            
+            }
             return failure;
         }
     }  
@@ -437,7 +439,7 @@ uint8_t parse_rule_coeff( uint8_t argc , char ** argv, uint8_t rule_count, uint1
     for(uint8_t i=0; i<rule_count ; i++){
         if(casted_sum>UINT16_MAX) { fprintf(stderr,"casted sum %u\n", casted_sum); report_err("parse_rule_coeff", PRS_COEFF); return PRS_COEFF;}
 
-        coeff_arr[i]= (uint16_t)( ( (double)((double)index_arr[i]/(double)sum)* (double)255 )+casted_sum );
+        coeff_arr[i]= (uint16_t)( ( (double)((double)index_arr[i]/(double)sum)* (double)UINT16_MAX )+casted_sum );
         //printf("i:%u coeffarri:%u\n", i, coeff_arr[i]);
         casted_sum=coeff_arr[i];
        
@@ -516,7 +518,6 @@ static uint8_t parse_meta_rules( uint8_t argc, char ** argv, uint8_t* rule_count
                 char* str_coeff= strstr(argv[i], ":"); 
                 if(!str_coeff){ report_err("parse_meta_rules", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
                 str_coeff++;
-                
                 char * end=str_coeff; 
                 double coeff = strtod(str_coeff, &end);
             
@@ -549,7 +550,7 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv, uint8_t* prop_flag )
     if(!t) {report_err("in parse_args", T_NULL); return T_NULL;}
 
     if(argc ==0 ){ //default behavior when no optionnal arguments are given
-        addRule(t, 255, &rule_rand);
+        addRule(t,UINT16_MAX, &rule_rand);
         t->meta_function.meta_function=&rule_speed_constant;
         t->meta_function.rule_coeff=0;
         return T_OK;
@@ -561,7 +562,7 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv, uint8_t* prop_flag )
 
 
     if(rule_count == 0){ //if only meta rules are given defaults to rand
-        addRule(t, 255, &rule_rand);
+        addRule(t, UINT16_MAX, &rule_rand);
         return T_OK;
     }
 

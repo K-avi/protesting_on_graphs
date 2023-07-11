@@ -19,11 +19,11 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset){
     memset(wArray->array, 0, wArray->size*sizeof(Walker));
 
     wArray->array_prev=NULL;
-    if(prevset){
+    
         wArray->array_prev = (Walker*) GROW_ARRAY(Walker, wArray->array_prev, 0, size);
         if(!wArray->array_prev) { report_err( "initWalkerArray", WA_ALLOC ) ; return WA_ALLOC;} 
         memset(wArray->array_prev, 0, wArray->size*sizeof(Walker));
-    }
+    
 
     return WA_OK;
 }//ok

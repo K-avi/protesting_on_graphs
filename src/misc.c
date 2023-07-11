@@ -88,6 +88,7 @@ char * str_flag(uint8_t flag){
   case WA_READFAIL : return "couldn't properly read file at path given\n";
   case ERRFLAG_WARNING : return "default warning flag\n";
   case PRS_NOSUM : return "sum of coefficients of arguments is 0; first argument set to 1\n";
+  case MV_WARNING : return "couldn't choose a node; defaulting to rand\n";
   default : return "unknown error ; how did you get here?\n";
   }
 }//ok

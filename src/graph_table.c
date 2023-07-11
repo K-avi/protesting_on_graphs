@@ -242,10 +242,10 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t cu
     FILE * f = fopen(path, "r");
     if(!f) { report_err("loadGraphTab", GT_READFAIL); return GT_READFAIL;};
 
-    char line[256];
-    memset(line, 0, 256);
+    char line[262144];
+    memset(line, 0, 262144);
 
-    if(!fgets(line, 256, f)) {//consume first line to retrieve size of graph and size of arrline
+    if(!fgets(line, 262144, f)) {//consume first line to retrieve size of graph and size of arrline
         fclose(f);
         report_err("loadGraphTab", GT_NOREAD); 
         return GT_NULL;
@@ -268,7 +268,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t cu
     uint32_t cpt=0; 
     //keep track of nblines consumed ; report error if nbline consumed higher than counter
     
-    while(fgets(line, 256, f) && cpt<table_size){
+    while(fgets(line, 262144, f) && cpt<table_size){
         char* end, *cur=line;
         if(emptyLine(cur)) continue; // ignores empty lines
         cpt++; 
@@ -295,6 +295,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t cu
             if(peek(end, ':') && cur!=end) cur=(++end);    
             else {
                 fclose(f);
+                fprintf(stderr,"at line :%s\n", line);
                 report_err("loadGraphTab parse4", GT_PARSE);
                 return GT_PARSE;
             }
@@ -303,13 +304,15 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t cu
             if(i!=neighboor_num-1){
                 if(peek(end, ';') && cur!=end ) cur=(++end);
                 else {
-                    fclose(f);
+                    fclose(f); 
+                    fprintf(stderr,"at line :%s\n", line);
                     report_err("loadGraphTab parse5", GT_PARSE);
                     return GT_PARSE;
                 }
             }else{
                 if( cur==end){
                     fclose(f);
+                    fprintf(stderr,"at line :%s\n", line);
                     report_err("loadGraphTab parse6", GT_PARSE);
                     return GT_PARSE; 
                 }
@@ -319,7 +322,7 @@ uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t cu
             if(errflag_in ) return errflag_in;
             
         }
-        memset(line, 0, 256);
+        memset(line, 0, 262144);
     }  
     fclose(f);
     return GT_OK;

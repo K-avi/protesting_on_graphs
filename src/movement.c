@@ -2,6 +2,7 @@
 #include "common.h"
 #include "graph_table.h"
 #include "misc.h"
+#include "tactics.h"
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -86,7 +87,7 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_nu
     return MV_OK;
 }//tested; ok
 
-uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num, char * trace_name, uint16_t flux_start){
+uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t iter_num, char * trace_name, uint16_t flux_start, uint16_t spread_flag){
     /*
     O(w*i)
     clone of iterate_ntimes that dumps the graph after each iteration
@@ -144,8 +145,20 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
         }   
 
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
-        failure= iterate_once(gtable, tactics);
+        if(!spread_flag || spread_flag != i) failure= iterate_once(gtable, tactics);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
+        
+        if(spread_flag && spread_flag == i){
+            Tactics trand; 
+            initTactics(&trand, 1);
+            addRule(&trand,UINT16_MAX,&rule_rand);
+            trand.meta_function.meta_function=&rule_speed_constant;
+            trand.meta_function.rule_coeff=0;
+
+            iterate_once(gtable, &trand);
+            freeTactics(&trand);
+        }
+       
         
     }
  

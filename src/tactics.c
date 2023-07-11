@@ -151,8 +151,6 @@ static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32
     for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
         
         Line * cur_line = cur_entry->first_neighboor_ref +i;
-        uint32_t cur_val = gtable->wkcn->cur_num[cur_line->node_index];
-
 
          if(( gtable->wkcn->cur_num[cur_line->node_index] != max) && max != INT64_MIN) { 
             if(diff < UINT8_MAX) diff++;

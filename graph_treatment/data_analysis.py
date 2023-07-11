@@ -138,7 +138,7 @@ def clean_results(simul_name):
             os.remove(fname)
             
 
-def gen_data_groups(t_curnum, adj):
+def gen_data_groups(t_curnum, adj, mobility_mean):
     """
     np.array[1D], scipy.sparse.csgraph , np.array[2D] ->
     array[6] 
@@ -152,7 +152,7 @@ def gen_data_groups(t_curnum, adj):
     """
     Nitt = t_curnum.shape[0]
     ret = np.zeros((Nitt,7  ))
-    #ret[:, 3] = mobility_mean
+    ret[:, 3] = mobility_mean
     for itt, cur in enumerate(t_curnum):
         nadj = lt.merge_wknum_adj_mat(cur, adj)
         nb_gp, labels = get_adj_group(cur, nadj)
@@ -160,9 +160,9 @@ def gen_data_groups(t_curnum, adj):
         ret[itt, 0] = nb_gp
         ret[itt, 1] = spread_gp(nb_gp, labels)
         ret[itt, 2] = size_gp(cur, nb_gp, labels)
-        ret[itt, 3] = cur[labels == -1].sum()
-        ret[itt, 4] = ret[itt, 2]/ ret[itt, 1]      
-        ret[itt, 5] = (cur > 0).sum()
+        ret[itt, 4] = cur[labels == -1].sum()
+        ret[itt, 5] = ret[itt, 2]/ ret[itt, 1]      
+        ret[itt, 6] = (cur > 0).sum()
         
     return ret
 

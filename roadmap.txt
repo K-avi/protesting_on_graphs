@@ -217,19 +217,24 @@ done :
 
     - run simuls with slow down rule (on paris)
 
+    - implement movement together (Paris)
+
+    - did branch to stop simul when a certain group size is reached 
+
+
 pending : 
 
-    Data analysis : 
 
-      - propu 10 turns 
-
-      Need other simulations to finish before starting : 
-
-        - rerun Paris 
-        - rerun Paris w mcrowd 
+ 
    
     C : 
-      - implement movement together (Paris)
+
+      - implement a coefficient based alignement 
+        - parse it and then test it 
+
+      - use the search branch to create the dt analysis 
+        directly in C 
+      
 
     Documentation : 
 

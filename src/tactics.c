@@ -90,24 +90,55 @@ static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from ){
     uint8_t diff=0;
     GraphTableEntry * cur_entry = &gtable->entries[node_from];
     Line * line_to=NULL;
+
+    Line * arr_max[cur_entry->neighboor_num]; 
+    memset(arr_max, 0, sizeof(Line *)* cur_entry->neighboor_num);
+    uint32_t cur_arr_max = 0 ;
+
+
     for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
         
         Line * cur_line = cur_entry->first_neighboor_ref +i;
+
+        if(( gtable->wkcn->cur_num[cur_line->node_index] != max) && max != INT64_MIN) { 
+            if(diff < UINT8_MAX) diff++;
+        }
+
         uint32_t cur_val = gtable->wkcn->cur_num[cur_line->node_index];
        
         if( gtable->wkcn->cur_num[cur_line->node_index] > max ) {
             line_to = cur_line; 
             max= gtable->wkcn->cur_num[cur_line->node_index];
-            diff++;
+            
+            cur_arr_max = 0 ; 
+            arr_max[cur_arr_max++] = line_to ;
+
+            max= gtable->wkcn->cur_num[cur_line->node_index]; 
         }else if (cur_val != max){
-            diff++;
+            line_to = cur_line ; 
+            arr_max[cur_arr_max++] = line_to ;
         }
     }   
     if(!line_to)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
     if(!diff) return rule_rand(gtable,  node_from); //goes to random node if no diff num
 
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
-    gtable->wkcn->next_num[line_to->node_index]+= gtable->wkcn->cur_num[node_from];
+    if(cur_arr_max == 0)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    if(!diff) return rule_rand(gtable,  node_from);
+    if(cur_arr_max == 1) { 
+        gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_max[0]->node_index]++;
+      
+    }else{
+        uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
+
+        gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_max[r]->node_index]++;
+
+
+            //moves and updates fields 
+        gtable->arrLine->next_flux[arr_max[r] - gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+         gtable->wkcn->next_num[arr_max[r]->node_index]+= gtable->wkcn->cur_num[node_from];
+    }
 
     return T_OK;
 
@@ -171,15 +202,18 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from){
     n
     */
     if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
-  
     if(node_from>gtable->table_size) { report_err( "rule_alignement", GT_SIZE ) ; return GT_SIZE;} 
     if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    
-    
-    int64_t flux_max=INT64_MIN;
+
+    uint32_t diff = 0; //checks that you see at least two disctinct values
+
     GraphTableEntry * cur_entry = &gtable->entries[node_from];
-    Line * line_to=NULL;
-    uint8_t diff=0;
+    Line * line_cur=NULL;
+    double coeff_arr[cur_entry->neighboor_num]; //C99 or higher required
+    uint64_t tot=0;
+    int64_t min_flux = INT64_MAX;
+
+
     for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
 
         Line * cur_line = cur_entry->first_neighboor_ref +i;
@@ -198,20 +232,53 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from){
             report_err( "rule_alignement weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
         }
 
-        if(flux_from_to - flux_to_from > flux_max){
-            line_to= cur_line;
-            flux_max= flux_from_to- flux_to_from;
-            diff++;
-        }else if(flux_from_to - flux_to_from != flux_max) { 
-            diff++;
+        int64_t flux_sub = flux_from_to - flux_to_from;
+
+        if(flux_sub != 0 ) diff++;
+
+        tot += flux_sub; 
+        if(flux_sub < min_flux) min_flux = flux_sub;
+
+        coeff_arr[i] = flux_sub; 
+
+    }
+        
+
+    if(!diff){ //case where only every flux is zero 
+        return rule_rand(gtable, node_from);
+    }else if(diff==1){
+        return rule_alignement(gtable, node_from);
+    }
+    uint64_t new_tot = tot; 
+    min_flux = min_flux < 0 ? - min_flux : min_flux; 
+    new_tot+= min_flux*cur_entry->neighboor_num; //not sure abt this 
+    if(new_tot == 0 ) return rule_rand(gtable, node_from);
+    //makes the choice 
+    double randval= (double) rand()/RAND_MAX;
+    for(uint32_t i=0; i<cur_entry->neighboor_num; i++){
+        
+        coeff_arr[i] = (double)((double)coeff_arr[i]+(double)min_flux)/ (double) new_tot;
+      
+        if(randval< coeff_arr[i]){
+            line_cur= cur_entry->first_neighboor_ref+i; //retrieves the line 
+
+            //moves and updates fields 
+            gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
+            gtable->wkcn->next_num[line_cur->node_index]++;
+            
+
+            return T_OK;
         }
-    }   
+        if( (uint16_t) i == cur_entry->neighboor_num -1){//division can round stuff poorly
+            //moves and updates fields 
+            line_cur= cur_entry->first_neighboor_ref+i; //retrieves the line      
 
-    if(!line_to)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from);
-    gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
-    gtable->wkcn->next_num[line_to->node_index]+= gtable->wkcn->cur_num[node_from];
-
+            //moves and updates fields 
+            gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+            gtable->wkcn->next_num[line_cur->node_index]+= gtable->wkcn->cur_num[node_from];
+            return T_OK;
+        }
+    }  
     return T_OK;
 }// tested; seems ok ; awful tbh
 
@@ -227,7 +294,7 @@ static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from ){
     */
     if(!gtable) { report_err( "rule_speed_constant", GT_NULL ) ; return GT_NULL;} 
     if(node_from>gtable->table_size) { report_err( "rule_speed_constant", GT_SIZE ) ; return GT_SIZE;} 
-    gtable->wkcn->next_num[node_from]++;
+    gtable->wkcn->next_num[node_from]+=gtable->wkcn->cur_num[node_from];
    
     return T_OK;
 }//tested ; seems ok
@@ -274,7 +341,7 @@ static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from){
     gtable->wkcn->next_num[line_to->node_index]+= gtable->wkcn->cur_num[node_from];
 */
     
-    return rule_sleep(gtable, node_from);
+    return rule_rand(gtable, node_from);
 }//not tested ;might be wrong i dunno
 
 

@@ -42,13 +42,13 @@ def run_simul_once(
         # simulation
         t_curnum = lt.load_trace_elem(tr_comp_name+"_curnum", nb_it)
         
-        #t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
+        t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
 
-      #  mobility_mean = dt.stat_mobility(t_wkpos, t_curnum.shape[1])
-       # del t_wkpos
+        #mobility_mean = dt.stat_mobility(t_wkpos, t_curnum.shape[1])
+        del t_wkpos
 
         adj = lt.load_adj_mat(tr_comp_name+"_hr")
-        group_data_mat = dt.gen_data_groups(t_curnum, adj)
+        group_data_mat = dt.gen_data_groups(t_curnum, adj, 0)
         del (t_curnum, adj)
         
         lt.clean_trace(tr_comp_name)

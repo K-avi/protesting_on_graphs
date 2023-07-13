@@ -221,16 +221,66 @@ done :
 
     - did branch to stop simul when a certain group size is reached 
 
+    - implement a coefficient based alignement 
+
+    - create a graph from a lattice where I delete 30% of nodes , take 
+        the big connected componnent and then discretise it
+    
+    -  run align on small word (generate it, filter it , discretise it )  
+
+    - collective randwalk w 3 then 2 times more wk than nodes 
+        then 1.5 then 1 then then 0.8 - 0.2 step of 0.2 and 0.1
+
+        should converge to around the same nb of gp unless too few guys
+    
+    - redo scaterplot (separate noisy not noisy)
+
+      - add support for slow and collective on scatterplot
+      
+      - if majority is align or smtg add different point shape 
+      (triangle align , square attra etc)
+      - change color when scatterplot of multiple bases     
+
+      - the return of the fn should be : 
+
+          - array of : 
+              - array containing :
+                [0] points that are noisy 
+                [1] other points 
+                
+                they are both structured the same : 
+                  majority of rand -> index 0 
+                              zttra -> 1 
+                              attco -> 2 
+                              align -> 3 
+                              propu -> 4 
+                              no majority -> 5 
+
+     
+
+       
+
 
 pending : 
 
 
+    python : 
+
+      
+      - rerun base at some point
+        
  
    
-    C : 
+    C :
+ 
 
-      - implement a coefficient based alignement 
-        - parse it and then test it 
+      - test coefficiented alignment 
+
+      - implement "vision" 
+
+      - asynchronous movement 
+
+      - make sure the fixes to align / attra are ok 
 
       - use the search branch to create the dt analysis 
         directly in C 
@@ -246,9 +296,3 @@ pending :
       - remove curse words from commentaries and documentation
 
       - put the GPL warning things everywhere 
-
-    C Optimization : (optionnal)
-
-      - use __builtin_prefetch
-
-      - do the malloc wrapper arena/mempool thingy

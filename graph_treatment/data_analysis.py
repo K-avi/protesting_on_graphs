@@ -245,6 +245,7 @@ def mean_flux_correct( lines, flux_mat, nb_wk ):
     
     nb_not_zer = np.nonzero( np.array(flux_arr[Idab]+ np.array(flux_arr[Idba])))
     s =  sum((np.abs(flux_arr[Idab] - flux_arr[Idba])))
+    
     print( s/(nb_wk*m))
     return s/(nb_wk*m)
 

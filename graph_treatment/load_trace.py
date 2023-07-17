@@ -25,7 +25,7 @@ def load_line_trace(path, nb_lines):
     arr = np.loadtxt(path, dtype=np.int32)
     return arr.reshape(int(nb_lines), -1 )
 
-def load_nbwk_nblines( path):
+def load_nbwk_nblines( path, coeff_wk):
     """
     simple helper fn to read nbwk 
     and nblines
@@ -34,7 +34,7 @@ def load_nbwk_nblines( path):
         line = f.readline()
       
         a,b = line.split(",")[0:2]
-        return (int(a),int(b))
+        return (int(a)*coeff_wk,int(b))
 
 def load_adj_mat(path):
     """

@@ -12,7 +12,7 @@ def plot_list(simul_files, index=False):
     passed as arg
     """
     
-    color = iter(['r', 'g', 'b', 'y','pink', 'black', 'brown', 'grey', 'purple', 'orange']) 
+    color = iter(['r', 'g', 'b', 'y','pink', 'black', 'brown', 'grey', 'purple', 'orange','cyan',"lightblue","darkgreen"]) 
     
     plt.figure(1)
     plt.title("evolution of number of groups")
@@ -20,7 +20,7 @@ def plot_list(simul_files, index=False):
     plt.title("evolution of mean spread of groups")
     plt.figure(3)
     plt.title("evolution of number of walkers per group")
-   
+
     plt.figure(5) 
     plt.title("evolution of the number of 'groupless walkers'")
     plt.figure(6)

@@ -272,13 +272,30 @@ pending :
  
    
     C :
- 
-
-      - test coefficiented alignment 
 
       - implement "vision" 
+        - create a "search array" dynamic array initialised 
+          in the iterate n times function use this array as 
+          the only array to write in for searches this makes 
+          it possible to not ask for memory each time u wanna 
+          do a search (good) however it makes it so u can't 
+          do multiple searches in parallel (I don't do it anyways)
+          defined a depth limited search (the search stops either 
+          when the graph is explored or when the depth is reached)
+
+        - import seen array from the search branch
+        - add another array that's like "search id" or some thing to 
+          make sure the search is correct and shit (I know what I'm 
+          talking about)
+
+          fuck align has to be recursive otherwise it's going to be fucking 
+          DREADFULL to implement man what a pain
+
+          the seen array is not needed cuz I store the index 
+          and stuff  ; remove it actually 
 
       - asynchronous movement 
+        - just use the next array lol 
 
       - make sure the fixes to align / attra are ok 
 

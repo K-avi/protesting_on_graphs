@@ -89,6 +89,17 @@ char * str_flag(uint8_t flag){
   case ERRFLAG_WARNING : return "default warning flag\n";
   case PRS_NOSUM : return "sum of coefficients of arguments is 0; first argument set to 1\n";
   case MV_WARNING : return "couldn't choose a node; defaulting to rand\n";
+  case GA_NULL : return "group array passed is NULL\n";
+  case GA_MALLOC : return "failed to allocate memory to group array's element field\n"; 
+  case GA_REALLOC : return "failed to reallocate group array's elements\n";
+  case ERRFLAG_NULL : return "null pointer caught\n";
+  case GA_NOWK : return "no walkers on the graph passsed\n";
+  case STACK_NULL : return "queue passed is NULL\n";
+  case STACK_MALLOC : return "couldn't allocate memory for queue\n";
+  case STACK_REALLOC : return "realloc of queue failed\n";
+  case WA_ZERDEPTH : return "the depth of the search is zero\n";
+  case SU_NULL : return "search utilitaries pointer is NULL\n";
+  case SU_MALLOC : return "couldn't allocate memory for search util array\n";
   default : return "unknown error ; how did you get here?\n";
   }
 }//ok

@@ -2,6 +2,7 @@
 #include "common.h"
 #include "graph_table.h"
 #include "misc.h"
+#include "search.h"
 #include "tactics.h"
 #include <stdint.h>
 #include <stdlib.h>
@@ -46,7 +47,7 @@ static uint8_t prepare_ite( GraphTable * gtable){
 
 }//tested ; ok
 
-static uint8_t iterate_once(GraphTable * gtable , Tactics * t){
+static uint8_t iterate_once(GraphTable * gtable , Tactics * t, SEARCH_UTILS * search_util){
     /*
     iteration function; 
     for every walker; chooses a node ; update relevant fields for next iteration 
@@ -60,7 +61,7 @@ static uint8_t iterate_once(GraphTable * gtable , Tactics * t){
 
     for(uint32_t i=0; i<gtable->warray->size;i++){
 
-        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].index_entry, i);
+        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].index_entry, i, search_util);
         if(failure)return failure;      
     }
     return MV_OK;
@@ -75,15 +76,21 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_nu
     */
     if(!gtable){ report_err("iterate_ntimes", GT_NULL); return GT_NULL;}
     if(!tactics){ report_err("iterate_ntimes", T_NULL); return T_NULL;}
+
+    SEARCH_UTILS search_util;
     uint8_t failure;
+    failure = init_search_utils(&search_util, gtable->table_size);
+    if(failure){ report_err("iterate_ntimes_dump", failure); return failure;}
+
     for(uint32_t i=0; i<iter_num; i++){
         
         failure= prepare_ite(gtable);
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
-        failure= iterate_once(gtable, tactics);
+        failure= iterate_once(gtable, tactics, &search_util);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
     }
 
+    free_search_utils(&search_util);
     return MV_OK;
 }//tested; ok
 
@@ -132,7 +139,10 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     write_lines( gtable , f_lines );
     fclose(f_lines);
 
+    SEARCH_UTILS search_util;
     uint8_t failure;
+    failure = init_search_utils(&search_util, gtable->table_size);
+    if(failure){ report_err("iterate_ntimes_dump", failure); return failure;}
 
     for(uint32_t i=0; i<iter_num; i++){
         
@@ -145,7 +155,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
         }   
 
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
-        if(!spread_flag || spread_flag != i) failure= iterate_once(gtable, tactics);
+        if(!spread_flag || spread_flag != i) failure= iterate_once(gtable, tactics, &search_util);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
         
         if(spread_flag && spread_flag == i){
@@ -155,12 +165,13 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
             trand.meta_function.meta_function=&rule_speed_constant;
             trand.meta_function.rule_coeff=0;
 
-            iterate_once(gtable, &trand);
+            iterate_once(gtable, &trand, &search_util);
             freeTactics(&trand);
         }
        
-        
     }
+
+    free_search_utils(&search_util);
  
     fclose(f_curnum); 
     fclose(f_flux);

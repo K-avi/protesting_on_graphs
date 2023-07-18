@@ -1,2 +1,2 @@
 #include "common.h"
-uint8_t global_vision = 5;
+uint8_t global_vision = 2;

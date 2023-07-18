@@ -154,15 +154,17 @@ uint8_t dfs_limited_nbwk(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
         //seen AND with walkers to the stack
                     
             uint32_t neighbor_index = (gt->entries[cur_node].first_neighboor_ref+i)->node_index;
-                  
-            if(gt->wkcn->cur_num[neighbor_index] && search_util->cur_sid != search_util->sid_array[cur_node]){ 
+            //printf("%lu %lu\n",search_util->cur_sid ,search_util->sid_array[cur_node]  );
+            if( search_util->cur_sid != search_util->sid_array[neighbor_index]){ 
                 
                 search_util->sid_array[neighbor_index]= search_util->cur_sid; //updates index of search
+               // printf("app\n");
                 stack_darr(&search_util->stack, neighbor_index); 
             }
         }
         cur_depth++;   
     }
+
 
     return ERRFLAG_OK;
 }
@@ -201,32 +203,31 @@ uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
         GraphTableEntry * cur_entry = &gt->entries[cur_node];
         
         for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
-
-            
+     
             Line * cur_line = cur_entry->first_neighboor_ref +i;
 
-            if(search_util->cur_sid != search_util->sid_array[cur_node]){ //stacks the stuff                
+            if(search_util->cur_sid != search_util->sid_array[cur_line->node_index]){ //stacks the stuff                
                 search_util->sid_array[cur_line->node_index]= search_util->cur_sid; //updates index of search
                 stack_darr(&search_util->stack, cur_line->node_index); 
-            }
-
-            uint32_t cur_line_index=  cur_line - gt->arrLine->array;
-            int32_t flux_from_to= gt->arrLine->cur_flux[cur_line_index];
-
-            int64_t flux_to_from= INT64_MIN;
-            for(uint32_t j=0; j<gt->entries[cur_line->node_index].neighboor_num; j++){
-                Line * cur_line_inside = gt->entries[cur_line->node_index].first_neighboor_ref+j;
-                if(cur_line_inside->node_index==cur_node){
-                    flux_to_from= gt->arrLine->cur_flux[cur_line_inside - gt->arrLine->array];
-                    break;
-                }
-            }
-            if(flux_to_from == INT64_MIN){
-                report_err( "depth_lim_search_align weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
-            }
            
-            *flux_sum += flux_from_to - flux_to_from; 
+                uint32_t cur_line_index=  cur_line - gt->arrLine->array;
+                int32_t flux_from_to= gt->arrLine->cur_flux[cur_line_index];
             
+                int64_t flux_to_from= INT64_MIN;
+                for(uint32_t j=0; j<gt->entries[cur_line->node_index].neighboor_num; j++){
+                    Line * cur_line_inside = gt->entries[cur_line->node_index].first_neighboor_ref+j;
+                    if(cur_line_inside->node_index==cur_node){
+                        flux_to_from= gt->arrLine->cur_flux[cur_line_inside - gt->arrLine->array];
+                        break;
+                    }
+                }
+                if(flux_to_from == INT64_MIN){
+                    report_err( "depth_lim_search_align weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
+                }
+
+                
+                *flux_sum += flux_from_to - flux_to_from; 
+            }
             cur_depth++;   
         }
     }

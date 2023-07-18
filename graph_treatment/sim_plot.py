@@ -17,7 +17,7 @@ def plot(simul_name):
     plt.figure(1)
     plt.title("evolution of number of groups")
     plt.figure(2)
-    plt.title("evolution of mean spread of groups")
+    plt.title("evolution of mean sprawl of groups")
     plt.figure(3)
     plt.title("evolution of number of walkers per group")
     plt.figure(4) 

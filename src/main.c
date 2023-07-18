@@ -13,10 +13,10 @@
 int main(int argc , char ** argv){
 
     int8_t c;
-    uint8_t helpset=0 , dumpset=0, loadset=0, fluxset=0, spreadset=0;
+    uint8_t helpset=0 , dumpset=0, loadset=0, fluxset=0, spreadset=0, visionset = 0 ;
     uint16_t flux_dump_start = 0, spread_flag = 0;
     char * trace_name =NULL, *warray_name =NULL;
-    while ((c = getopt(argc, argv, "hd:w:l:s:")) != -1) {
+    while ((c = getopt(argc, argv, "hd:w:l:s:v:")) != -1) {
         
         switch (c) {
         case 'h':
@@ -38,6 +38,12 @@ int main(int argc , char ** argv){
         case 's':
             spreadset = 2; 
             spread_flag = atoi(optarg);   
+            break;
+
+        case 'v':
+            visionset = 2;
+            global_vision = atoi(optarg);   
+           
             break;     
 
         case '?':
@@ -49,6 +55,8 @@ int main(int argc , char ** argv){
             }else if(optopt=='l'){
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
             }else if(optopt=='s'){
+                fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+            }else if(optopt=='v'){
                 fprintf(stderr, "Option -%c requires an argument.\n", optopt);
             }else{
                 fprintf(stderr, "Unknown option character `\\x%x'.", optopt);
@@ -70,7 +78,7 @@ int main(int argc , char ** argv){
         return ERRFLAG_NOFILE;
     }
     
-    uint8_t optset = dumpset + loadset + fluxset + spreadset; //number of args to remove 
+    uint8_t optset = dumpset + loadset + fluxset + spreadset + visionset; //number of args to remove 
 
     char * path = argv[1+optset]; 
     char * end=argv[2+optset];

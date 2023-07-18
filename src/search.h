@@ -42,6 +42,7 @@ typedef struct search_util{
     is to do as few allocs as possible 
     so this guy is used to do every search
     */
+
     S_STACK stack;
 
 }SEARCH_UTILS;

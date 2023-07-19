@@ -374,10 +374,8 @@ static uint8_t rule_align_vision(GraphTable * gtable, uint32_t node_from , uint3
         uint8_t failure = dfs_limited_flux(gtable, sutils, global_vision, cur_line->node_index, &flux_sum);
         if(failure){ report_err("jv pàkljbùpwob,", failure); return failure;}
 
-        flux_sum += 2*( (int64_t)flux_from_to - (int64_t)flux_to_from); //to compensate for 
-        // 2 times the flux from a to b to compensate for the flux from b to a seen in 
-        //the search 
-
+        flux_sum += (int64_t)flux_from_to - (int64_t)flux_to_from; 
+        
         if(( flux_sum != flux_max) && flux_max != INT64_MIN) { 
             if(diff < UINT8_MAX) diff++;
         }

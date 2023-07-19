@@ -167,8 +167,7 @@ uint8_t dfs_limited_nbwk(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
 
 
     return ERRFLAG_OK;
-}
-
+}//tested; seems ok ; error prone 
 
 uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t depth,
                          uint32_t starting_node ,int64_t * flux_sum){
@@ -235,4 +234,4 @@ uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
     //printf("%ld\n",*flux_sum);
     return ERRFLAG_OK;
 }
-//not tested; error prone
+//tested seems ok; error prone

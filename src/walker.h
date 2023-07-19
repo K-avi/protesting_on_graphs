@@ -2,6 +2,7 @@
 #define WALKER_H 
 
 #include "common.h"
+#include <stdint.h>
 
 //might be irrelevant 
 
@@ -25,6 +26,7 @@ typedef struct s_warray{
     uint32_t size; 
     Walker *array;
     Walker *array_prev; 
+    uint32_t * array_index_shuffled;
 }WalkerArray ; //where the actual walkers will be stored and initialised and so on
 
 typedef struct s_walker_num_curnext{

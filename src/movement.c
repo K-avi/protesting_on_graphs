@@ -26,6 +26,18 @@ uint8_t init_pos(GraphTable * gtable){
     return MV_OK;
 }//tested ; ok
 
+void swap(uint32_t * a, uint32_t i, uint32_t j) {
+    
+    
+  int temp = a[i]; a[i] = a[j]; a[j] = temp;
+}
+
+void fisher_yates_shuffle( uint32_t  size, uint32_t * a) {
+    for ( uint32_t i = 0; i < size; i++){
+        int64_t mod = size - 1 -i > 0 ? size - i -1: 1;
+        swap(a, i, i+ (rand()%(mod)) ); // swap element with random later element
+    }
+}
 
 static uint8_t prepare_ite( GraphTable * gtable){
     /*
@@ -41,11 +53,14 @@ static uint8_t prepare_ite( GraphTable * gtable){
 
     failure= swap_flux_curnext(gtable->arrLine);
     if(failure) { report_err("prepare_ite", failure); return failure;}
-
+    fisher_yates_shuffle( gtable->warray->size, gtable->warray->array_index_shuffled);
     gtable->curgen++;
     return MV_OK;
 
 }//tested ; ok
+
+
+
 
 static uint8_t iterate_once(GraphTable * gtable , Tactics * t, SEARCH_UTILS * search_util){
     /*
@@ -60,8 +75,8 @@ static uint8_t iterate_once(GraphTable * gtable , Tactics * t, SEARCH_UTILS * se
     */
 
     for(uint32_t i=0; i<gtable->warray->size;i++){
-
-        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[i].index_entry, i, search_util);
+       
+        uint8_t failure= choose_node(t, gtable,  gtable->warray->array[gtable->warray->array_index_shuffled[i]].index_entry, i, search_util);
         if(failure)return failure;      
     }
     return MV_OK;

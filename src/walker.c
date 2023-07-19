@@ -1,6 +1,8 @@
 #include "walker.h"
 #include "graph_table.h"
 #include "misc.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 /* RAW WALKER ARRAY MANIPULATION */
 
@@ -18,6 +20,14 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset){
     if(!wArray->array) { report_err( "initWalkerArray", WA_ALLOC ) ; return WA_ALLOC;} 
     memset(wArray->array, 0, wArray->size*sizeof(Walker));
 
+    wArray->array_index_shuffled=NULL;
+    wArray->array_index_shuffled = (uint32_t*) GROW_ARRAY(uint32_t, wArray->array_index_shuffled, 0, size);
+    if(!wArray->array_index_shuffled) { report_err( "initWalkerArray", WA_ALLOC ) ; return WA_ALLOC;} 
+    for(uint32_t i = 0 ; i < wArray->size ; i++){       
+        wArray->array_index_shuffled[i] = i ;
+    }
+    
+
     wArray->array_prev=NULL;
     
         wArray->array_prev = (Walker*) GROW_ARRAY(Walker, wArray->array_prev, 0, size);
@@ -32,6 +42,7 @@ uint8_t initWalkerArray( WalkerArray * wArray, uint32_t size, uint8_t prevset){
 void freeWalkerArray(WalkerArray * wArray){
     /*yes*/
     free(wArray->array);
+    if(wArray->array_index_shuffled)free(wArray->array_index_shuffled);
     if(wArray->array_prev) free(wArray->array_prev);
 }//ok
 

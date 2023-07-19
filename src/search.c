@@ -148,7 +148,7 @@ uint8_t dfs_limited_nbwk(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
         failure = pop_stack(&search_util->stack, &cur_node);
         if(failure){ report_err("dfs_limited_nvwk", failure); return failure;}
 
-        *nb_sum+= gt->wkcn->cur_num[cur_node];
+        *nb_sum+= gt->wkcn->cur_num[cur_node]+gt->wkcn->next_num[cur_node];
 
         for(uint32_t i =0 ; i < gt->entries[cur_node].neighboor_num; i++){//appends neighbors not already 
         //seen AND with walkers to the stack
@@ -210,13 +210,15 @@ uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
                 stack_darr(&search_util->stack, cur_line->node_index); 
            
                 uint32_t cur_line_index=  cur_line - gt->arrLine->array;
-                int32_t flux_from_to= gt->arrLine->cur_flux[cur_line_index];
+                int64_t flux_from_to= gt->arrLine->cur_flux[cur_line_index];
+                int64_t flux_from_to_next= gt->arrLine->next_flux[cur_line_index];
             
-                int64_t flux_to_from= INT64_MIN;
+                int64_t flux_to_from= INT64_MIN, flux_to_from_next = INT64_MIN;
                 for(uint32_t j=0; j<gt->entries[cur_line->node_index].neighboor_num; j++){
                     Line * cur_line_inside = gt->entries[cur_line->node_index].first_neighboor_ref+j;
                     if(cur_line_inside->node_index==cur_node){
                         flux_to_from= gt->arrLine->cur_flux[cur_line_inside - gt->arrLine->array];
+                        flux_to_from_next= gt->arrLine->next_flux[cur_line_inside - gt->arrLine->array];
                         break;
                     }
                 }
@@ -225,7 +227,7 @@ uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
                 }
 
                 
-                *flux_sum += flux_from_to - flux_to_from; 
+                *flux_sum += flux_from_to_next - flux_to_from_next + flux_from_to - flux_to_from; 
             }
             cur_depth++;   
         }

@@ -74,7 +74,7 @@ static uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from ,
     //calculates coefficient for every neighboor 
     for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
        line_cur = cur_entry->first_neighboor_ref+i;
-       tot+= gtable->wkcn->cur_num[line_cur->node_index];
+       tot+= gtable->wkcn->cur_num[line_cur->node_index]+gtable->wkcn->next_num[line_cur->node_index];
        coeff_arr[i]=tot;
     }
 
@@ -153,18 +153,18 @@ static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32
         
         Line * cur_line = cur_entry->first_neighboor_ref +i;
 
-         if(( gtable->wkcn->cur_num[cur_line->node_index] != max) && max != INT64_MIN) { 
+         if(( gtable->wkcn->cur_num[cur_line->node_index] + gtable->wkcn->next_num[cur_line->node_index] != max) && max != INT64_MIN) { 
             if(diff < UINT8_MAX) diff++;
         }
 
-        if(gtable->wkcn->cur_num[cur_line->node_index] > max){
+        if(gtable->wkcn->cur_num[cur_line->node_index]+gtable->wkcn->next_num[cur_line->node_index] > max){
             line_to= cur_line;
             cur_arr_max = 0 ; 
             arr_max[cur_arr_max++] = line_to ;
 
-            max= gtable->wkcn->cur_num[cur_line->node_index]; 
+            max= gtable->wkcn->cur_num[cur_line->node_index]+gtable->wkcn->next_num[cur_line->node_index]; 
             
-        }else if ( gtable->wkcn->cur_num[cur_line->node_index] == max){
+        }else if ( gtable->wkcn->cur_num[cur_line->node_index]+gtable->wkcn->next_num[cur_line->node_index] == max){
             line_to = cur_line ; 
             arr_max[cur_arr_max++] = line_to ;
         }
@@ -283,31 +283,36 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_
         Line * cur_line = cur_entry->first_neighboor_ref +i;
         uint32_t cur_line_index=  cur_line - gtable->arrLine->array;
         uint32_t flux_from_to= gtable->arrLine->cur_flux[cur_line_index];
+        
+        uint32_t flux_from_to_next = gtable->arrLine->next_flux[cur_line_index];
 
         int64_t flux_to_from= INT64_MIN;
+        int64_t flux_to_from_next= INT64_MIN;
+
         for(uint32_t j=0; j<gtable->entries[cur_line->node_index].neighboor_num; j++){
             Line * cur_line_inside = gtable->entries[cur_line->node_index].first_neighboor_ref+j;
             if(cur_line_inside->node_index==node_from){
                 flux_to_from= gtable->arrLine->cur_flux[cur_line_inside - gtable->arrLine->array];
+                flux_to_from_next = gtable->arrLine->next_flux[cur_line_inside - gtable->arrLine->array];
                 break;
             }
         }
         if(flux_to_from == INT64_MIN){
             report_err( "rule_alignement weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
         }
-
-        if((flux_from_to - flux_to_from != flux_max) && flux_max != INT64_MIN) { 
+        int64_t flux_diff_next = flux_from_to_next - flux_to_from_next;
+        if((flux_diff_next + flux_from_to - flux_to_from != flux_max) && flux_max != INT64_MIN) { 
             if(diff < UINT8_MAX) diff++;
         }
 
-        if(flux_from_to - flux_to_from > flux_max){
+        if( flux_diff_next + flux_from_to - flux_to_from > flux_max){
             line_to= cur_line;
             cur_arr_max = 0 ; 
             arr_max[cur_arr_max++] = line_to ;
 
-            flux_max= flux_from_to- flux_to_from; 
+            flux_max= flux_diff_next+ flux_from_to- flux_to_from; 
             
-        }else if ( flux_from_to - flux_to_from == flux_max){
+        }else if ( flux_diff_next+ flux_from_to - flux_to_from == flux_max){
             line_to = cur_line ; 
             arr_max[cur_arr_max++] = line_to ;
         }
@@ -356,12 +361,14 @@ static uint8_t rule_align_vision(GraphTable * gtable, uint32_t node_from , uint3
         Line * cur_line = cur_entry->first_neighboor_ref +i;
         uint32_t cur_line_index=  cur_line - gtable->arrLine->array;
         uint32_t flux_from_to= gtable->arrLine->cur_flux[cur_line_index];
+        uint32_t flux_from_to_next= gtable->arrLine->next_flux[cur_line_index];
 
-        int64_t flux_to_from= INT64_MIN;
+        int64_t flux_to_from= INT64_MIN, flux_to_from_next = INT64_MIN;
         for(uint32_t j=0; j<gtable->entries[cur_line->node_index].neighboor_num; j++){
             Line * cur_line_inside = gtable->entries[cur_line->node_index].first_neighboor_ref+j;
             if(cur_line_inside->node_index==node_from){
                 flux_to_from= gtable->arrLine->cur_flux[cur_line_inside - gtable->arrLine->array];
+                flux_to_from_next= gtable->arrLine->next_flux[cur_line_inside - gtable->arrLine->array];
                 break;
             }
         }
@@ -374,8 +381,8 @@ static uint8_t rule_align_vision(GraphTable * gtable, uint32_t node_from , uint3
         uint8_t failure = dfs_limited_flux(gtable, sutils, global_vision, cur_line->node_index, &flux_sum);
         if(failure){ report_err("jv pàkljbùpwob,", failure); return failure;}
 
-        flux_sum += (int64_t)flux_from_to - (int64_t)flux_to_from; 
-        
+        flux_sum +=  (int64_t)flux_from_to_next - (int64_t)flux_to_from_next +  (int64_t)flux_from_to - (int64_t)flux_to_from; 
+
         if(( flux_sum != flux_max) && flux_max != INT64_MIN) { 
             if(diff < UINT8_MAX) diff++;
         }
@@ -431,12 +438,14 @@ static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32
         Line * cur_line = cur_entry->first_neighboor_ref +i;
         uint32_t cur_line_index=  cur_line - gtable->arrLine->array;
         uint32_t flux_from_to= gtable->arrLine->cur_flux[cur_line_index];
+        uint32_t flux_from_to_next= gtable->arrLine->next_flux[cur_line_index];
 
-        int64_t flux_to_from= INT64_MIN;
+        int64_t flux_to_from= INT64_MIN, flux_to_from_next= INT64_MIN;
         for(uint32_t j=0; j<gtable->entries[cur_line->node_index].neighboor_num; j++){
             Line * cur_line_inside = gtable->entries[cur_line->node_index].first_neighboor_ref+j;
             if(cur_line_inside->node_index==node_from){
                 flux_to_from= gtable->arrLine->cur_flux[cur_line_inside - gtable->arrLine->array];
+                flux_to_from_next = gtable->arrLine->next_flux[cur_line_inside - gtable->arrLine->array];
                 break;
             }
         }
@@ -444,7 +453,7 @@ static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32
             report_err( "rule_alignement weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
         }
 
-        int64_t flux_sub = flux_from_to - flux_to_from;
+        int64_t flux_sub = flux_from_to_next - flux_to_from_next + flux_from_to - flux_to_from;
 
         if(flux_sub != 0 ) diff++;
 

@@ -26,13 +26,11 @@ uint8_t init_pos(GraphTable * gtable){
     return MV_OK;
 }//tested ; ok
 
-void swap(uint32_t * a, uint32_t i, uint32_t j) {
-    
-    
+static inline void swap(uint32_t * a, uint32_t i, uint32_t j) {
   int temp = a[i]; a[i] = a[j]; a[j] = temp;
 }
 
-void fisher_yates_shuffle( uint32_t  size, uint32_t * a) {
+static void fisher_yates_shuffle( uint32_t  size, uint32_t * a) {
     for ( uint32_t i = 0; i < size; i++){
         int64_t mod = size - 1 -i > 0 ? size - i -1: 1;
         swap(a, i, i+ (rand()%(mod)) ); // swap element with random later element

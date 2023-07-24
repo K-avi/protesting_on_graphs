@@ -1,3 +1,5 @@
+I'm currentlty writing my internship report so I'm not coding as much 
+
 redesign of code structure count : 5 
 I didn't rewrite the data analysis mind you. However it WAS done so it DOES count
 
@@ -136,7 +138,8 @@ done :
     - start simulations in batch on multiple CPUs (the idea is that 1 simulation is too fast to 
       benefit of multithread so just start a bunch of them on a bunch of threads)
     
-    - implemented / tested a script to start simulations w random parameters to gener- redo the flux correctly ; current flux thing is bad 
+    - implemented / tested a script to start simulations w random parameters to gener- redo the flux correctly ;
+	 current flux thing is bad 
 
     - optimize the python stuff  ( call for help)
 
@@ -255,7 +258,13 @@ done :
                               align -> 3 
                               propu -> 4 
                               no majority -> 5 
-
+     - implement vision
+     - asynchronous movement 
+         
+     - make sure the fixes to align / attra are ok 
+     
+     - upload docu as a github site lol 
+	
      
 
        
@@ -265,51 +274,19 @@ pending :
 
 
     python : 
-
       
-      - rerun base at some point
-        
- 
+      - rerun base at some point 
    
     C :
 
-      - implement "vision" 
-        - create a "search array" dynamic array initialised 
-          in the iterate n times function use this array as 
-          the only array to write in for searches this makes 
-          it possible to not ask for memory each time u wanna 
-          do a search (good) however it makes it so u can't 
-          do multiple searches in parallel (I don't do it anyways)
-          defined a depth limited search (the search stops either 
-          when the graph is explored or when the depth is reached)
-
-        - import seen array from the search branch
-        - add another array that's like "search id" or some thing to 
-          make sure the search is correct and shit (I know what I'm 
-          talking about)
-
-          fuck align has to be recursive otherwise it's going to be fucking 
-          DREADFULL to implement man what a pain
-
-          the seen array is not needed cuz I store the index 
-          and stuff  ; remove it actually 
-
-      - asynchronous movement 
-        - just use the next array lol 
-
-      - make sure the fixes to align / attra are ok 
-
+      - rerun perftest 
       - use the search branch to create the dt analysis 
         directly in C 
       
 
-    Documentation : 
-
-      - upload docu as a github site lol 
-
-
     Misc: 
-
+	
+      - clean up / remove certain branches (useless ones I mean)
       - remove curse words from commentaries and documentation
 
       - put the GPL warning things everywhere 

@@ -215,6 +215,90 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from){
     return T_OK;
 }// tested; seems ok ; awful tbh
 
+static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from ){
+    /**/
+    if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_alignement_proba", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement_proba", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+
+    uint32_t diff = 0; //checks that you see at least two disctinct values
+
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_cur=NULL;
+    double coeff_arr[cur_entry->neighboor_num]; //C99 or higher required
+    uint64_t tot=0;
+    int64_t min_flux = INT64_MAX;
+
+
+    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
+
+        Line * cur_line = cur_entry->first_neighboor_ref +i;
+        uint32_t cur_line_index=  cur_line - gtable->arrLine->array;
+        uint32_t flux_from_to= gtable->arrLine->cur_flux[cur_line_index];
+
+        int64_t flux_to_from= INT64_MIN;
+        for(uint32_t j=0; j<gtable->entries[cur_line->node_index].neighboor_num; j++){
+            Line * cur_line_inside = gtable->entries[cur_line->node_index].first_neighboor_ref+j;
+            if(cur_line_inside->node_index==node_from){
+                flux_to_from= gtable->arrLine->cur_flux[cur_line_inside - gtable->arrLine->array];
+                break;
+            }
+        }
+        if(flux_to_from == INT64_MIN){
+            report_err( "rule_alignement weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
+        }
+
+        int64_t flux_sub = flux_from_to - flux_to_from;
+
+        if(flux_sub != 0 ) diff++;
+
+        tot += flux_sub; 
+        if(flux_sub < min_flux) min_flux = flux_sub;
+
+        coeff_arr[i] = flux_sub; 
+
+    }
+        
+
+    if(!diff){ //case where only every flux is zero 
+        return rule_rand(gtable, node_from);
+    }
+    uint64_t new_tot = tot; 
+    min_flux = min_flux < 0 ? - min_flux : min_flux; 
+    new_tot+= min_flux*cur_entry->neighboor_num; //not sure abt this 
+    if(new_tot == 0 ) return rule_rand(gtable, node_from);
+    //makes the choice 
+    double randval= (double) ((double)rand()/(double)RAND_MAX);
+    for(uint32_t i=0; i<cur_entry->neighboor_num; i++){
+        
+        coeff_arr[i] = ((double)((double)coeff_arr[i]+(double)min_flux))/ (double) new_tot;
+      
+        if(randval <= coeff_arr[i]){
+            line_cur= cur_entry->first_neighboor_ref+i; //retrieves the line 
+
+            //moves and updates fields 
+            gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
+            gtable->wkcn->next_num[line_cur->node_index]++;
+            
+
+            return T_OK;
+        }
+        
+    }  
+
+    //division can round stuff poorly 
+    //so I use a special case if I move past the last entry
+    //moves and updates fields 
+    line_cur= cur_entry->first_neighboor_ref+ (cur_entry->neighboor_num - 1) ; //retrieves the line      
+            
+    gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
+    gtable->wkcn->next_num[line_cur->node_index]++;
+  
+    
+    return T_OK;
+}// tested ; prolly ok
+
 
 static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from ){
     /*
@@ -455,6 +539,9 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "attco", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_attraction_proba;
+        }else if (!strncmp(rule_str, "alico", 5)){
+            if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+            rule_fun_arr[app_index++]= &rule_align_proba;
         }else if (!strncmp(rule_str, "propu", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_propulsion;

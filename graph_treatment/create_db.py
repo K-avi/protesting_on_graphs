@@ -80,6 +80,66 @@ def gen_db_var(graph_path, nb_it):
         cpt+=1  
     
     close(index)
+    
+    
+
+def gen_small(graph_path, nb_it):
+    """ 
+    graphml_path , nb_it -> db of simul results
+    
+    generates a base of about 30 sims exploring different variations 
+    """
+
+     #permutations from (0,10) to (5,5)
+    s2 = [i for i in it.combinations_with_replacement(np.linspace(0,10,11), r=2) if sum(i) == 10]
+    f2 = sum([ list(set(it.permutations(j, r=len(j)))) for j in s2 ],[]).sort()
+    
+    
+    s3 = [i for i in it.combinations_with_replacement(np.linspace(0,10,11), r=3) if sum(i) == 10]
+    f3 = sum([ list(set(it.permutations(j, r=len(j)))) for j in s3 ],[])
+    f3 = [ (i,j,k) for (i,j,k) in f3 if j >= 5 and k != 0].sort()
+    
+    
+    for a,b in f2: 
+              
+        print(f"simul running with par :\nattra:{a} align:{b}")
+        ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
+                                      f"attra:{a} align:{b}",
+                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+        dt.clean_results( f"{cpt}_run")
+        
+        with open("index_base.csv", "a") as f:
+            f.write(f"{cpt},attra:{a} align:{b}\n")
+        cpt+=1 
+    
+    for a,b in f2: 
+       
+        print(f"simul running with par :\nattco:{a} alico:{b}")
+        ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
+                                      f"attco:{a} alico:{b}",
+                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+        dt.clean_results( f"{cpt}_run")
+        
+        with open("index_base.csv", "a") as f:
+            f.write(f"{cpt},attco:{a} alico:{b}\n")
+        cpt+=1 
+    
+    for a,b,c in f3: 
+            
+        print(f"simul running with par :\nattra:{a} align:{b} rand:{c}")
+        ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
+                                      f"attra:{a} align:{b} rand{c}",
+                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+        dt.clean_results( f"{cpt}_run")
+        
+        with open("index_base.csv", "a") as f:
+            f.write(f"{cpt},attra:{a} align:{b}\n")
+        cpt+=1   
+    close(index)
+    
 
 def get_simpar(index_path):
     """
@@ -107,49 +167,7 @@ def gen_newflux(graph_path, index_path, nb_it_flux):
         dt.mean_results_flux( f"{cpt}_run", f"{cpt}_res")
         dt.clean_results( f"{cpt}_run")
     
-def query(query, db_name):
-    """
-    parses a simple query string 
-    currently not done 
-    placeholder
-    """
-    if query.startwith("or_select"):
-        
-        ret=""
-        args = query.split(" ")[1::]
-        
-        with open(f"index_base.csv") as index:
-            for line in index : 
-               if any( arg in line for arg in args ):
-                   ret+= f"{line}\n"
-        print("sim matching query are :\n",ret)
-    
-    elif query.startwith("and_select"): 
-        
-        ret=""    
-        args = query.split(" ")[1::]
-        
-        with open(f"index_base.csv") as index:
-            for line in index : 
-               if all( arg in line for arg in args ):
-                   ret+= f"{line}\n"
-        print("sim matching query are :\n",ret)
-   
-    elif string.startwith("plot"):   
-        
-        ret=[]
-        for file in os.listdir(db_name):
-            args = query.split(" ")[1::]
-            if(file.split("_")[1] in  args):
-                ret.append(file)
-        print(ret)
-        sp.plot_list(ret)
-        
-    else : 
-        print("invalid query please print a valid query")
-        
-    return 0 
-    
+
         
 if __name__=='__main__':
     gen_db_var("paris_5k_10m.csv",100)

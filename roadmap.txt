@@ -268,6 +268,10 @@ done :
      - reran some perftest 
 
      - implemented two variants of probabilistic align 
+
+     - add gp permille to dt analysis 
+
+     - implement repulsion and teleportation (Goku rule)
 	
      
 
@@ -278,19 +282,18 @@ pending :
 
 
     python : 
+
+      - add distribution of group size at the end of the simul
       
       - rerun base at some point 
+
    
     C :
 
+      - implement least crowded and not empty place (asocial rule)
+
       - use the search branch to create the dt analysis 
         directly in C 
-
-      - test proba align w threshold at 0 
-
-      - proba align with (i,j) (follow / stalk rule)
-
-      - implement repulsion , teleportation (Goku rule) and go to the least crowded , not empty place
 
 
       

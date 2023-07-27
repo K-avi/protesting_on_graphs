@@ -127,6 +127,23 @@ uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_ind
     return T_OK;
 }// new version ;tested ; seems ok
 
+uint8_t rule_teleport( GraphTable * gtable , uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils){
+    /*
+    chooses a random node in the graph and teleports to it 
+    O(1)
+    */
+    if(!gtable) { report_err( "rule_teleport", GT_NULL ) ; return GT_NULL;} 
+    if(node_from>gtable->table_size) { report_err( "rule_teleport", GT_SIZE ) ; return GT_SIZE;} 
+    
+    Line  line_to = gtable->arrLine->array[rand()%gtable->arrLine->size];
+   
+    
+    gtable->wkcn->next_num[line_to.node_index]++;
+    gtable->warray->array[walker_index].index_entry= line_to.node_index;
+
+    return T_OK;
+}// not tested, prolly ok tested ; seems ok
+
 static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
     /*
     chooses the neighbor with the most entry and goes there 
@@ -182,6 +199,67 @@ static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32
         gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[r]->node_index]++;
         gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
+    }
+
+    return T_OK;
+
+}//fixed ; works
+
+static uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+    /*
+    chooses the neighbor with the most entry and goes there 
+
+    WARNING : will update the flux field of gtable 
+
+    O(d(node_from)) ~ constant 
+    */
+    if(!gtable) { report_err( "rule_repulsion", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_atrraction", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_repulsion", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+
+    int64_t min=INT64_MAX; 
+    uint8_t diff=0;
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_to=NULL;
+
+    Line * arr_min[cur_entry->neighboor_num]; 
+    memset(arr_min, 0, sizeof(Line *)* cur_entry->neighboor_num);
+    uint32_t cur_arr_min = 0 ;
+
+    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
+        
+        Line * cur_line = cur_entry->first_neighboor_ref +i;
+
+         if(( gtable->wkcn->cur_num[cur_line->node_index] != min) && min != INT64_MAX) { 
+            if(diff < UINT8_MAX) diff++;
+        }
+
+        if(gtable->wkcn->cur_num[cur_line->node_index] < min){
+            line_to= cur_line;
+            cur_arr_min = 0 ; 
+            arr_min[cur_arr_min++] = line_to ;
+
+            min= gtable->wkcn->cur_num[cur_line->node_index]; 
+            
+        }else if ( gtable->wkcn->cur_num[cur_line->node_index] == min){
+            line_to = cur_line ; 
+            arr_min[cur_arr_min++] = line_to ;
+        }
+    }   
+    
+    if(cur_arr_min == 0)  { report_err( "rule_repulsion no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(cur_arr_min == 1) { 
+        gtable->arrLine->next_flux[ arr_min[0] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_min[0]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_min[0]->node_index;
+    }else{
+        uint32_t r = (rand()%UINT32_MAX)%cur_arr_min;
+
+        gtable->arrLine->next_flux[ arr_min[r] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_min[r]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_min[r]->node_index;
     }
 
     return T_OK;
@@ -414,8 +492,8 @@ static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32
     /**/
     if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
   
-    if(node_from>gtable->table_size) { report_err( "rule_alignement", GT_SIZE ) ; return GT_SIZE;} 
-    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    if(node_from>gtable->table_size) { report_err( "rule_alignement_proba", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement_proba", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
 
     uint32_t diff = 0; //checks that you see at least two disctinct values
 
@@ -458,20 +536,18 @@ static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32
 
     if(!diff){ //case where only every flux is zero 
         return rule_rand(gtable, node_from, walker_index, sutils);
-    }else if(diff==1){
-        return rule_alignement(gtable, node_from,  walker_index, sutils);
     }
     uint64_t new_tot = tot; 
     min_flux = min_flux < 0 ? - min_flux : min_flux; 
     new_tot+= min_flux*cur_entry->neighboor_num; //not sure abt this 
     if(new_tot == 0 ) return rule_rand(gtable, node_from, walker_index, sutils);
     //makes the choice 
-    double randval= (double) rand()/RAND_MAX;
+    double randval= (double) ((double)rand()/(double)RAND_MAX);
     for(uint32_t i=0; i<cur_entry->neighboor_num; i++){
         
-        coeff_arr[i] = (double)((double)coeff_arr[i]+(double)min_flux)/ (double) new_tot;
+        coeff_arr[i] = ((double)((double)coeff_arr[i]+(double)min_flux))/ (double) new_tot;
       
-        if(randval< coeff_arr[i]){
+        if(randval <= coeff_arr[i]){
             line_cur= cur_entry->first_neighboor_ref+i; //retrieves the line 
 
             //moves and updates fields 
@@ -481,17 +557,18 @@ static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32
 
             return T_OK;
         }
-        if( (uint16_t) i == cur_entry->neighboor_num -1){//division can round stuff poorly
-            //moves and updates fields 
-            line_cur= cur_entry->first_neighboor_ref+i; //retrieves the line      
-            
-            gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
-            gtable->wkcn->next_num[line_cur->node_index]++;
-            gtable->warray->array[walker_index].index_entry= line_cur->node_index;
-
-            return T_OK;
-        }
+        
     }  
+
+    //division can round stuff poorly 
+    //so I use a special case if I move past the last entry
+    //moves and updates fields 
+    line_cur= cur_entry->first_neighboor_ref+ (cur_entry->neighboor_num - 1) ; //retrieves the line      
+            
+    gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
+    gtable->wkcn->next_num[line_cur->node_index]++;
+    gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+    
     return T_OK;
 }// tested ; prolly ok
 
@@ -917,15 +994,22 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "alpos", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_align_proba_threshold;
-            *prop_flag=1;
+            
         }else if (!strncmp(rule_str, "stalk", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_align_proba_stalk;
-            *prop_flag=1;
+            
         }else if (!strncmp(rule_str, "propu", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_propulsion;
             *prop_flag=1;
+        }else if (!strncmp(rule_str, "repu", 4)){
+            if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+            rule_fun_arr[app_index++]= &rule_repulsion;
+            
+        }else if (!strncmp(rule_str, "goku", 4)){
+            if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+            rule_fun_arr[app_index++]= &rule_teleport;
         }else if (!strncmp(rule_str, "mconst", 6) || !strncmp(rule_str, "mprop", 5) || !strncmp(rule_str, "mcrowd", 6)){
             //hello there :)
         }else{

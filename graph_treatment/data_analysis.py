@@ -144,14 +144,14 @@ def gen_data_groups(t_curnum, adj, mobility_mean):
     array[6] 
     nb_group, spread_group , group size, nb lonely wk,
     density of groups (nb walkers / nodes / groups)
-    nb occupied nodes
+    nb occupied nodes , nb_gp in permille, 
     generates the data related to group for
     one iteration
     
     function was rewritten by https://github.com/Pacidus
     """
     Nitt = t_curnum.shape[0]
-    ret = np.zeros((Nitt,7  ))
+    ret = np.zeros((Nitt,8  ))
     ret[:, 3] = mobility_mean
     for itt, cur in enumerate(t_curnum):
         nadj = lt.merge_wknum_adj_mat(cur, adj)
@@ -163,6 +163,8 @@ def gen_data_groups(t_curnum, adj, mobility_mean):
         ret[itt, 4] = cur[labels == -1].sum()
         ret[itt, 5] = ret[itt, 2]/ ret[itt, 1]      
         ret[itt, 6] = (cur > 0).sum()
+       
+        ret[itt, 7] = nb_gp/ len(t_curnum[0]) * 1000
         
     return ret
 
@@ -245,7 +247,6 @@ def mean_flux_correct( lines, flux_mat, nb_wk ):
     
     nb_not_zer = np.nonzero( np.array(flux_arr[Idab]+ np.array(flux_arr[Idba])))
     s =  sum((np.abs(flux_arr[Idab] - flux_arr[Idba])))
-    print( s/(nb_wk*m))
     return s/(nb_wk*m)
 
 

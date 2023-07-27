@@ -49,7 +49,7 @@ def run_simul_once(
 
         adj = lt.load_adj_mat(tr_comp_name+"_hr")
         group_data_mat = dt.gen_data_groups(t_curnum, adj, mobility_mean)
-        del (t_curnum, adj)
+        del ( adj)
         
         lt.clean_trace(tr_comp_name)
         np.savetxt(f"{result_file}{i}", group_data_mat)
@@ -60,10 +60,16 @@ def run_simul_once(
         
        
         n = dt.mean_flux_correct( lines, t_flux,nb_wk )
-
         del(t_flux , lines)
-        
         np.savetxt( f"{result_file}_{i}_fluxmean", np.array([n]))
+        
+        #nadj = lt.merge_wknum_adj_mat(t_curnum[-1], group_data_mat)
+        #nb_gp, labels = get_adj_group(t_curnum[-1], nadj)
+        #del(t_curnum)
+        #final_spread = spread_gp(nb_gp, labels)
+        
+        #np.savetxt(f"{result_file}_{i}_finalsprawl", final_spread)
+
 
 
 

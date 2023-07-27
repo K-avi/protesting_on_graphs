@@ -264,6 +264,10 @@ done :
      - make sure the fixes to align / attra are ok 
      
      - upload docu as a github site lol 
+
+     - reran some perftest 
+
+     - implemented two variants of probabilistic align 
 	
      
 
@@ -279,12 +283,21 @@ pending :
    
     C :
 
-      - rerun perftest 
       - use the search branch to create the dt analysis 
         directly in C 
+
+      - test proba align w threshold at 0 
+
+      - proba align with (i,j) (follow / stalk rule)
+
+      - implement repulsion , teleportation (Goku rule) and go to the least crowded , not empty place
+
+
       
 
     Misc: 
+
+      - check out TASEP and implement it if I have the time 
 	
       - clean up / remove certain branches (useless ones I mean)
       - remove curse words from commentaries and documentation

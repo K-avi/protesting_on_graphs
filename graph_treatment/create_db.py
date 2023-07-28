@@ -59,8 +59,8 @@ def gen_db_var(graph_path, nb_it):
         print(f"simul running with par :\nrand:{a} attra:{b} align:{c} propu:{d}")
         ars.run_simul_nth(1,1, graph_path, 1 , nb_it,
                                       f"rand:{a} attco:{b} align:{c} propu:{d}",
-                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
-        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+                                      graph_path, f"{cpt}_run", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"base/{cpt}_res")
         dt.clean_results( f"{cpt}_run")
         
         with open("index_base.csv", "a") as f:
@@ -71,8 +71,8 @@ def gen_db_var(graph_path, nb_it):
         
         print(f"simul running with par :\nrand:{a} attra:{b} align:{c} propu:{d}")
         ars.run_simul_nth(1,1, graph_path, 1 , nb_it, f"rand:{a} attco:{b} align:{c} propu:{d}",
-                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
-        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+                                      graph_path, f"{cpt}_run", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"base/{cpt}_res")
         dt.clean_results( f"{cpt}_run")
         
         with open("index_base.csv", "a") as f:
@@ -92,51 +92,53 @@ def gen_small(graph_path, nb_it):
 
      #permutations from (0,10) to (5,5)
     s2 = [i for i in it.combinations_with_replacement(np.linspace(0,10,11), r=2) if sum(i) == 10]
-    f2 = sum([ list(set(it.permutations(j, r=len(j)))) for j in s2 ],[]).sort()
+    f2 = s2
+    f2.sort()
     
     
     s3 = [i for i in it.combinations_with_replacement(np.linspace(0,10,11), r=3) if sum(i) == 10]
     f3 = sum([ list(set(it.permutations(j, r=len(j)))) for j in s3 ],[])
-    f3 = [ (i,j,k) for (i,j,k) in f3 if j >= 5 and k != 0].sort()
+    f3 = [ (i,j,k) for (i,j,k) in f3 if j >= 5 and k != 0]
+    f3.sort()
     
-    
-    for a,b in f2: 
+    cpt = 0 
+    for (a,b) in f2: 
               
         print(f"simul running with par :\nattra:{a} align:{b}")
         ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
                                       f"attra:{a} align:{b}",
-                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
-        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+                                      "trace", f"{cpt}_run", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"base/{cpt}_res")
         dt.clean_results( f"{cpt}_run")
         
         with open("index_base.csv", "a") as f:
             f.write(f"{cpt},attra:{a} align:{b}\n")
         cpt+=1 
     
-    for a,b in f2: 
+    for (a,b) in f2: 
        
         print(f"simul running with par :\nattco:{a} alico:{b}")
         ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
                                       f"attco:{a} alico:{b}",
-                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
-        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+                                      "trace", f"{cpt}_run", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"base/{cpt}_res")
         dt.clean_results( f"{cpt}_run")
         
         with open("index_base.csv", "a") as f:
             f.write(f"{cpt},attco:{a} alico:{b}\n")
         cpt+=1 
     
-    for a,b,c in f3: 
+    for (a,b,c) in f3: 
             
         print(f"simul running with par :\nattra:{a} align:{b} rand:{c}")
         ars.run_simul_nth(4,4, graph_path, 1 , nb_it,
-                                      f"attra:{a} align:{b} rand{c}",
-                                      graph_path, f"base/{cpt}_simul", nb_it - 10)
-        dt.mean_results( f"{cpt}_run", f"{cpt}_res")
+                                      f"attra:{a} align:{b} rand:{c}",
+                                      "trace", f"{cpt}_run", nb_it - 10)
+        dt.mean_results( f"{cpt}_run", f"base{cpt}_res")
         dt.clean_results( f"{cpt}_run")
         
         with open("index_base.csv", "a") as f:
-            f.write(f"{cpt},attra:{a} align:{b}\n")
+            f.write(f"{cpt},attra:{a} align:{b} rand:{c}\n")
         cpt+=1   
     close(index)
     
@@ -163,7 +165,7 @@ def gen_newflux(graph_path, index_path, nb_it_flux):
     for i in simstrings: 
         
         print(f"simul running with par :{i}")
-        ars.run_simul_nth_flux(1,1, graph_path, 1 , nb_it, i, graph_path, f"base/{cpt}_simul", nb_it - 10)
+        ars.run_simul_nth_flux(1,1, graph_path, 1 , nb_it, i, graph_path, f"{cpt}_run", nb_it - 10)
         dt.mean_results_flux( f"{cpt}_run", f"{cpt}_res")
         dt.clean_results( f"{cpt}_run")
     

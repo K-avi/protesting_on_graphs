@@ -207,7 +207,7 @@ static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32
 
 static uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
     /*
-    chooses the neighbor with the most entry and goes there 
+    chooses the neighbor with the least walkers and goes there 
 
     WARNING : will update the flux field of gtable 
 
@@ -248,7 +248,7 @@ static uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_
         }
     }   
     
-    if(cur_arr_min == 0)  { report_err( "rule_repulsion no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+    if(cur_arr_min == 0)  { report_err( "rule_agoraphobic no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
     if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
     if(cur_arr_min == 1) { 
         gtable->arrLine->next_flux[ arr_min[0] - gtable->arrLine->array]++;
@@ -264,7 +264,69 @@ static uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_
 
     return T_OK;
 
-}//fixed ; works
+}//tested prolly ok
+
+static uint8_t rule_agoraphobic( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+    /*
+    chooses the neighbor with the least walkers over but more than 0 walkers
+
+    WARNING : will update the flux field of gtable 
+
+    O(d(node_from)) ~ constant 
+    */
+    if(!gtable) { report_err( "rule_agoraphobic", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_agoraphobic", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_agoraphobic", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+
+    int64_t min=INT64_MAX; 
+    uint8_t diff=0;
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_to=NULL;
+
+    Line * arr_min[cur_entry->neighboor_num]; 
+    memset(arr_min, 0, sizeof(Line *)* cur_entry->neighboor_num);
+    uint32_t cur_arr_min = 0 ;
+
+    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
+        
+        Line * cur_line = cur_entry->first_neighboor_ref +i;
+
+         if(( gtable->wkcn->cur_num[cur_line->node_index] != min) && min != INT64_MAX && gtable->wkcn->cur_num[cur_line->node_index]!=0) { 
+            if(diff < UINT8_MAX) diff++;
+        }
+
+        if(gtable->wkcn->cur_num[cur_line->node_index] < min && gtable->wkcn->cur_num[cur_line->node_index] != 0){
+            line_to= cur_line;
+            cur_arr_min = 0 ; 
+            arr_min[cur_arr_min++] = line_to ;
+
+            min= gtable->wkcn->cur_num[cur_line->node_index]; 
+            
+        }else if ( gtable->wkcn->cur_num[cur_line->node_index] == min){
+            line_to = cur_line ; 
+            arr_min[cur_arr_min++] = line_to ;
+        }
+    }   
+    
+    
+    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(cur_arr_min == 0)  return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(cur_arr_min == 1) { 
+        gtable->arrLine->next_flux[ arr_min[0] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_min[0]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_min[0]->node_index;
+    }else{
+        uint32_t r = (rand()%UINT32_MAX)%cur_arr_min;
+
+        gtable->arrLine->next_flux[ arr_min[r] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_min[r]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_min[r]->node_index;
+    }
+
+    return T_OK;
+
+}//not tested; prolly ok
 
 static uint8_t rule_attra_vision( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
     /*
@@ -659,7 +721,7 @@ static uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_fro
     return T_OK;
 }// not tested ; prolly ok
 
-static uint8_t rule_align_proba_stalk(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+static uint8_t rule_align_proba_follow(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
     /*
     similar to alignement with coefficient; 
     the difference is that the "flux" is just 
@@ -982,7 +1044,7 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "attco", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_attraction_proba;
-        }else if (!strncmp(rule_str, "alico", 5)){
+        }else if (!strncmp(rule_str, "alibad", 6)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_align_proba;
         }else if (!strncmp(rule_str, "alivi", 5)){
@@ -991,13 +1053,13 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "attvi", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_attra_vision;
-        }else if (!strncmp(rule_str, "alpos", 5)){
+        }else if (!strncmp(rule_str, "alico", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_align_proba_threshold;
             
-        }else if (!strncmp(rule_str, "stalk", 5)){
+        }else if (!strncmp(rule_str, "follow", 6)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
-            rule_fun_arr[app_index++]= &rule_align_proba_stalk;
+            rule_fun_arr[app_index++]= &rule_align_proba_follow;
             
         }else if (!strncmp(rule_str, "propu", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}

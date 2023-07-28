@@ -272,6 +272,8 @@ done :
      - add gp permille to dt analysis 
 
      - implement repulsion and teleportation (Goku rule)
+
+     - implement least crowded and not empty place (agoraphobic rule)
 	
      
 
@@ -283,20 +285,19 @@ pending :
 
     python : 
 
-      - add distribution of group size at the end of the simul
+      - add distribution of group size and group spread at the end of the simul
       
       - rerun base at some point 
 
+      - add align w asynchronous mvmt and collective mvmt to scatterplot running on the server 
+
+      - run simulation w smaller discretisation step (maybe run from 0 to 9 idk)
+
    
     C :
-
-      - implement least crowded and not empty place (asocial rule)
-
-      - use the search branch to create the dt analysis 
-        directly in C 
-
-
-      
+  
+      - use the search branch to create some dt analysis 
+        directly in C
 
     Misc: 
 

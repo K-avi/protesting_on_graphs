@@ -504,6 +504,95 @@ static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32
     return T_OK;
 }// not tested ; prolly ok
 
+static uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+    /*
+    similar to alignement with coefficient ; only difference is that the values 
+    equal to zero are not used 
+    */
+    if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_alignement", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+
+    uint32_t diff = 0; //checks that you see at least two disctinct values
+
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_cur=NULL;
+    double coeff_arr[cur_entry->neighboor_num]; //C99 or higher required
+    uint64_t tot=0;
+   
+
+
+    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
+
+        Line * cur_line = cur_entry->first_neighboor_ref +i;
+        uint32_t cur_line_index=  cur_line - gtable->arrLine->array;
+        uint32_t flux_from_to= gtable->arrLine->cur_flux[cur_line_index];
+        uint32_t flux_from_to_next= gtable->arrLine->next_flux[cur_line_index];
+
+        int64_t flux_to_from= INT64_MIN, flux_to_from_next= INT64_MIN;
+        for(uint32_t j=0; j<gtable->entries[cur_line->node_index].neighboor_num; j++){
+            Line * cur_line_inside = gtable->entries[cur_line->node_index].first_neighboor_ref+j;
+            if(cur_line_inside->node_index==node_from){
+                flux_to_from= gtable->arrLine->cur_flux[cur_line_inside - gtable->arrLine->array];
+                flux_to_from_next = gtable->arrLine->next_flux[cur_line_inside - gtable->arrLine->array];
+                break;
+            }
+        }
+        if(flux_to_from == INT64_MIN){
+            report_err( "rule_alignement weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
+        }
+
+       int64_t flux_sub = flux_from_to_next - flux_to_from_next + flux_from_to - flux_to_from;
+        if (flux_sub < 0) flux_sub = 0;
+        if(flux_sub != 0 ) diff++;
+        
+        tot += flux_sub; 
+
+        coeff_arr[i] = flux_sub; 
+
+    }
+        
+
+    if(!diff){ //case where only every flux is zero 
+        return rule_rand(gtable, node_from, walker_index, sutils);
+    }else if(diff==1){
+        return rule_alignement(gtable, node_from,  walker_index, sutils);
+    }
+
+    
+    
+    if( tot == 0 ) return rule_rand(gtable, node_from, walker_index, sutils);
+    //makes the choice 
+    double randval= (double) rand()/RAND_MAX;
+    for(uint32_t i=0; i<cur_entry->neighboor_num; i++){
+        
+        coeff_arr[i] = (double)((double)coeff_arr[i]/ (double) tot);
+      
+        if(randval < coeff_arr[i]){
+            line_cur = cur_entry->first_neighboor_ref+i; //retrieves the line 
+
+            //moves and updates fields 
+            gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
+            gtable->wkcn->next_num[line_cur->node_index]++;
+            gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+
+            return T_OK;
+        }
+        
+    }  
+    //division can round stuff poorly 
+    //so I use a special case if I move past the last entry
+    //moves and updates fields 
+    line_cur= cur_entry->first_neighboor_ref+ (cur_entry->neighboor_num - 1) ; //retrieves the line      
+            
+    gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
+    gtable->wkcn->next_num[line_cur->node_index]++;
+    gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+
+    return T_OK;
+}// not tested ; prolly ok
+
 
 static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
     /*
@@ -756,7 +845,7 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "attco", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_attraction_proba;
-        }else if (!strncmp(rule_str, "alico", 5)){
+        }else if (!strncmp(rule_str, "alibad", 6)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_align_proba;
         }else if (!strncmp(rule_str, "alivi", 5)){
@@ -765,6 +854,10 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "attvi", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_attra_vision;
+        }else if (!strncmp(rule_str, "alico", 5)){
+            if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+            rule_fun_arr[app_index++]= &rule_align_proba_threshold;
+
         }else if (!strncmp(rule_str, "propu", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_propulsion;

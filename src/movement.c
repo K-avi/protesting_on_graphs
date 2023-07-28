@@ -56,7 +56,7 @@ static uint8_t iterate_once(GraphTable * gtable , Tactics * t){
     */
 
     for(uint32_t i=0; i<gtable->wkcn->size;i++){
-
+       
         if(gtable->wkcn->cur_num[i]){
             uint8_t failure= choose_node(t, gtable, i);
             if(failure)return failure;    
@@ -76,7 +76,7 @@ uint8_t iterate_ntimes( GraphTable * gtable, Tactics * tactics, uint32_t iter_nu
     if(!tactics){ report_err("iterate_ntimes", T_NULL); return T_NULL;}
     uint8_t failure;
     for(uint32_t i=0; i<iter_num; i++){
-        
+       
         failure= prepare_ite(gtable);
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
         failure= iterate_once(gtable, tactics);

@@ -592,7 +592,7 @@ static uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32
         tot += flux_sub; 
         if(flux_sub < min_flux) min_flux = flux_sub;
 
-        coeff_arr[i] = flux_sub; 
+        coeff_arr[i] = tot; 
 
     }
         
@@ -678,7 +678,7 @@ static uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_fro
         
         tot += flux_sub; 
 
-        coeff_arr[i] = flux_sub; 
+        coeff_arr[i] = tot; 
 
     }
         
@@ -753,7 +753,7 @@ static uint8_t rule_align_proba_follow(GraphTable * gtable, uint32_t node_from ,
 
         tot += flux_from_to; 
 
-        coeff_arr[i] = flux_from_to; 
+        coeff_arr[i] = tot; 
 
     }
         
@@ -812,7 +812,7 @@ static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t wal
 //make a metarule
 
 
-static uint8_t rule_alignement_proba_exclusion(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+static uint8_t rule_align_proba_exclusion(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
     /*
 
     variant of probalistic align where negative values 
@@ -830,7 +830,7 @@ static uint8_t rule_alignement_proba_exclusion(GraphTable * gtable, uint32_t nod
         
     
     GraphTableEntry * cur_entry = &gtable->entries[node_from];
-    Line * line_to=NULL;
+   
     uint8_t diff=0;
 
     Line * arr_pos[cur_entry->neighboor_num]; 
@@ -866,11 +866,13 @@ static uint8_t rule_alignement_proba_exclusion(GraphTable * gtable, uint32_t nod
 
         if(flux_from_to - flux_to_from >= 0){
            
-            arr_pos[cur_arr_pos] = line_to ;
-            coeff_arr[cur_arr_pos] = flux_from_to - flux_to_from;
-            cur_arr_pos++ ; 
+            arr_pos[cur_arr_pos] = cur_line ;
+            
 
             sum_pos += flux_from_to - flux_to_from;
+
+            coeff_arr[cur_arr_pos] = sum_pos;
+            cur_arr_pos++ ; 
             
         }
         
@@ -1172,7 +1174,7 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
             
         }else if (!strncmp(rule_str, "aliex", 5)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
-            rule_fun_arr[app_index++]= &rule_alignement_proba_exclusion;
+            rule_fun_arr[app_index++]= &rule_align_proba_exclusion;
             
         }else if (!strncmp(rule_str, "follow", 6)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}

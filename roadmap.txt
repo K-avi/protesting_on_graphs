@@ -274,10 +274,10 @@ done :
      - implement repulsion and teleportation (Goku rule)
 
      - implement least crowded and not empty place (agoraphobic rule)
-	
-     
 
-       
+     - add align w asynchronous mvmt and collective mvmt to scatterplot running on the server 
+
+      - run simulation w smaller discretisation step (maybe run from 10 to 90 idk)
 
 
 pending : 
@@ -285,13 +285,15 @@ pending :
 
     python : 
 
-      - add distribution of group size and group spread at the end of the simul
+      - add distribution of group size and group sprawl at the end of the simul
       
       - rerun base at some point 
-
-      - add align w asynchronous mvmt and collective mvmt to scatterplot running on the server 
-
-      - run simulation w smaller discretisation step (maybe run from 0 to 9 idk)
+        - to do so do the big combination thing ; 
+        - also modify trace binary to drop last gen (at least have a version that does so) 
+        - make it so I only generate the data necessary to calculate the flux related things (sprawl at last iteration and )
+          the one based on the last iterations of flux n stuff 
+      
+      - write the big base script 
 
    
     C :
@@ -302,8 +304,34 @@ pending :
     Misc: 
 
       - check out TASEP and implement it if I have the time 
+
+      - Linkstreams -> 
+
+      - update docu
 	
       - clean up / remove certain branches (useless ones I mean)
       - remove curse words from commentaries and documentation
 
       - put the GPL warning things everywhere 
+
+
+samos : 4 sims of the base in parallel
+khiva : 4 sims of the base in parallel
+jussieu : 2*24 sims of the base in parallel 
+
+total : 56 sims in parallel
+
+
+each subdivision of the script will have to run 20.000 / 56 ~= 3572 sims chunks
+is 20.000 before or after the mean thing ??? 
+
+
+test : 
+
+align coeff different -> 
+
+instead of putting neg @ 0 ; u don't use them for choice 
+
+and don't move if everyone is lt zero 
+
+

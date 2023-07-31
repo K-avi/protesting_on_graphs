@@ -36,7 +36,7 @@ def spread_gp(nb_gp, labels):
     """
     num , np.array[1D] -> num 
     calculates the spread of the
-    node groups
+    groups during a single iteration
     
     function was improved by https://github.com/Pacidus
     """
@@ -105,7 +105,7 @@ def mean_results_flux(simul_name, res_name):
     """
     str, str -> writes file
 
-    variant of mean resutl used to calculate the correct flux
+    variant of mean resuts used to calculate the correct flux
     
     function was improved by https://github.com/Pacidus
     """

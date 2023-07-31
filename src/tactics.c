@@ -470,6 +470,7 @@ static uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_
     return T_OK;
 }//fixed; seems ok ; awful tbh 
 
+
 static uint8_t rule_align_vision(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
     /*
     where d(n) is the number of neighbors of n
@@ -810,6 +811,118 @@ static uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t wal
 }//tested ; seems ok
 //make a metarule
 
+
+static uint8_t rule_alignement_proba_exclusion(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+    /*
+
+    variant of probalistic align where negative values 
+    are excluded instead of ignored 
+    where d(n) is the number of neighbors of n
+    O(d(n)*a) where d(n) is the degree of neighboors and a is the 
+        print("simul done running") 
+    the average of the sum of the degrees of the neighboors of 
+    n
+    */
+    if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
+  
+    if(node_from>gtable->table_size) { report_err( "rule_alignement", GT_SIZE ) ; return GT_SIZE;} 
+    if(gtable->entries[node_from].neighboor_num==0) { report_err( "rule_alignement", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
+        
+    
+    GraphTableEntry * cur_entry = &gtable->entries[node_from];
+    Line * line_to=NULL;
+    uint8_t diff=0;
+
+    Line * arr_pos[cur_entry->neighboor_num]; 
+    double coeff_arr[cur_entry->neighboor_num];
+
+    memset(arr_pos, 0, sizeof(Line *)* cur_entry->neighboor_num);
+    memset(coeff_arr, 0, sizeof(double)* cur_entry->neighboor_num);
+
+    uint32_t cur_arr_pos = 0 ;
+
+    double sum_pos = 0 ;
+    for(uint32_t i=0; i<cur_entry->neighboor_num ; i++){
+
+        Line * cur_line = cur_entry->first_neighboor_ref +i;
+        uint32_t cur_line_index=  cur_line - gtable->arrLine->array;
+        uint32_t flux_from_to= gtable->arrLine->cur_flux[cur_line_index];
+
+        int64_t flux_to_from= INT64_MIN;
+        for(uint32_t j=0; j<gtable->entries[cur_line->node_index].neighboor_num; j++){
+            Line * cur_line_inside = gtable->entries[cur_line->node_index].first_neighboor_ref+j;
+            if(cur_line_inside->node_index==node_from){
+                flux_to_from= gtable->arrLine->cur_flux[cur_line_inside - gtable->arrLine->array];
+                break;
+            }
+        }
+        if(flux_to_from == INT64_MIN){
+            report_err( "rule_alignement weird case ", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;
+        }
+
+        if((flux_from_to - flux_to_from > 0) ) { 
+            if(diff < UINT8_MAX) diff++;
+        }
+
+        if(flux_from_to - flux_to_from >= 0){
+           
+            arr_pos[cur_arr_pos] = line_to ;
+            coeff_arr[cur_arr_pos] = flux_from_to - flux_to_from;
+            cur_arr_pos++ ; 
+
+            sum_pos += flux_from_to - flux_to_from;
+            
+        }
+        
+    }   
+
+    if(cur_arr_pos == 0)  { return rule_sleep(gtable, node_from,  walker_index, sutils);} 
+    
+    if(cur_arr_pos == 1) { 
+        gtable->arrLine->next_flux[ arr_pos[0] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_pos[0]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_pos[0]->node_index;
+
+        return T_OK;
+    }else{ //separate case where everyone is 0 and normal case
+        
+        if(!diff) //only zeroes
+        {
+        uint32_t r = (rand()%UINT32_MAX)%cur_arr_pos;
+
+        gtable->arrLine->next_flux[ arr_pos[r] - gtable->arrLine->array]++;
+        gtable->wkcn->next_num[arr_pos[r]->node_index]++;
+        gtable->warray->array[walker_index].index_entry= arr_pos[r]->node_index;
+
+        return T_OK;
+        }
+        else{
+            double randval = (double)rand()/(double)RAND_MAX;
+            
+            for (uint32_t i =0 ; i<cur_arr_pos ; i++){
+
+                coeff_arr[i]/=sum_pos;
+                if(coeff_arr[i] >= randval){
+                    gtable->arrLine->next_flux[ arr_pos[i] - gtable->arrLine->array]++;
+                    gtable->wkcn->next_num[arr_pos[i]->node_index]++;
+                    gtable->warray->array[walker_index].index_entry= arr_pos[i]->node_index;
+
+                    return T_OK;
+                }
+            }
+        }
+    }
+    //in case of a floating point rounding error or something like that
+    gtable->arrLine->next_flux[ arr_pos[cur_arr_pos-1] - gtable->arrLine->array]++;
+    gtable->wkcn->next_num[arr_pos[cur_arr_pos-1]->node_index]++;
+    gtable->warray->array[walker_index].index_entry= arr_pos[cur_arr_pos-1]->node_index;
+
+                    
+    return T_OK;
+}//fixed; seems ok ; awful tbh 
+
+
+
 static uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils){
     /*the propulsion itself */
 
@@ -1057,6 +1170,10 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_align_proba_threshold;
             
+        }else if (!strncmp(rule_str, "aliex", 5)){
+            if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+            rule_fun_arr[app_index++]= &rule_alignement_proba_exclusion;
+            
         }else if (!strncmp(rule_str, "follow", 6)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_align_proba_follow;
@@ -1072,6 +1189,9 @@ static uint8_t parse_rule_fn(  uint8_t argc , char ** argv, uint8_t rule_count, 
         }else if (!strncmp(rule_str, "goku", 4)){
             if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
             rule_fun_arr[app_index++]= &rule_teleport;
+        }else if (!strncmp(rule_str, "phobic", 6)){
+            if(app_index>rule_count){ report_err("parse_rule_fn size check", PRS_INVALID_FORMAT); return PRS_INVALID_FORMAT;}
+            rule_fun_arr[app_index++]= &rule_agoraphobic;
         }else if (!strncmp(rule_str, "mconst", 6) || !strncmp(rule_str, "mprop", 5) || !strncmp(rule_str, "mcrowd", 6)){
             //hello there :)
         }else{

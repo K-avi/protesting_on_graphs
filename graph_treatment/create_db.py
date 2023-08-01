@@ -148,11 +148,7 @@ def the_final_gendown(graph_path, nb_it):
     graphml_path , nb_it -> db of simul results
     
     generates a huge base w five parameters 
-    
     """
-
-   
-    
     
     s5 = [i for i in it.combinations_with_replacement(np.linspace(0,10,11), r=5) if sum(i) == 10]
     f5 = sum([ list(set(it.permutations(j, r=len(j)))) for j in s5 ],[])
@@ -167,7 +163,7 @@ def the_final_gendown(graph_path, nb_it):
         ars.run_simul_nth(10,10, graph_path, 1 , nb_it,
                                       f"attra:{a} align:{b} rand:{c} propu:{d} follow:{e}",
                                       "trace", f"{cpt}_run", nb_it - 10)
-        dt.mean_results( f"{cpt}_run", f"base{cpt}_res")
+        dt.mean_results( f"{cpt}_run", f"base/{cpt}_res")
         dt.clean_results( f"{cpt}_run")
         
         with open("index_base.csv", "a") as f:

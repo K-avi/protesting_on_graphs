@@ -305,9 +305,13 @@ pending :
 
       - check out TASEP and implement it if I have the time 
 
-      - Linkstreams -> 
+      - Linkstreams -> holy shite 
 
       - update docu
+
+      - clean up the repo structure 
+        (separate files that are too long into separate files ;
+        different source folders etc)
 	
       - clean up / remove certain branches (useless ones I mean)
       - remove curse words from commentaries and documentation
@@ -334,4 +338,31 @@ instead of putting neg @ 0 ; u don't use them for choice
 
 and don't move if everyone is lt zero 
 
+in the new paris graph : 
+  
+  - fromplace paris osmnx 
+  - remove self loops 
+  - use 2-core 
+  - largest connected comp of 2-core
+  - 10m discretise ->  division entiere
 
+-> check stuff (discretisation went well n so on)
+
+
+iterate on : 
+
+propu + rand + attra + align + follow
+
+on branches : 
+
+normal 
+normal + slow down 
+collective 
+
+
+1000 steps 
+
+mean 10 simulations to create res 
+
+all of the dt analysis but on the last 10 iterations 
+-> only spit those 

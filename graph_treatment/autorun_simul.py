@@ -21,7 +21,7 @@ def run_simul_once(
     
     the main function to run a simulation
     starts it w the little shell script ,
-    reads from the trace , write in result files
+    reads from the trace , write in result files"
     
     function was improved by https://github.com/Pacidus
     """

@@ -150,14 +150,17 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
        
         if( flux_start <= i){ //dumps flux only if reached 
             dump_trace(gtable, f_curnum, f_flux, f_wkpos);
-        }else{
+        }
+        /*else{
              dump_trace(gtable, f_curnum, NULL, f_wkpos);
-        }   
+        }
+        */  
 
         if(failure){report_err("iterate_ntimes prepare ite call", failure); return failure;}
         if(!spread_flag || spread_flag != i) failure= iterate_once(gtable, tactics, &search_util);
         if(failure){report_err("iterate_ntimes iterate_once call", failure); return failure;}
         
+        /*
         if(spread_flag && spread_flag == i){
             Tactics trand; 
             initTactics(&trand, 1);
@@ -168,6 +171,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
             iterate_once(gtable, &trand, &search_util);
             freeTactics(&trand);
         }
+        */
        
     }
 

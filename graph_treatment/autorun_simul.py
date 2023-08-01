@@ -40,9 +40,9 @@ def run_simul_once(
       
         # append the results of analysis functions to a file used to generate mean results of the
         # simulation
-        t_curnum = lt.load_trace_elem(tr_comp_name+"_curnum", nb_it)
+        t_curnum = lt.load_trace_elem(tr_comp_name+"_curnum", nb_it - nb_it_flux)
         
-        t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it)
+        t_wkpos = lt.load_trace_elem(tr_comp_name+"_wkpos", nb_it - nb_it_flux)
 
         mobility_mean = dt.stat_mobility(t_wkpos, t_curnum.shape[1])
         del t_wkpos

@@ -168,7 +168,6 @@ def gen_data_groups(t_curnum, adj, mobility_mean, fhist = None):
         nb_gp, labels = get_adj_group(cur, nadj)
         
         if itt == Nitt - 1 and fhist != None :
-            print( nb_gp, "nbgp" )
             np.savetxt(fhist , distrib_gp(cur, labels))
             
         ret[itt, 0] = nb_gp

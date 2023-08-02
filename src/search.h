@@ -55,6 +55,9 @@ uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
 
 uint8_t dfs_limited_nbwk(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t depth,
                          uint32_t starting_node ,int64_t * nb_sum);
+                         
+
+uint8_t get_group_sizes(GraphTable * gt, SEARCH_UTILS * sutils, char * res_file);
 
 #define init_gp_arr(arr) (init_dyn_arr((arr), GA_SIZE_DEF , GA_TYPE))
 #define free_gp_arr(arr) (free_dyn_arr((arr)))

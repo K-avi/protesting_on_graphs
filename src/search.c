@@ -2,7 +2,7 @@
 #include "common.h"
 #include "graph_table.h"
 #include "misc.h"
-#include <stdint.h>
+
 
 static uint8_t init_dyn_arr(s_dynamic_array * arr, uint32_t size, uint8_t type){
     /*
@@ -235,3 +235,79 @@ uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
     return ERRFLAG_OK;
 }
 //tested seems ok; error prone
+
+
+
+uint8_t get_group_sizes(GraphTable * gt, SEARCH_UTILS * sutils, char* res_file){
+    /*
+    creates a trace of the size and number of walkers per group in a file; 
+
+    uses a dfs to do so so O(n) where n is the size of the graph
+
+    the file is formatted where the first value of each line is the number of walkers in the group 
+    and the second number is the size of every group ; 
+
+    each couple is separated by a \n
+    */
+    if(!gt){report_err("get_group_sizes", GT_NULL); return GT_NULL;}
+    if(!sutils){ report_err("get_group_sizes", SU_NULL); return SU_NULL;}
+
+    sutils->stack.cur_in=0;
+    sutils->cur_sid++;
+
+
+    int64_t start = -1; 
+    uint64_t cur_gp_size = 0 ; //nb nodes in the group 
+    uint64_t cur_gp_nbwk = 0 ;  // nbwk in the group
+
+    uint8_t failure;
+
+    FILE * fsearch = fopen(res_file,"w");
+
+    //search loop -> start dfs at each non seen non empty node 
+    for(uint32_t i = 0 ; i<gt->wkcn->size; i++){
+        
+        if(gt->wkcn->cur_num[i]!=0 && sutils->sid_array[i] != sutils->cur_sid){
+            start = i; 
+
+            stack_darr(&(sutils->stack), start);
+            sutils->sid_array[start]=sutils->cur_sid;
+
+            cur_gp_size = 0 ; //number of nodes in the group 
+            cur_gp_nbwk = 0 ; //number of walkers in the group
+
+            while(sutils->stack.cur_in){
+
+                uint32_t cur_node;
+                failure = pop_stack(&sutils->stack, &cur_node);
+                if(failure){ report_err("get_group_nodes", failure); return failure;}
+
+                cur_gp_nbwk+= gt->wkcn->cur_num[cur_node];
+                cur_gp_size++;
+               
+                for(uint32_t i =0 ; i < gt->entries[cur_node].neighboor_num; i++){//appends neighbors not already 
+                //seen AND with walkers to the stack
+                    
+                    uint32_t neighbor_index = (gt->entries[cur_node].first_neighboor_ref+i)->node_index;
+                  
+                    if(gt->wkcn->cur_num[neighbor_index] && sutils->sid_array[neighbor_index] != sutils->cur_sid){ 
+                      
+                        
+                        sutils->sid_array[neighbor_index]=sutils->cur_sid;
+                        stack_darr(&sutils->stack, neighbor_index);
+                    }
+                }
+            }
+
+            if(cur_gp_nbwk > 1){ //lonely walkers are NOT groups 
+                fprintf(fsearch, "%lu %lu \n", cur_gp_nbwk, cur_gp_size);
+            }
+        }
+        
+    }
+    if(start == -1){report_err("get_group_nodes", GA_NOWK);return GA_NOWK;}
+
+    fclose(fsearch);
+    return GA_OK;
+}//not tested; 
+//error prone  

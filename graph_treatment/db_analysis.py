@@ -10,7 +10,7 @@ import os
 def plot_efficiency(eff_arr, marker_arr =  [ i for i in "^Xv.*dPs,"]):
     
     
-    fig, ax = plt.subplots(1, 2, figsize=(10, 10), layout="constrained")
+    fig, ax = plt.subplots(1, 1, figsize=(10, 10), layout="constrained")
     
     color_patches = []
     marker_patches = [mlines.Line2D([], [], color='k', marker='^', markersize=10, linestyle='' ,label='attra'),
@@ -30,23 +30,21 @@ def plot_efficiency(eff_arr, marker_arr =  [ i for i in "^Xv.*dPs,"]):
         #ax[0].scatter([ j[0] for j in i[0][0]], [j[1] for j in i[0][0]], color=i[1], marker = marker_arr[0])
         
         for p in range(0, len(i[0])):
-            ax[1].scatter([ j[0] for j in i[0][p]], [j[1] for j in i[0][p]], color=i[1], marker = marker_arr[p%len(marker_arr)])
+            ax.scatter([ j[0] for j in i[0][p]], [j[1] for j in i[0][p]], color=i[1], marker = marker_arr[p%len(marker_arr)])
     
     
-    ax[1].set_title("scatterplot of efficiency without randomness")
-    ax[1].set_xlabel("mean density of groups")
-    ax[1].set_ylabel("flocking")
+    ax.set_title("scatterplot of efficiency")
+    ax.set_xlabel("mean density of groups")
+    ax.set_ylabel("flocking")
     
     
-    ax[0].set_title("scatterplot of efficiency with randomness")
-    ax[0].set_xlabel("mean density of groups")
-    ax[0].set_ylabel("flocking")
+
     
     
-    for i in [0,1]:
-        ax[i].grid("on")
-        xlab = ax[i].xaxis.get_label()
-        ylab = ax[i].yaxis.get_label()
+    for i in [0]:
+        ax.grid("on")
+        xlab = ax.xaxis.get_label()
+        ylab = ax.yaxis.get_label()
         xlab.set_style("italic")
         xlab.set_size(10)
         ylab.set_style("italic")
@@ -89,22 +87,21 @@ def get_efficiency(base_path_array,
                 
                 point = [ float([i for i in s.split(" ")][5]), np.loadtxt(base_path+"/base/"+fname+"fluxmean") ]
             
-                li = index[num].split(",")[1:5]
+                li = index[num].split(",")[1:6]
                 
                 coeffs = [ float(n.split(":")[1]) for n in li]
                 
-                if coeffs[0] > 0 : #rand
+                if coeffs[0] > 5 : #attra
                     points[0].append(point)
-                elif coeffs[1] > 5 : #attra/attco 
-                    if "attra" in index[num]: 
-                        points[1].append(point)
-                    else : 
-                        points[2].append(point)
-                elif coeffs[2] > 5: 
-                        points[3].append(point)
-                elif coeffs[3] > 5 : 
-                        points[4].append(point)
-                else : 
+                elif coeffs[1] > 5 : #align   
+                    points[1].append(point)                  
+                elif coeffs[2] > 5: #rand
+                    points[2].append(point)
+                elif coeffs[3] > 5 :  #propu
+                    points[3].append(point)
+                elif coeffs[4] > 5 :  #propu
+                    points[4].append(point)
+                else : #no majority
                     points[5].append(point)
 
         ret.append( [[np.array(i) for i in points],color_sim[cpt%len(color_sim)],base_path])

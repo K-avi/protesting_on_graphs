@@ -171,10 +171,17 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
             iterate_once(gtable, &trand, &search_util);
             freeTactics(&trand);
         }
+
         
        
     }
+    char * trace_gp_size=malloc( (11+ strnlen(trace_name,245 )) * sizeof(char)); ; 
+    snprintf(trace_lines, 256, "%s_gp_sizenum", trace_name);
+    get_group_sizes(gtable,  &search_util, trace_gp_size);
 
+    free(trace_gp_size);
+
+    
     free_search_utils(&search_util);
  
     fclose(f_curnum); 
@@ -204,6 +211,8 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     }
     fwrite( gtable->warray->array, sizeof(Walker), gtable->warray->size , f_wkend);
     fclose(f_wkend);
+
+   
     
     return MV_OK;
 }//done ; tested scaling ; seems constant (great) however 

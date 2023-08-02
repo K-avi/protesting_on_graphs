@@ -52,6 +52,16 @@ def size_gp(wlkr_num_arr, nb_gp, labels):
     """
     return wlkr_num_arr[labels >= 0].sum() / nb_gp
 
+def distrib_gp( wlkr_num_arr, labels):
+    """
+     something -> np.array[1d]
+     
+     returns the distrib of nb walker / node  ; I think ? 
+    """
+   
+    return np.array(wlkr_num_arr[labels > 0])
+
+
 
 def stat_mobility(wlkr_pos_mat, Nnodes):
     """
@@ -138,7 +148,7 @@ def clean_results(simul_name):
             os.remove(fname)
             
 
-def gen_data_groups(t_curnum, adj, mobility_mean):
+def gen_data_groups(t_curnum, adj, mobility_mean, fhist = None):
     """
     np.array[1D], scipy.sparse.csgraph , np.array[2D] ->
     array[6] 
@@ -156,7 +166,11 @@ def gen_data_groups(t_curnum, adj, mobility_mean):
     for itt, cur in enumerate(t_curnum):
         nadj = lt.merge_wknum_adj_mat(cur, adj)
         nb_gp, labels = get_adj_group(cur, nadj)
-
+        
+        if itt == Nitt - 1 and fhist != None :
+            print( nb_gp, "nbgp" )
+            np.savetxt(fhist , distrib_gp(cur, labels))
+            
         ret[itt, 0] = nb_gp
         ret[itt, 1] = spread_gp(nb_gp, labels)
         ret[itt, 2] = size_gp(cur, nb_gp, labels)

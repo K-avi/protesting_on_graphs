@@ -277,7 +277,9 @@ done :
 
      - add align w asynchronous mvmt and collective mvmt to scatterplot running on the server 
 
-      - run simulation w smaller discretisation step (maybe run from 10 to 90 idk)
+     - run simulation w smaller discretisation step (maybe run from 10 to 90 idk)
+
+     - reran base to get scatterplot
 
 
 pending : 
@@ -285,15 +287,9 @@ pending :
 
     python : 
 
-      - add distribution of group size and group sprawl at the end of the simul
-      
-      - rerun base at some point 
-        - to do so do the big combination thing ; 
-        - also modify trace binary to drop last gen (at least have a version that does so) 
-        - make it so I only generate the data necessary to calculate the flux related things (sprawl at last iteration and )
-          the one based on the last iterations of flux n stuff 
-      
-      - write the big base script 
+      - remove base generation stuff (analyze only 10 steps and stuff)
+
+      - fix scatterplot 
 
    
     C :
@@ -301,11 +297,11 @@ pending :
       - use the search branch to create some dt analysis 
         directly in C
 
+      - remove base related stuff (dump)
+
+      - do the search to create the hmmm the histogram thing 
+
     Misc: 
-
-      - check out TASEP and implement it if I have the time 
-
-      - Linkstreams -> holy shite 
 
       - update docu
 
@@ -315,55 +311,43 @@ pending :
         different source folders etc)
 	
       - clean up / remove certain branches (useless ones I mean)
+
+      - check out TASEP and implement it if I have the time 
+
       - remove curse words from commentaries and documentation
 
       - put the GPL warning things everywhere 
 
 
-samos : 4 sims of the base in parallel
-khiva : 4 sims of the base in parallel
-jussieu : 2*24 sims of the base in parallel 
+TASEP : 
 
-total : 56 sims in parallel
+french ewwww 
 
+-> initialement pr modéliser congestion de traffic 
 
-each subdivision of the script will have to run 20.000 / 56 ~= 3572 sims chunks
-is 20.000 before or after the mean thing ??? 
+-> proba sortir / entrer sur un oeud 
 
+-> bouge qd pas saturé 
 
-test : 
+-> après certain nombre mvmt -> atteint équilibre ; 
 
-align coeff different -> 
+-> qd attaque -> enlève lien dc perturbation déplacement 
+   transition avt atteindre un nvl équilibre 
 
-instead of putting neg @ 0 ; u don't use them for choice 
+-> idée ici : ne pas faire une attaque ; mais en faire 
+   plusieurs l'une après l'autre pr continuellement perturber l'état de déplacement
 
-and don't move if everyone is lt zero 
+-> avoir modèle sur la ville + fonctions d'attaques 
 
-in the new paris graph : 
-  
-  - fromplace paris osmnx 
-  - remove self loops 
-  - use 2-core 
-  - largest connected comp of 2-core
-  - 10m discretise ->  division entiere
+fonction d'attaque : 
 
--> check stuff (discretisation went well n so on)
+-> nb lien à enlever 
+-> fréquence enlève 
 
+ex : 
 
-iterate on : 
+attaque aléatoire 
 
-propu + rand + attra + align + follow
+ex 1000 ; fq 2 
 
-on branches : 
-
-normal 
-normal + slow down 
-collective 
-
-
-1000 steps 
-
-mean 10 simulations to create res 
-
-all of the dt analysis but on the last 10 iterations 
--> only spit those 
+tt les 2 tours ; enlève 1000 lien (remets ceux d'avant)

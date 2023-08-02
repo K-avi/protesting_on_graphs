@@ -7,17 +7,17 @@ import matplotlib.lines as mlines
 import os
 
 
-def plot_efficiency(eff_arr, marker_arr =  [ i for i in "^,v.*dPsX"]):
+def plot_efficiency(eff_arr, marker_arr =  [ i for i in "^Xv.*dPs,"]):
     
     
     fig, ax = plt.subplots(1, 2, figsize=(10, 10), layout="constrained")
     
     color_patches = []
-    marker_patches = [mlines.Line2D([], [], color='k', marker='^', markersize=10, linestyle='' ,label='rand'),
-                      mlines.Line2D([], [], color='k', marker=',', markersize=10, linestyle='' ,label='attra'),
-                      mlines.Line2D([], [], color='k', marker='v', markersize=10, linestyle='' ,label='attco'),
-                      mlines.Line2D([], [], color='k', marker='.', markersize=10, linestyle='' ,label='align'),
-                      mlines.Line2D([], [], color='k', marker='*', markersize=10, linestyle='' ,label='propu'),
+    marker_patches = [mlines.Line2D([], [], color='k', marker='^', markersize=10, linestyle='' ,label='attra'),
+                      mlines.Line2D([], [], color='k', marker='X', markersize=10, linestyle='' ,label='align'),
+                      mlines.Line2D([], [], color='k', marker='v', markersize=10, linestyle='' ,label='rand'),
+                      mlines.Line2D([], [], color='k', marker='.', markersize=10, linestyle='' ,label='propu'),
+                      mlines.Line2D([], [], color='k', marker='*', markersize=10, linestyle='' ,label='follow'),
                       mlines.Line2D([], [], color='k', marker='d', markersize=10, linestyle='' ,label='no majority'),
                      ]
     
@@ -27,9 +27,9 @@ def plot_efficiency(eff_arr, marker_arr =  [ i for i in "^,v.*dPsX"]):
         color_patches.append(mpatches.Patch(color=i[1], label=i[2]))
       
 
-        ax[0].scatter([ j[0] for j in i[0][0]], [j[1] for j in i[0][0]], color=i[1], marker = marker_arr[0])
+        #ax[0].scatter([ j[0] for j in i[0][0]], [j[1] for j in i[0][0]], color=i[1], marker = marker_arr[0])
         
-        for p in range(1, len(i[0])):
+        for p in range(0, len(i[0])):
             ax[1].scatter([ j[0] for j in i[0][p]], [j[1] for j in i[0][p]], color=i[1], marker = marker_arr[p%len(marker_arr)])
     
     
@@ -90,6 +90,7 @@ def get_efficiency(base_path_array,
                 point = [ float([i for i in s.split(" ")][5]), np.loadtxt(base_path+"/base/"+fname+"fluxmean") ]
             
                 li = index[num].split(",")[1:5]
+                
                 coeffs = [ float(n.split(":")[1]) for n in li]
                 
                 if coeffs[0] > 0 : #rand
@@ -276,9 +277,7 @@ def main():
     """
     """
     
-    a = get_efficiency(["async_determ" , "async_rand"   ,  "collec_proba"  ,"vanilla_determ" , 
-                       "vanilla_rand",   "vision_rand", "async_proba"  , "collec_determ",
-                        "collec_rand"  , "vanilla_proba"  , "vision_determ"
+    a = get_efficiency(["base_coll",  "base_normal", "base_slow_down"
                     ])
     
 

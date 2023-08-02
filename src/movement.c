@@ -4,8 +4,8 @@
 #include "misc.h"
 #include "search.h"
 #include "tactics.h"
-#include <stdint.h>
-#include <stdlib.h>
+
+#include "misc_rules.h"
 
 uint8_t init_pos(GraphTable * gtable){
     /*inits position of walkers on the graphs; 

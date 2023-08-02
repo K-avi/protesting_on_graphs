@@ -48,8 +48,11 @@ uint8_t parse_args(Tactics *t, uint8_t argc , char ** argv , uint8_t *prop_flag)
 
 uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * search_util);
 uint8_t addRule( Tactics * t , uint16_t rule_coeff, rule_fun);
-uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils);
+
 uint8_t rule_speed_constant(GraphTable * gtable, uint32_t node_from , uint32_t choice_coeff, bool * movement_choice );
+
+uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils);
+
 #ifdef debug_mode
 
 

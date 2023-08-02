@@ -3,7 +3,7 @@ TEST := ../test
 CC := gcc
 CFLAGS := -O1    -g -Wall -Wextra -Wpedantic -Wno-unused-parameter -std=gnu17
 
-SRCS := misc.c tactics.c walker.c  graph_table.c movement.c restart_sim.c search.c common.c
+SRCS := misc.c tactics.c walker.c  graph_table.c movement.c restart_sim.c search.c common.c align.c attra.c misc_rules.c
 
 all: $(TARGET)
 

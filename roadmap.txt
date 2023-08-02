@@ -281,36 +281,34 @@ done :
 
      - reran base to get scatterplot
 
+     - fix scatterplot 
+
+     - do the search to create the hmmm the histogram thing 
+
 
 pending : 
 
 
     python : 
-
-      - remove base generation stuff (analyze only 10 steps and stuff)
-
-      - fix scatterplot 
-
+      
    
     C :
   
       - use the search branch to create some dt analysis 
         directly in C
-
-      - remove base related stuff (dump)
-
-      - do the search to create the hmmm the histogram thing 
+      
 
     Misc: 
 
-      - update docu
+      - update docu ; 
+
+        - add new options 
+        - add new rules
 
       - clean up the repo structure 
       
         (separate files that are too long into separate files ;
         different source folders etc)
-	
-      - clean up / remove certain branches (useless ones I mean)
 
       - check out TASEP and implement it if I have the time 
 

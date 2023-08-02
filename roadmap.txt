@@ -285,6 +285,11 @@ done :
 
      - do the search to create the hmmm the histogram thing 
 
+      - update docu ; 
+
+        - add new options 
+        - add new rules
+
 
 pending : 
 
@@ -299,11 +304,6 @@ pending :
       
 
     Misc: 
-
-      - update docu ; 
-
-        - add new options 
-        - add new rules
 
       - clean up the repo structure 
       

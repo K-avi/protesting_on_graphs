@@ -117,6 +117,10 @@
                         every other argument is optional however, you will want to customize the behavior of walkers. In order to do so you can pass rules 
                         to the program.<br/>
                         Every rule (except mprop MUST be passed with a coefficient)
+                        <p>
+                            The rules often mention the "flux". It's a line attribute. It's determined by the number of walkers going from a node i 
+                            to a node j during an iteration.
+                        </p>
                         The different rules supported by WOG are : 
                     </p>
                     
@@ -134,16 +138,17 @@
                         <tr>
                             <td style="text-align:center"><code>align</code></td>
                             <td>
-                                every walker will move to their neighbor node where the flux difference (a,b) - (b,a) 
-                                where a is the node they're currently at is the highest. If every flux difference is 
-                                the same they will move to a random node 
+                                Their walker will move to their neighbor node where the flux difference flux((a,b)) - flux((b,a)) 
+                                where a is the node they're currently at is the highest. If multiple nodes share the max flux 
+                                difference, the walkers chooses one of them randomly.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>attra</code></td>
                             <td>
-                                A walker will ALWAYS move to their neighbor node 
-                                where the number of walkers is the highest.
+                                A walker will move to their neighbor node 
+                                where the number of walkers is the highest. If multiple nodes share the max number 
+                                of walker, they will choose one of them randomly.
                             </td>
                         </tr>
                         <tr>
@@ -156,35 +161,40 @@
                         <tr>
                             <td style="text-align:center"><code>alibad</code></td>
                             <td>
-                                a probalistic alignement where each coeff 
+                                The walker makes a weighed random chance to move to one of it's neighbor node. The coefficient of each neighor is determined 
+                                by the flux difference (as defined in the align rule) plus the minimum flux difference from the current node to one of it's neighbor. 
+                                This rule is terrible.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>alivi</code></td>
                             <td>
-                                
-                            </td>
+                                Similar to the align rule except the rule uses a dfs on a small depth (default 5) and sums the flux difference at 
+                                each node encountered during the dfs to calculate the values of each neighbor.
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>attvi</code></td>
                             <td>
-                                
+                                Similar to attra rule except the rule does a dfs of a small depth (default 5) and sums the walkers of each node 
+                                encountered during the dfs to calculate the values of each neighbor.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>alico</code></td>
                             <td>
-                                Each neighbor node of a walker's current node is associated a coefficient. The walker then makes a weighed random 
-                                choice to move to one of it's neighbor node. The coeffiient of each neighbor is determined by the highest 
-                                value between the flux (as defined in the align rule) and 0.
+                                The walker makes a weighed random 
+                                choice to move to one of it's neighbor node. The coeffcient of each neighbor is determined by the highest 
+                                value between the flux (as defined in the align rule) and 0 divided by the.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>aliex</code></td>
                             <td>
-                                Each neighbor node h of a walker's current node is associated a coefficient. The walker then makes a weighed random 
-                                choice to move to one of it's neighbor node. The coeffiient of each neighbor is determined by the highest 
-                                value between the flux (as defined in the align rule) and 0.
+                                The walker makes a weighed random choice to move to one of it's neighbor node.
+                                The coefficient of each neighbor node is determined by the flux difference (as defined in the align rule) of each neighbor. 
+                                The neighbors nodes where the flux difference is negative are ignored (the walkers don't "see" them when making their decision)
+
+                                If every flux difference is less than zero the walker moves at random.
                             </td>
                         </tr>
                         <tr>
@@ -197,7 +207,8 @@
                         <tr>
                             <td style="text-align:center"><code>follco</code></td>
                             <td>
-                                
+                                The walker makes a weighed random choice to move to one of it's neighbor node.
+                                The coefficient of each neighbor node is determined by the flux from the current node to it's neighbors. 
                             </td>
                         </tr>
                         <tr>

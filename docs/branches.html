@@ -1,0 +1,59 @@
+<!DOCTYPE html >
+<html lang="en">
+    <head>
+        <title>other branches</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="css/bootstrap.min.css" >
+        <!--custom css-->
+        <link rel="stylesheet" href="css/styles_var.css">
+    </head>
+
+    <body>
+        <h1 class="text-center">Walking on graphs : other branches</h1>
+        <div class="card text-white bg-light mb-3" style="max-width: 18rem;">
+            <div class="card-header">
+                <h2 class="text-left blue" >Summary:</h2>
+                <br/>
+            </div>
+            <div class="card-body">
+                        <ul>
+                            <li><a href="#p1" class="text-justify">I: Introduction</a></li>                       
+                            <li><a href="#p2" class="text-justify">II: The collective_movement branch</a></li> 
+                            <li><a href="#p3" class="text-justify">II: The asynchronous branch</a></li> 
+                        </ul>
+            </div>
+        </div>
+
+        <div id="p1">
+            <h2><u>I: Introduction</u></h2>
+            <p>Alongside the main (anonymous_walkers) branch of the project, there is two other parallel branches of it. Their purpose is to test 
+            other ways of moving the walkers.</p>
+            <p>
+                In the main branch of the project, walkers take their decision "at the same time" (they're synchronous) and individually. The collective_movement and asynchronous 
+                branches change the movement functions to remove individual decision and synchronicity.
+            </p>
+        </div><hr/>
+        <div id="p2">
+            <h2><u>II: The collective_movement branch</u></h2>
+            <p>
+                On the collective_movement branch, every walker on a node makes the "same" choice. This is implemented by simply considering the walkers 
+                as a weight on the node and not as actual "entities" moving around on the graph. The simulations using collective_movement produce results
+                that are very different on the main branch. This is because groups can NOT be broken and can only get larger and larger.
+                Some rules and data analysis features are not yet implemented on this branch.
+            </p>
+        </div><hr/>
+        <div id="p3">
+            <h2><u>III: The asynchronous branch</u></h2>
+            <p>
+                On the asynchronous branch, every walker can "see" the movement choices made by the walkers that moved before them during the current iteration of the simulation. 
+                This impact the efficiency of the "align" family of rules and makes them significantly better. At the start of every iteration of the simulation, the order 
+                in which the walker will move is randomized. 
+                Some rules and data analysis features are not yet implemented on this branch.
+            </p>
+        </div>
+    </body>
+    <footer><hr/><i>documentation written by Ivan MULOT-RADOJCIC</i><br/><a href="index.html">index</a></footer>
+</html>

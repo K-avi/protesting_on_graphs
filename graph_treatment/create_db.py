@@ -10,7 +10,6 @@ import networkx as nx
 import sim_plot as sp
 import itertools as it 
 
-
 def parse_seen_cpt(path): 
     """
     str -> set , num
@@ -201,4 +200,5 @@ def gen_newflux(graph_path, index_path, nb_it_flux):
 
         
 if __name__=='__main__':
+    
     the_final_gendown("paris_final_gendown.csv",1000)

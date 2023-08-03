@@ -1,4 +1,4 @@
-I'm currentlty writing my internship report so I'm not coding as much 
+Preparing release here we go baybay 
 
 redesign of code structure count : 5 
 I didn't rewrite the data analysis mind you. However it WAS done so it DOES count
@@ -111,7 +111,7 @@ done :
       affect the number of nodes where I get out of the cache so I'm not sure what 
       causes me to break in perftest. I'm really confused
 
-    - perftest another 20000walker * 1000 it simul cuz the last result was fucked up 
+    - perftest another 20000walker * 1000 it simul cuz the last result was messed up 
       done; results are what were expected but kinda disapointing- redo the flux correctly ; current flux thing is bad 
     
     - wrote + tested most of the dt analysis functions ; haven't tested 
@@ -134,7 +134,7 @@ done :
       wire up the different sections of the prgm smtg like : 
       python retriever -> C simulation -> python trace loader -> python dt analysis 
                         (possibility to run the simulation a bunch of times to get avg of simul)
-    - relabel the first 200 runs of the db (shite)
+    - relabel the first 200 runs of the db 
     - start simulations in batch on multiple CPUs (the idea is that 1 simulation is too fast to 
       benefit of multithread so just start a bunch of them on a bunch of threads)
     
@@ -193,7 +193,7 @@ done :
 
     - redo the flux correctly ; current flux thing is bad 
 
-    - relabel the first 200 runs of the db (shite)
+    - relabel the first 200 runs of the db 
 
     - corrected typos in docu
     
@@ -216,7 +216,7 @@ done :
     - add rand to plot 
           plot good sims instead of noisy 
     
-    - add a turn of "noise" during a run ; doesn't do shit; should prolly add 50~100 turns of propu to spread groups 
+    - add a turn of "noise" during a run ; doesn't do  much; should prolly add 50~100 turns of propu to spread groups 
 
     - run simuls with slow down rule (on paris)
 
@@ -296,6 +296,14 @@ done :
         different source folders etc) 
 
         makefile is ugly af now but it works so what do I care 
+      - put the GPL warning things everywhere 
+
+      - remove curse words from commentaries and documentation
+
+      - add a main to db_analysis that takes dir names as input 
+
+      - document db gen / db plot
+
 
 
 pending : 
@@ -303,51 +311,20 @@ pending :
 
     python : 
       
-   
+
     C :
   
       - use the search branch to create some dt analysis 
-        directly in C
+        directly in C (maybe later)
       
 
-    Misc: 
+    Misc:
 
-      - check out TASEP and implement it if I have the time  
-
-      - remove curse words from commentaries and documentation
-
-      - put the GPL warning things everywhere 
-
-
-TASEP : 
-
-french ewwww 
-
--> initialement pr modéliser congestion de traffic 
-
--> proba sortir / entrer sur un oeud 
-
--> bouge qd pas saturé 
-
--> après certain nombre mvmt -> atteint équilibre ; 
-
--> qd attaque -> enlève lien dc perturbation déplacement 
-   transition avt atteindre un nvl équilibre 
-
--> idée ici : ne pas faire une attaque ; mais en faire 
-   plusieurs l'une après l'autre pr continuellement perturber l'état de déplacement
-
--> avoir modèle sur la ville + fonctions d'attaques 
-
-fonction d'attaque : 
-
--> nb lien à enlever 
--> fréquence enlève 
-
-ex : 
-
-attaque aléatoire 
-
-ex 1000 ; fq 2 
-
-tt les 2 tours ; enlève 1000 lien (remets ceux d'avant)
+      - update asynchronous and collective branches
+        - update graph_treatment
+        - add missing rules 
+        - update structure of the src/ subdir 
+        - add missing options 
+      (I don't wanna ...)
+      
+      - do a release (crazy)

@@ -173,8 +173,8 @@ def main():
         the flux start",
         nargs="?",
     )
-    # doesn't parse the fucking options of the simulation
-    # which is kinda fucking stupid
+    # doesn't parse the options of the simulation
+    # which is kinda bad
     opt = parser.parse_args()
     (latt, long, rad, step, path) = (
         opt.lattitude[0], opt.longitude[0],

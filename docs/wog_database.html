@@ -22,9 +22,51 @@
                         <ul>
                             <li><a href="#p1" class="text-justify">I: Introduction</a></li>                       
                         </ul>                
+            
+                <ul>
+                    <li><a href="#p2" class="text-justify">II: How to create a base of simulations</a></li> 
+                    <ul>
+                        <li><a href="#p21">1: The create_db.py script</a></li>
+                        <li><a href="#p22">2: The db_analysis.py script</a></li>                                                                 
+                    </ul>                      
+                </ul> 
             </div>
         </div>
-        Yeah there's a script that does like 1001 simuls with different parameters and then you can do a funky scatterplot thing. It's great.
+
+        <div id="p1">
+            <h2><u>I: Introduction</u></h2>
+            <p>To further automate the simulation, there are different Python script that will run the walking_on_graphs binary 
+                with different parameters and store the results in a directory. These script rely on the <a href="autorun.html">autorun.py</a> script. Which itself relies on the 
+                main  walking_on_graphs C program.</p><p>
+            </p>
+        </div><hr/>
+        <div id="p2">
+            <h2><u>II: How to create a base of simulations</u></h2>
+            <p>To use these script you need to create a directory with : 
+                <ul>
+                <li> a  copy of the walking_on_graphs binary (type "make walking_on_graphs" in the walking_on_graphs directory) </li>
+                <li> a directory called "base", a file called index_base.csv </li>
+                <li> a copy of the batch_launch.sh script (which can be found in the graph_treatment/) subdirectory </li>
+                </ul>
+            </p>
+            <div id="p21"></div>
+            <h4><em>II.1: The create_db.py script</em></h4>
+            <p>You will then be able to use the functions defined in the create_db.py python file. You might want to adjust the generation functions 
+                to your needs and your machine. The function currently used will produce results for 10001 different parameters of the simulations. 
+                Each result is obtained by doing the mean of 10 simulations of 1000 steps with the same parameters. I
+                t ran on one of the lab's server and I was only interrested in 
+                the last 10 steps of the simulation so I used a different version of the program that only dumped it's last iterations.</p>
+            <p>However is you were to use it now it would take ages as it would analyze every iteration of the simulations.</p>
+            <div id="p22"></div>
+            <br/><h4><em>II.2: The db_analysis.py script</em></h4>
+            <p>The db_analysis.py script takes one or more directories containing simulation bases as argument. It will then create a custom scatterplot 
+                of these bases. 
+            </p>
+            <p>
+                Like the create_db.py script, you might want to tweek it because it relies on matplotlib and a bunch of dodgy code that is somewhat 
+                specific to the simulations I ran.
+            </p>
+        </div>
     </body>
     <footer><hr/><i>documentation written by Ivan MULOT-RADOJCIC</i><br/><a href="index.html">index</a></footer>
 </html>

@@ -33,7 +33,7 @@ static uint8_t init_dyn_arr(s_dynamic_array * arr, uint32_t size, uint8_t type){
     arr->size = size;
 
     return ERRFLAG_OK;
-}//not tested ; watch out for flags and shit
+}//not tested ; watch out for flags 
 
 static void free_dyn_arr(s_dynamic_array * arr){
     /*

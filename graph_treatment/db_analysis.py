@@ -6,6 +6,7 @@ import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
 import os
 
+import argparse as args
 
 def plot_efficiency(eff_arr, marker_arr =  [ i for i in "^Xv.*dPs,"]):
     
@@ -274,9 +275,21 @@ def main():
     """
     """
     
-    a = get_efficiency(["base_coll",  "base_normal", "base_slow_down"
-                    ])
+    parser = args.ArgumentParser(
+        prog="db_analysis",
+        description="script creating scatterplot from well \
+        generated simulations bases directories",
+    )
+    parser.add_argument(
+        "dir_name", metavar="latt", type=str, nargs="+",
+        help="floating point number corresponding \
+        to the lattitude of a geographical point",
+    )
+    
+    opt = parser.parse_args()
+    a = get_efficiency(opt.dir_name)
     
 
 if __name__=='__main__': 
+    
     main()

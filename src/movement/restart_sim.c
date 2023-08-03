@@ -1,6 +1,6 @@
 #include "restart_sim.h"
-#include "misc.h"
-#include "walker.h"
+#include "../misc.h"
+#include "../graph_walkers/walker.h"
 
 
 

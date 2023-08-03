@@ -1,11 +1,7 @@
 #include "movement.h"
-#include "common.h"
-#include "graph_table.h"
-#include "misc.h"
+#include "../misc.h"
 #include "search.h"
-#include "tactics.h"
-
-#include "misc_rules.h"
+#include "../tactics/misc_rules.h"
 
 uint8_t init_pos(GraphTable * gtable){
     /*inits position of walkers on the graphs; 

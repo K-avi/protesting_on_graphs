@@ -1,11 +1,11 @@
 #ifndef MOVEMENT_H 
 #define MOVEMENT_H
 
-#include "common.h"
+#include "../common.h"
 
-#include "graph_table.h"
-#include "tactics.h"
-#include "walker.h"
+#include "../graph_walkers/graph_table.h"
+#include "../tactics/tactics.h"
+#include "../graph_walkers/walker.h"
 
 
 uint8_t init_pos(GraphTable * gtable); //call before iterating 

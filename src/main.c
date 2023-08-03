@@ -1,12 +1,11 @@
 #include "common.h"
-#include "graph_table.h"
+#include "graph_walkers/graph_table.h"
 #include "misc.h"
-#include "movement.h"
-#include "walker.h"
-#include "tactics.h"
-#include "restart_sim.h"
+#include "movement/movement.h"
+#include "graph_walkers/walker.h"
+#include "tactics/tactics.h"
+#include "movement/restart_sim.h"
 
-#include <stdint.h>
 #include <time.h>
 
 

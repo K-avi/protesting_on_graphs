@@ -1,8 +1,7 @@
 #ifndef SEARCH_H 
 #define SEARCH_H
-#include "common.h"
+#include "../common.h"
 #include "graph_table.h"
-#include <stdint.h>
 
 
 #define GA_SIZE_DEF 8

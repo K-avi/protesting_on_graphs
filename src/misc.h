@@ -2,8 +2,8 @@
 #define misc_h 
 
 #include "common.h"
-#include "walker.h"
-#include "graph_table.h"
+#include "graph_walkers/walker.h"
+#include "graph_walkers/graph_table.h"
 
 //arrays are now static so these constants r useless 
 #define DEFAULT_CAPA_TACTICS 8 //maybe less ?

@@ -1,7 +1,5 @@
 #include "search.h"
-#include "common.h"
-#include "graph_table.h"
-#include "misc.h"
+#include "../misc.h"
 
 
 static uint8_t init_dyn_arr(s_dynamic_array * arr, uint32_t size, uint8_t type){

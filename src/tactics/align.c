@@ -1,9 +1,5 @@
 #include "align.h"
-#include "misc.h"
-
-
-#include "tactics.h" //remove later
-
+#include "../misc.h"
 #include "misc_rules.h"
 
 

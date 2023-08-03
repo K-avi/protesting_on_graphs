@@ -1,9 +1,7 @@
 #include "tactics.h"
-#include "common.h"
-#include "graph_table.h"
-#include "misc.h"
+#include "../misc.h"
 #include "search.h"
-#include "walker.h"
+#include "../graph_walkers/walker.h"
 
 #include "align.h"
 #include "attra.h"

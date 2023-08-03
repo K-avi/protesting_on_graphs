@@ -1,9 +1,7 @@
 #include "misc.h"
 #include "common.h"
-#include "graph_table.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <sys/types.h>
+#include "graph_walkers/graph_table.h"
+
 /*
 this file contains the realloc functions for every dynamic array in the project 
 to avoid boilerplates; dynamic arrays reallocations will be handled here

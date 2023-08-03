@@ -1,9 +1,9 @@
 #ifndef tactics_h
 #define tactics_h 
 
-#include "common.h"
-#include "graph_table.h"
-#include "search.h"
+#include "../common.h"
+#include "../graph_walkers/graph_table.h"
+#include "../graph_walkers/search.h"
 
 
 typedef uint8_t(*rule_fun)( GraphTable * gtable, uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils);

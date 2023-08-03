@@ -1,9 +1,8 @@
 #ifndef GRAPH_TABLE_H //placeholder name 
 #define GRAPH_TABLE_H
 
-#include "common.h"
+#include "../common.h"
 #include "walker.h"
-#include <stdint.h>
 
 typedef struct s_graph_table_entry GraphTableEntry;
 

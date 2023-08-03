@@ -1,6 +1,6 @@
 #include "walker.h"
 #include "graph_table.h"
-#include "misc.h"
+#include "../misc.h"
 
 /* RAW WALKER ARRAY MANIPULATION */
 

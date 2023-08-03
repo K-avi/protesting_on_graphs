@@ -1,18 +1,14 @@
 TARGET := ../walking_on_graphs
-TEST := ../test
 CC := gcc
 CFLAGS := -O1    -g -Wall -Wextra -Wpedantic -Wno-unused-parameter -std=gnu17
 
-SRCS := misc.c tactics.c walker.c  graph_table.c movement.c restart_sim.c search.c common.c align.c attra.c misc_rules.c
+SRCS := graph_walkers/*.c movement/*.c tactics/*.c common.c misc.c main.c 
 
 all: $(TARGET)
 
 $(TARGET):  $(SRCS) main.c
 	$(CC) $(CFLAGS) $^ -o $(TARGET) $(CLIBS)
 
-
-$(TEST): $(SRCS) arena.c main_test.c
-	$(CC) $(CFLAGS) $^ -o $(TEST) $(CLIBS)
  
 	
 .PHONY: clean

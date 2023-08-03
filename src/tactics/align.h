@@ -1,9 +1,9 @@
 #ifndef ALIGN_H
 #define ALIGN_H
 
-#include "common.h"
-#include "graph_table.h"
-#include "search.h"
+#include "../common.h"
+#include "../graph_walkers/graph_table.h"
+#include "../graph_walkers/search.h"
 
 
 //deterministic alignement rules 

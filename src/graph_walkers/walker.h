@@ -1,7 +1,7 @@
 #ifndef WALKER_H
 #define WALKER_H 
 
-#include "common.h"
+#include "../common.h"
 
 //might be irrelevant 
 

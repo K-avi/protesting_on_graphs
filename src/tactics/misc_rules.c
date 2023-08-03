@@ -1,5 +1,5 @@
 #include "attra.h"
-#include "misc.h"
+#include "../misc.h"
 
 uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils){
     /*

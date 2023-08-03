@@ -1,9 +1,9 @@
 #ifndef ATTRA_H
 #define ATTRA_H
 
-#include "common.h"
-#include "graph_table.h"
-#include "search.h"
+#include "../common.h"
+#include "../graph_walkers/graph_table.h"
+#include "../graph_walkers/search.h"
 
 // deterministic attraction rules
 uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils); //dt attraction 

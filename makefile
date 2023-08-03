@@ -1,5 +1,5 @@
 TARGET:= walking_on_graphs
-TEST :=test
+
 
 ALLPROGS= $(TARGET) $(TEST)
 
@@ -7,9 +7,6 @@ ALLPROGS= $(TARGET) $(TEST)
 
 all: $(ALLPROGS)
 progs: $(PROGRAMS)
-
-$(TEST): 
-	$(MAKE) -C src/ ../test
 
 $(TARGET): 
 	$(MAKE) -C src/ ../walking_on_graphs

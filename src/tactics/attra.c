@@ -1,5 +1,5 @@
 #include "attra.h"
-#include "misc.h"
+#include "../misc.h"
 
 #include "misc_rules.h"
 

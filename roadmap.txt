@@ -289,6 +289,13 @@ done :
 
         - add new options 
         - add new rules
+      
+      - clean up the repo structure 
+      
+        (separate files that are too long into separate files ;
+        different source folders etc) 
+
+        makefile is ugly af now but it works so what do I care 
 
 
 pending : 
@@ -305,12 +312,7 @@ pending :
 
     Misc: 
 
-      - clean up the repo structure 
-      
-        (separate files that are too long into separate files ;
-        different source folders etc)
-
-      - check out TASEP and implement it if I have the time 
+      - check out TASEP and implement it if I have the time  
 
       - remove curse words from commentaries and documentation
 

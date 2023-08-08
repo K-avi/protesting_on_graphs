@@ -127,19 +127,17 @@ static uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from ){
     if(cur_arr_max == 0)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
     if(!diff) return rule_rand(gtable,  node_from);
     if(cur_arr_max == 1) { 
-        gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
-        gtable->wkcn->next_num[arr_max[0]->node_index]++;
+
+        gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
+        gtable->wkcn->next_num[ arr_max[0]->node_index]+= gtable->wkcn->cur_num[node_from];
       
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
 
-        gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
-        gtable->wkcn->next_num[arr_max[r]->node_index]++;
-
 
             //moves and updates fields 
         gtable->arrLine->next_flux[arr_max[r] - gtable->arrLine->array]+= gtable->wkcn->cur_num[node_from];
-         gtable->wkcn->next_num[arr_max[r]->node_index]+= gtable->wkcn->cur_num[node_from];
+        gtable->wkcn->next_num[arr_max[r]->node_index]+= gtable->wkcn->cur_num[node_from];
     }
 
     return T_OK;

@@ -168,7 +168,7 @@ def the_final_gendown(graph_path, nb_it):
         with open("index_base.csv", "a") as f:
             f.write(f"{cpt},attra:{a},align:{b},rand:{c},propu{d},follow{e}\n")
         cpt+=1   
-    close(index)
+    
     
 
 def get_simpar(index_path):

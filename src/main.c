@@ -149,8 +149,6 @@ int main(int argc , char ** argv){
         if(failure){report_err("in main load_warray call", failure); exit(failure);}       
     }
 
-   
-
     if(!dumpset){
         failure=iterate_ntimes(&gtable, &tactics, iteration_num);
         if(failure){report_err("in main iterate_ntimes call", failure); exit(failure);}
@@ -158,7 +156,6 @@ int main(int argc , char ** argv){
 
         failure=iterate_ntimes_dump(&gtable, &tactics, iteration_num, trace_name, flux_dump_start, spread_flag);
         if(failure){report_err("in main iterate_ntimes_dump call", failure); exit(failure);}
-
     }
 
     //frees memory

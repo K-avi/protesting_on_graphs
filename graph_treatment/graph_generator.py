@@ -1,6 +1,6 @@
 #!/bin/python3.10
 #this is the file doing to the retrieval/ treatment of city graphs using OSMNX and networkx
-import osmnx as ox
+#import osmnx as ox
 import networkx as nx
 import numpy as np
 

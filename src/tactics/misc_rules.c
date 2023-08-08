@@ -74,7 +74,6 @@ uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker
     if(cur_entry->neighboor_num==1 &&  //checks if u can't move ; sleep if it's the case 
        gtable->warray->array_prev[walker_index].index_entry==
        (cur_entry->first_neighboor_ref)->node_index){
-   
          
         return rule_sleep(gtable, node_from, walker_index,  sutils);
     }
@@ -99,9 +98,7 @@ uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker
     //update pos / flux
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
-   //printf("%u \n",walker_index);
     gtable->warray->array[walker_index].index_entry= line_to->node_index;
 
-    
     return T_OK;
 }// tested ;ok ; hate it

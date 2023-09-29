@@ -22,7 +22,8 @@
 
 
 int main(int argc , char ** argv){
-
+	
+    printf("Walking on Graphs Copyright (C) 2023  Ivan MULOT-RADOJCIC This program comes with ABSOLUTELY NO WARRANTY;\nfor details see the GPLv3 documentation.\nThis is free software, and you are welcome to redistribute it under certain conditions\n\n");
     int8_t c;
     uint8_t helpset=0 , dumpset=0, loadset=0, fluxset=0, spreadset=0, visionset = 0 ;
     uint16_t flux_dump_start = 0, spread_flag = 0;

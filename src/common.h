@@ -1,4 +1,4 @@
-// walking_on_graphs: A simulation of .... walkers on graphs
+// protesting_on_graphs: A simulation of .... protesters on graphs
 // Copyright (C) 2023 Ivan Mulot-Radojcic 
 //
 // This program is free software: you can redistribute it and/or modify
@@ -31,19 +31,19 @@ typedef enum {
 }ErrFlag;
 
 //ndref stands for node ref 
-//wkr stands for walker ref
+//wkr stands for protester ref
 //fg just stands for flag
 #define GT_OK FG_OK //gt stands for graph table
 #define ERRFLAG_OK FG_OK //errflag are the global/ generic flags for errors
 #define MV_OK FG_OK //mv stands for movement
 #define T_OK FG_OK //t stands for tactics 
-#define WA_OK FG_OK //wa stands from walker array
-#define WTE_OK FG_OK //wte stands for walker table entry (deprecated)
-#define WT_OK FG_OK //wt stands for walker table (deprecated)
+#define WA_OK FG_OK //wa stands from protester array
+#define WTE_OK FG_OK //wte stands for protester table entry (deprecated)
+#define WT_OK FG_OK //wt stands for protester table (deprecated)
 #define GE_OK FG_OK //ge stands for graph table entry  
-#define WRS_OK FG_OK//wrf stands for walker ref stack
+#define WRS_OK FG_OK//wrf stands for protester ref stack
 #define IT_OK FG_OK //it stands for iteration 
-#define WKCN_OK FG_OK// walker cur next arrays
+#define WKCN_OK FG_OK// protester cur next arrays
 #define LARR_OK FG_OK //line arr
 #define PFN_OK FG_OK // parse function
 #define AR_OK FG_OK //arena 

@@ -201,4 +201,4 @@ def gen_newflux(graph_path, index_path, nb_it_flux):
         
 if __name__=='__main__':
     
-    the_final_gendown("paris_final_gendown.csv",1000)
+    the_final_gendown("test.csv",10)

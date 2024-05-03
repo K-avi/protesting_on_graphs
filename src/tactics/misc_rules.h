@@ -1,4 +1,4 @@
-// walking_on_graphs: A simulation of .... walkers on graphs
+// protesting_on_graphs: A simulation of .... protesters on graphs
 // Copyright (C) 2023 Ivan Mulot-Radojcic 
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,13 +14,13 @@
 #define MISC_RULES_H
 
 #include "../common.h"
-#include "../graph_walkers/graph_table.h"
-#include "../graph_walkers/search.h"
+#include "../graph_protesters/graph_table.h"
+#include "../graph_protesters/search.h"
 
-uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils);
-uint8_t rule_teleport( GraphTable * gtable , uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils);
+uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t protester_index, SEARCH_UTILS * sutils);
+uint8_t rule_teleport( GraphTable * gtable , uint32_t node_from, uint32_t protester_index, SEARCH_UTILS * sutils);
 
-uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils);
-uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils);
+uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils);
+uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t protester_index, SEARCH_UTILS * sutils);
 
 #endif

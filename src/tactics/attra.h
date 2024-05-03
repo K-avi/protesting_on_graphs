@@ -1,4 +1,4 @@
-// walking_on_graphs: A simulation of .... walkers on graphs
+// protesting_on_graphs: A simulation of .... protesters on graphs
 // Copyright (C) 2023 Ivan Mulot-Radojcic 
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,18 +14,18 @@
 #define ATTRA_H
 
 #include "../common.h"
-#include "../graph_walkers/graph_table.h"
-#include "../graph_walkers/search.h"
+#include "../graph_protesters/graph_table.h"
+#include "../graph_protesters/search.h"
 
 // deterministic attraction rules
-uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils); //dt attraction 
-uint8_t rule_attra_vision( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils);// vision attraction
+uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils); //dt attraction 
+uint8_t rule_attra_vision( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils);// vision attraction
 
 // probabilistic attraction
-uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils);
+uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils);
 
 //silly attraction 
-uint8_t rule_agoraphobic( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils);
-uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils);
+uint8_t rule_agoraphobic( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils);
+uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils);
 
 #endif

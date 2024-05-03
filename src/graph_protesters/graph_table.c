@@ -77,7 +77,7 @@ void printLineArr( LineArray * lineArr, FILE * stream){
 uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,  uint32_t warray_size ,uint32_t curgen , uint8_t prop_flag){
     /*
     initialises a non null graph table ; sets it's entries to default values and initialises 
-    it's walker entries
+    it's protester entries
     */
     if(!gt) return GT_NULL;
 
@@ -101,15 +101,15 @@ uint8_t initGraphTab(GraphTable *gt, uint32_t arrline_size ,uint32_t table_size,
     uint8_t failure= initnLineArr(gt->arrLine, arrline_size);
     if(failure) return failure;
 
-    gt->warray= malloc(sizeof(WalkerArray));
+    gt->warray= malloc(sizeof(protesterArray));
     if(!gt->warray) return WA_ALLOC;
-    failure=initWalkerArray(gt->warray, warray_size, prop_flag);
+    failure=initprotesterArray(gt->warray, warray_size, prop_flag);
     if(failure) return failure;
 
-    gt->wkcn= malloc(sizeof(WalkerCurNext));
+    gt->wkcn= malloc(sizeof(protesterCurNext));
     if(!gt->wkcn) return GT_MALLOC;
 
-    failure=initWalkerCurNext(gt->wkcn, table_size);
+    failure=initprotesterCurNext(gt->wkcn, table_size);
     if(failure)return failure;
 
     return GT_OK;
@@ -123,12 +123,12 @@ void freeGraphTab( GraphTable * gt){
     if(!gt) return;
 
     free(gt->entries);
-    freeWalkerArray(gt->warray);
+    freeprotesterArray(gt->warray);
     free(gt->warray);
     freeLineArr(gt->arrLine);
     free(gt->arrLine);
 
-    freeWalkerCurNext(gt->wkcn);
+    freeprotesterCurNext(gt->wkcn);
     free(gt->wkcn);
 
     return ;
@@ -224,15 +224,15 @@ static bool emptyLine( char * str){
 uint8_t loadGraphTab(GraphTable *gt, char *path, double warray_coeff,uint32_t curgen, uint8_t prop_flag){
     /*
     takes a non initialised ; non null , empty gt and loads a graph stored at path into it
-    also pass walk table entry size parameter cuz it's better looking than to init w a global var
+    also pass protest table entry size parameter cuz it's better looking than to init w a global var
 
     if there is more line than space for the graph (i.e : the size of the graph is actually inferior to)
     the number of lines) the lines after the limit of the graph will be ignored
 
-    warray coeff is a double used to determine the nb of walkers in the graph; 
-    it is multiplied by the nb of nodes in the graph to calculate the nb of walkers.
+    warray coeff is a double used to determine the nb of protesters in the graph; 
+    it is multiplied by the nb of nodes in the graph to calculate the nb of protesters.
 
-    on a graph with 1000 nodes , if warray coeff is 1 there will be 1000 walkers; 
+    on a graph with 1000 nodes , if warray coeff is 1 there will be 1000 protesters; 
     if it's 0.8 there will be 800 and so on 
     if its 3 there will be 3000...
     */

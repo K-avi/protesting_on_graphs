@@ -1,6 +1,6 @@
 #include "misc.h"
 #include "common.h"
-#include "graph_walkers/graph_table.h"
+#include "graph_protesters/graph_table.h"
 
 /*
 this file contains the realloc functions for every dynamic array in the project 
@@ -48,28 +48,28 @@ char * str_flag(uint8_t flag){
   case GT_ARFULL: return "coulnd't add a node to the graphtable"; 
   case T_NULL: return "tactics ptr is null"; 
   case T_REALLOC: return "realloc of tactics failed";
-  case WA_NULL: return "walker array is null"; 
-  case WA_ALLOC: return "couldn't allocate memory to walker entry "; 
-  case WTE_NULL: return "walker table entry is null"; 
-  case WTE_REALLOC: return "coulnd't reallocate memory to walker table entry";
+  case WA_NULL: return "protester array is null"; 
+  case WA_ALLOC: return "couldn't allocate memory to protester entry "; 
+  case WTE_NULL: return "protester table entry is null"; 
+  case WTE_REALLOC: return "coulnd't reallocate memory to protester table entry";
   case WTE_IN: return "deprecated flag";
-  case WT_NULL: return "walker table is null";
-  case WT_REALLOC: return "realloc of walker table failed";
+  case WT_NULL: return "protester table is null";
+  case WT_REALLOC: return "realloc of protester table failed";
   case WT_INDEX_TOO_BIG: return "deprecated flag";
   case WT_NOT_FOUND: return "deprecated flag";
   case GT_SIZE: return "index of graph table given is too big";
   case GTE_NULL: return "deprecated flag";
   case NDREF_NULL:return "deprecated flag";
   case MV_NONEIGHBOORS: return "node has no neighboors to move to";
-  case WKR_NULL: return "walker reference is null"; 
+  case WKR_NULL: return "protester reference is null"; 
   case LINEREF_NULL: return "line reference is null";
   case WRS_NULL: return "deprecated flag";
   case WRS_MALLOC:return "deprecated flag";
   case WRS_REALLOC:return "deprecated flag";
   case WRS_EMPTYSTACK :return "deprecated flag";
-  case WKCN_NULL : return "walker cur next array is null";
-  case WKCN_MALLOC : return "couldn't allocate memory to walker cur next array";
-  case WKCN_REALLOC : return "realloc of walker cur next array failed";
+  case WKCN_NULL : return "protester cur next array is null";
+  case WKCN_MALLOC : return "couldn't allocate memory to protester cur next array";
+  case WKCN_REALLOC : return "realloc of protester cur next array failed";
   case MV_NULL : return "deprecated flag";
   case L_ARRNULL :return "line array is null";
   case T_CANTCHOOSE :return "couldn't choose a rule based on value given";
@@ -91,7 +91,7 @@ char * str_flag(uint8_t flag){
   case GA_MALLOC : return "failed to allocate memory to group array's element field\n"; 
   case GA_REALLOC : return "failed to reallocate group array's elements\n";
   case ERRFLAG_NULL : return "null pointer caught\n";
-  case GA_NOWK : return "no walkers on the graph passsed\n";
+  case GA_NOWK : return "no protesters on the graph passsed\n";
   case STACK_NULL : return "queue passed is NULL\n";
   case STACK_MALLOC : return "couldn't allocate memory for queue\n";
   case STACK_REALLOC : return "realloc of queue failed\n";
@@ -130,20 +130,20 @@ uint8_t write_lines( GraphTable * gt ,FILE * stream ){
 }
 
 
-void dump_trace(GraphTable * gt, FILE * stream_curnum , FILE * stream_flux, FILE * stream_walker ){
+void dump_trace(GraphTable * gt, FILE * stream_curnum , FILE * stream_flux, FILE * stream_protester ){
   //the trace function to dump graph after it
 
-   //dumps the bin array of the walker's position in the file for curnum trace
+   //dumps the bin array of the protester's position in the file for curnum trace
    if(stream_curnum)
     fwrite(gt->wkcn->cur_num, sizeof(uint32_t), gt->wkcn->size, stream_curnum);
    //dumps the binary array of the flux at each line in the file for flux trace
    if(stream_flux)
     fwrite(gt->arrLine->cur_flux, sizeof(uint32_t), gt->arrLine->size, stream_flux);  
-   //dumps the bin array of walkers
-   if(stream_walker)
-    fwrite(gt->warray->array, sizeof(Walker), gt->warray->size , stream_walker);
+   //dumps the bin array of protesters
+   if(stream_protester)
+    fwrite(gt->warray->array, sizeof(protester), gt->warray->size , stream_protester);
 }//tested; ok 
-//might be an issue if the walkers have more fields added 
+//might be an issue if the protesters have more fields added 
 //if it happens separate their immutable states from their mutable ones 
 
 

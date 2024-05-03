@@ -1,4 +1,4 @@
-// walking_on_graphs: A simulation of .... walkers on graphs
+// protesting_on_graphs: A simulation of .... protesters on graphs
 // Copyright (C) 2023 Ivan Mulot-Radojcic 
 //
 // This program is free software: you can redistribute it and/or modify
@@ -11,10 +11,10 @@
 // for more details: https://www.gnu.org/licenses/
 
 #include "common.h"
-#include "graph_walkers/graph_table.h"
+#include "graph_protesters/graph_table.h"
 #include "misc.h"
 #include "movement/movement.h"
-#include "graph_walkers/walker.h"
+#include "graph_protesters/protester.h"
 #include "tactics/tactics.h"
 #include "movement/restart_sim.h"
 
@@ -23,7 +23,7 @@
 
 int main(int argc , char ** argv){
 	
-    printf("Walking on Graphs Copyright (C) 2023  Ivan MULOT-RADOJCIC This program comes with ABSOLUTELY NO WARRANTY;\nfor details see the GPLv3 documentation.\nThis is free software, and you are welcome to redistribute it under certain conditions\n\n");
+    printf("protesting on Graphs Copyright (C) 2023  Ivan MULOT-RADOJCIC This program comes with ABSOLUTELY NO WARRANTY;\nfor details see the GPLv3 documentation.\nThis is free software, and you are welcome to redistribute it under certain conditions\n\n");
     int8_t c;
     uint8_t helpset=0 , dumpset=0, loadset=0, fluxset=0, spreadset=0, visionset = 0 ;
     uint16_t flux_dump_start = 0, spread_flag = 0;
@@ -81,12 +81,12 @@ int main(int argc , char ** argv){
     }
 
     if(helpset){ //prints help
-        fprintf(stdout, "usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n \
+        fprintf(stdout, "usage : ./protesting_on_graphs path/of/graph nb_protester nb_iterations rule1:coeff rule2:coeff\n \
         check out the docu directory for more informations\n");
         exit(0);
     }
     if(argc < 4){ //checks that the number of args is ok
-        fprintf(stderr, "1usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
+        fprintf(stderr, "1usage : ./protesting_on_graphs path/of/graph nb_protester nb_iterations rule1:coeff rule2:coeff\n");
         return ERRFLAG_NOFILE;
     }
     
@@ -95,10 +95,10 @@ int main(int argc , char ** argv){
     char * path = argv[1+optset]; 
     char * end=argv[2+optset];
 
-    //parses number of walkers
-    double walker_coeff=  (double) strtod( argv[2+optset], &end );
+    //parses number of protesters
+    double protester_coeff=  (double) strtod( argv[2+optset], &end );
     if(end == argv[2+optset]){
-        fprintf(stderr, "2usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");
+        fprintf(stderr, "2usage : ./protesting_on_graphs path/of/graph nb_protester nb_iterations rule1:coeff rule2:coeff\n");
         return ERRFLAG_INVALID_ARG;
     }
 
@@ -107,7 +107,7 @@ int main(int argc , char ** argv){
     uint32_t iteration_num = (uint32_t ) strtol( argv[3+optset], &end , 10);
  
     if(end== argv[3+optset]){
-        fprintf(stderr, "3usage : ./walking_on_graphs path/of/graph nb_walker nb_iterations rule1:coeff rule2:coeff\n");     
+        fprintf(stderr, "3usage : ./protesting_on_graphs path/of/graph nb_protester nb_iterations rule1:coeff rule2:coeff\n");     
         return ERRFLAG_INVALID_ARG;
     }
 
@@ -137,7 +137,7 @@ int main(int argc , char ** argv){
 
     //init graph 
     GraphTable gtable; 
-    failure = loadGraphTab(&gtable, path, walker_coeff, 0, prop_flag );
+    failure = loadGraphTab(&gtable, path, protester_coeff, 0, prop_flag );
     if(failure){ report_err("in main loadGraphTab call", failure); exit(failure);}
    
     //starts the simulation w randpos or pos stored at warray_name

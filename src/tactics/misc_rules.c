@@ -1,7 +1,7 @@
 #include "attra.h"
 #include "../misc.h"
 
-uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     chooses a random neighboor node at entry node from in a gt;
     
@@ -9,7 +9,7 @@ uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_ind
     returned by reference in the index_node_to argument
 
     WARNING : will update the flux field of gtable ; position 
-    of walker and wkcn->next_num;
+    of protester and wkcn->next_num;
     O(1)
     */
     if(!gtable) { report_err( "rule_rand", GT_NULL ) ; return GT_NULL;} 
@@ -21,12 +21,12 @@ uint8_t rule_rand( GraphTable * gtable , uint32_t node_from, uint32_t walker_ind
    
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
+    gtable->warray->array[protester_index].index_entry= line_to->node_index;
 
     return T_OK;
 }// new version ;tested ; seems ok
 
-uint8_t rule_teleport( GraphTable * gtable , uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_teleport( GraphTable * gtable , uint32_t node_from, uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     chooses a random node in the graph and teleports to it 
     O(1)
@@ -38,14 +38,14 @@ uint8_t rule_teleport( GraphTable * gtable , uint32_t node_from, uint32_t walker
    
     
     gtable->wkcn->next_num[line_to.node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to.node_index;
+    gtable->warray->array[protester_index].index_entry= line_to.node_index;
 
     return T_OK;
 }// not tested, prolly ok tested ; seems ok
 
-uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
-    will node move the walker 
+    will node move the protester 
     does so by setting it's next node to it's current node and not updating any flux.
     
     WARNING: will update the number of elements at the node of index 
@@ -60,7 +60,7 @@ uint8_t rule_sleep(GraphTable * gtable, uint32_t node_from , uint32_t walker_ind
 }//tested ; seems ok
 //make a metarule
 
-uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t protester_index, SEARCH_UTILS * sutils){
     /*the propulsion itself */
 
     if(!gtable) { report_err( "rule_propulsion", GT_NULL ) ; return GT_NULL;} 
@@ -72,10 +72,10 @@ uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker
     Line * line_to=NULL;
 
     if(cur_entry->neighboor_num==1 &&  //checks if u can't move ; sleep if it's the case 
-       gtable->warray->array_prev[walker_index].index_entry==
+       gtable->warray->array_prev[protester_index].index_entry==
        (cur_entry->first_neighboor_ref)->node_index){
          
-        return rule_sleep(gtable, node_from, walker_index,  sutils);
+        return rule_sleep(gtable, node_from, protester_index,  sutils);
     }
 
     uint32_t neighbor_num =gtable->entries[node_from].neighboor_num;
@@ -85,7 +85,7 @@ uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker
     //generates array of neighbor to pull from 
     for(uint32_t i=0; i<neighbor_num ; i++){
         line_to = (gtable->entries[node_from].first_neighboor_ref +i);
-        if( line_to->node_index != gtable->warray->array_prev[walker_index].index_entry)
+        if( line_to->node_index != gtable->warray->array_prev[protester_index].index_entry)
             filtered_tab[cpt++]= line_to;
     }
     if(cpt!=0){
@@ -93,12 +93,12 @@ uint8_t rule_propulsion(GraphTable * gtable, uint32_t node_from, uint32_t walker
     }else{ //weird ass case ; happened to me bc a node had "two lines" to the same node which 
     //like some type of multi graph
         
-        return rule_sleep(gtable, node_from, walker_index, sutils);
+        return rule_sleep(gtable, node_from, protester_index, sutils);
     }
     //update pos / flux
     gtable->arrLine->next_flux[ line_to- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_to->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_to->node_index;
+    gtable->warray->array[protester_index].index_entry= line_to->node_index;
 
     return T_OK;
 }// tested ;ok ; hate it

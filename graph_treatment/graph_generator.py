@@ -3,7 +3,7 @@
 #import osmnx as ox
 import networkx as nx
 import numpy as np
-
+import osmnx as ox 
 def discretisePA(Graph, step): 
     """
     nxGraph, step -> graph_string

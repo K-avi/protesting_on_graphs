@@ -1,4 +1,4 @@
-// walking_on_graphs: A simulation of .... walkers on graphs
+// protesting_on_graphs: A simulation of .... protesters on graphs
 // Copyright (C) 2023 Ivan Mulot-Radojcic 
 //
 // This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
 #ifndef RESTART_SIM_H
 #define RESTART_SIM_H 
 #include "../common.h"
-#include "../graph_walkers/graph_table.h"
+#include "../graph_protesters/graph_table.h"
 
 uint8_t load_warray( GraphTable * gtable, char * path);
 

@@ -6,12 +6,12 @@ import scipy.sparse.csgraph as cg
 import argparse as arg
 from statistics import mean
 
-def get_adj_group(node_walker_num_arr, nadj):
+def get_adj_group(node_protester_num_arr, nadj):
     """
     np.array[1D], sp.sparse.csgrap  -> sc.sparse.connected_comp
     
     creates the subgraphs of graph
-    representing the groups of walkers
+    representing the groups of protesters
     relies on the csgraph connected
     componnents function
     
@@ -22,7 +22,7 @@ def get_adj_group(node_walker_num_arr, nadj):
 
     # Generation of the new unique labels steadily increasing
     # from 0 to n-1 the number of new graphs. and -1 for the removed nodes
-    mask = ~((count == 1) * (node_walker_num_arr[idx] <= 1))
+    mask = ~((count == 1) * (node_protester_num_arr[idx] <= 1))
     Nun = (np.cumsum(mask) * mask) - 1
 
     # reevaluate stuff
@@ -56,7 +56,7 @@ def distrib_gp( wlkr_num_arr, labels):
     """
      something -> np.array[1d]
      
-     returns the distrib of nb walker / node  ; I think ? 
+     returns the distrib of nb protester / node  ; I think ? 
     """
    
     return np.array(wlkr_num_arr[labels > 0])
@@ -153,7 +153,7 @@ def gen_data_groups(t_curnum, adj, mobility_mean, fhist = None):
     np.array[1D], scipy.sparse.csgraph , np.array[2D] ->
     array[6] 
     nb_group, spread_group , group size, nb lonely wk,
-    density of groups (nb walkers / nodes / groups)
+    density of groups (nb protesters / nodes / groups)
     nb occupied nodes , nb_gp in permille, 
     generates the data related to group for
     one iteration
@@ -303,7 +303,7 @@ def main():
     
     parser.add_argument(
         "nb_wk", metavar="nb_wk", type=int,
-        nargs=1, help="the number of walkers in the graph",
+        nargs=1, help="the number of protesters in the graph",
     )
     
 

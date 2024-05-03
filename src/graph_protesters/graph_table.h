@@ -1,4 +1,4 @@
-// walking_on_graphs: A simulation of .... walkers on graphs
+// protesting_on_graphs: A simulation of .... protesters on graphs
 // Copyright (C) 2023 Ivan Mulot-Radojcic 
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
 #define GRAPH_TABLE_H
 
 #include "../common.h"
-#include "walker.h"
+#include "protester.h"
 
 typedef struct s_graph_table_entry GraphTableEntry;
 
@@ -56,8 +56,8 @@ typedef struct s_graph_table{ //the main table structure
 
     LineArray* arrLine; //the big array containing the adjacency lists
 
-    WalkerArray * warray; //the big array containing the walkers
-    WalkerCurNext * wkcn;//wrapper array to acces and update the walker position 
+    protesterArray * warray; //the big array containing the protesters
+    protesterCurNext * wkcn;//wrapper array to acces and update the protester position 
 
 }GraphTable ;
 

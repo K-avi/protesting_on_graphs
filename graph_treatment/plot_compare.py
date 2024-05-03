@@ -50,7 +50,7 @@ plt.plot(dt_noisy_attra.T[2], color='purple', label='noisy attra')
 plt.plot(dt_propu.T[2], color='pink', label='propu')
 plt.plot(dt_rand.T[2], color='black', label='rand')
 plt.legend()
-plt.title("evolution of number of walkers per group")
+plt.title("evolution of number of protesters per group")
 
 
 plt.figure(4)
@@ -63,7 +63,7 @@ plt.plot(dt_noisy_attra.T[3], color='purple', label='noisy attra')
 plt.plot(dt_propu.T[3], color='pink', label='propu')
 plt.plot(dt_rand.T[3], color='black', label='rand')
 plt.legend()
-plt.title("evolution of the mean of different nodes visited by each walker")
+plt.title("evolution of the mean of different nodes visited by each protester")
 
 
 
@@ -78,7 +78,7 @@ plt.plot(dt_noisy_attra.T[4], color='purple', label='noisy attra')
 plt.plot(dt_propu.T[4], color='pink', label='propu')
 plt.plot(dt_rand.T[4], color='black', label='rand')
 plt.legend()
-plt.title("evolution of the number of 'groupless walkers'")
+plt.title("evolution of the number of 'groupless protesters'")
 
 
 plt.figure(6)

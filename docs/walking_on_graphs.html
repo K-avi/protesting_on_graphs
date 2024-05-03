@@ -1,7 +1,7 @@
 <!DOCTYPE html >
 <html lang="en">
     <head>
-        <title>walking on graphs</title>
+        <title>protesting on graphs</title>
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,7 +12,7 @@
     </head>
 
     <body>
-        <h1 class="text-center">Walking on graphs : Documentation</h1>
+        <h1 class="text-center">protesting on graphs : Documentation</h1>
         <div class="card text-white bg-light mb-3" style="max-width: 18rem;">
             <div class="card-header">
                 <h2 class="text-left blue" >Summary:</h2>
@@ -22,7 +22,7 @@
                         <ul>
                             <li><a href="#p1" class="text-justify">I: Introduction</a></li>
                             <li><a href="#p2">II: What are Graphs? (as far as WOG is concerned)</a></li>
-                            <li><a href="#p3">III: What are walkers?</a></li>
+                            <li><a href="#p3">III: What are protesters?</a></li>
                             <li>
                                 <a href="#p4">IV: How to use WOG?</a>
                                 <ul>
@@ -37,7 +37,7 @@
                                     <li><a href="#p51">1: Introduction</a></li>
                                     <li><a href="#p52">2: custom CSV rep </a></li>
                                     <li><a href="#p53">3: LineArray </a></li>
-                                    <li><a href="#p54">4: WalkerCurnext</a></li> 
+                                    <li><a href="#p54">4: protesterCurnext</a></li> 
                                     <li><a href="#p55">5: GraphTableEntry</a></li>  
                                     <li><a href="#p56">6: Tactics rep</a></li>  
                                     <li><a href="#p57">7: Trace Format</a></li>                                                                  
@@ -50,15 +50,15 @@
         <div id="p1">
             <h2><u>I: Introduction</u></h2>
             <p>
-                Walking on graphs is a program used to simulate the movement 
-                of "Walker" like entities on small to medium sized 
+                protesting on graphs is a program used to simulate the movement 
+                of "protester" like entities on small to medium sized 
                 graphs (the biggest graph the program can theoretically load has 4.3*10e9 nodes,
-                lines and walkers but I don't recommend loading something that big).
+                lines and protesters but I don't recommend loading something that big).
                 The graphs used during the project had sizes varying from a few thousands to 
                 ~3*10e6 nodes.<br/>
-                Simulation are launched by passing the path to a graph file, a coefficient of walkers 
-                (the number of walkers is proportional to the number of nodes), and a number of 
-                iterations of the simulation (how many times will each walker move). 
+                Simulation are launched by passing the path to a graph file, a coefficient of protesters 
+                (the number of protesters is proportional to the number of nodes), and a number of 
+                iterations of the simulation (how many times will each protester move). 
                 Every other argument (rule arguments, trace argument , ...) is optional.
             </p>
             <br/>
@@ -74,8 +74,8 @@
                 it contains a size field to keep track of the number of entries in it 
                 a <a href=#p55>GraphTableEntry</a> pointer field containing the graph's entry
                 a <a href=#p53>LineArray</a> pointer field where the adjacency lists of the graph are stored
-                a <a href=#p3>WalkerArray</a> pointer field containing the walkers present in the graph
-                a <a href=#p54>WalkerCurNext</a> field to keep track of the position of the walkers
+                a <a href=#p3>protesterArray</a> pointer field containing the protesters present in the graph
+                a <a href=#p54>protesterCurNext</a> field to keep track of the position of the protesters
                 a cur_gen field which is an integer used to keep track of the number of iterations since 
                 the beginning of a simulation
             </p>
@@ -84,19 +84,19 @@
         
         <br/><hr/><br/>
         <div id="p3">
-            <h2><u>III: What are walkers? (spoiler: 32bits ints)</u></h2>
+            <h2><u>III: What are protesters? (spoiler: 32bits ints)</u></h2>
             <p>
-                Walkers are pretty simple. Trivial even. They're represented by their 
+                protesters are pretty simple. Trivial even. They're represented by their 
                 current position stored on a 32bit unsigned integer 
                 and (if the propulsion is active) another 32bit integer 
                 representing their previous position and...that's it. 
                 They're very very basic because the different rules used
                 to calculate their movement only rely on their neighbor nodes 
                 (or their previous position in the case of the propulsion rule)
-                The walkers are stored in the WalkerArray, a simple wrapper around the C 
-                array that contains a size field , an array of "Walkers" and an array containing 
-                the previous position of the walkers.<br/>
-                The "id" of the walkers doesn't have to be "stored". Since they are stored in an 
+                The protesters are stored in the protesterArray, a simple wrapper around the C 
+                array that contains a size field , an array of "protesters" and an array containing 
+                the previous position of the protesters.<br/>
+                The "id" of the protesters doesn't have to be "stored". Since they are stored in an 
                 array you can already identify them with their index when moving them around. 
             </p>
             <br/>
@@ -111,14 +111,14 @@
                         to call the program you must pass it: 
                         <ul>
                             <li>the Path to a custom CSV file representing a graph</li>
-                            <li>the proportion of walkers compared to the number of nodes (1 is as many walkers as nodes 0.5 twice as less walkers than nodes,...)</li>
+                            <li>the proportion of protesters compared to the number of nodes (1 is as many protesters as nodes 0.5 twice as less protesters than nodes,...)</li>
                             <li>the number of iterations</li>
                         </ul>
-                        every other argument is optional however, you will want to customize the behavior of walkers. In order to do so you can pass rules 
+                        every other argument is optional however, you will want to customize the behavior of protesters. In order to do so you can pass rules 
                         to the program.<br/>
                         Every rule (except mprop MUST be passed with a coefficient)
                         <p>
-                            The rules often mention the "flux". It's a line attribute. It's determined by the number of walkers going from a node i 
+                            The rules often mention the "flux". It's a line attribute. It's determined by the number of protesters going from a node i 
                             to a node j during an iteration.
                         </p>
                         The different rules supported by WOG are : 
@@ -132,36 +132,36 @@
                         <tr>
                             <td style="text-align:center"><code>rand</code></td>
                             <td>
-                                every walker chooses a random node amongst their neighbor nodes (moves randomly).
+                                every protester chooses a random node amongst their neighbor nodes (moves randomly).
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>align</code></td>
                             <td>
-                                Their walker will move to their neighbor node where the flux difference flux((a,b)) - flux((b,a)) 
+                                Their protester will move to their neighbor node where the flux difference flux((a,b)) - flux((b,a)) 
                                 where a is the node they're currently at is the highest. If multiple nodes share the max flux 
-                                difference, the walkers chooses one of them randomly.
+                                difference, the protesters chooses one of them randomly.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>attra</code></td>
                             <td>
-                                A walker will move to their neighbor node 
-                                where the number of walkers is the highest. If multiple nodes share the max number 
-                                of walker, they will choose one of them randomly.
+                                A protester will move to their neighbor node 
+                                where the number of protesters is the highest. If multiple nodes share the max number 
+                                of protester, they will choose one of them randomly.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>attco</code></td>
                             <td>
-                                the more walkers are on a node the more likely a walker is to 
+                                the more protesters are on a node the more likely a protester is to 
                                 move there.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>alibad</code></td>
                             <td>
-                                The walker makes a weighed random chance to move to one of it's neighbor node. The coefficient of each neighor is determined 
+                                The protester makes a weighed random chance to move to one of it's neighbor node. The coefficient of each neighor is determined 
                                 by the flux difference (as defined in the align rule) plus the minimum flux difference from the current node to one of it's neighbor. 
                                 This rule is terrible.
                             </td>
@@ -175,14 +175,14 @@
                         <tr>
                             <td style="text-align:center"><code>attvi</code></td>
                             <td>
-                                Similar to attra rule except the rule does a dfs of a small depth (default 5) and sums the walkers of each node 
+                                Similar to attra rule except the rule does a dfs of a small depth (default 5) and sums the protesters of each node 
                                 encountered during the dfs to calculate the values of each neighbor.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>alico</code></td>
                             <td>
-                                The walker makes a weighed random 
+                                The protester makes a weighed random 
                                 choice to move to one of it's neighbor node. The coeffcient of each neighbor is determined by the highest 
                                 value between the flux (as defined in the align rule) and 0 divided by the.
                             </td>
@@ -190,53 +190,53 @@
                         <tr>
                             <td style="text-align:center"><code>aliex</code></td>
                             <td>
-                                The walker makes a weighed random choice to move to one of it's neighbor node.
+                                The protester makes a weighed random choice to move to one of it's neighbor node.
                                 The coefficient of each neighbor node is determined by the flux difference (as defined in the align rule) of each neighbor. 
-                                The neighbors nodes where the flux difference is negative are ignored (the walkers don't "see" them when making their decision)
+                                The neighbors nodes where the flux difference is negative are ignored (the protesters don't "see" them when making their decision)
 
-                                If every flux difference is less than zero the walker moves at random.
+                                If every flux difference is less than zero the protester moves at random.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>follow</code></td>
                             <td>
-                                The walker will move to their neighbor node where the largest number of walker went to last iteration. 
-                                In case of egality, the walker will choose randomly between the nodes of same value.
+                                The protester will move to their neighbor node where the largest number of protester went to last iteration. 
+                                In case of egality, the protester will choose randomly between the nodes of same value.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>follco</code></td>
                             <td>
-                                The walker makes a weighed random choice to move to one of it's neighbor node.
+                                The protester makes a weighed random choice to move to one of it's neighbor node.
                                 The coefficient of each neighbor node is determined by the flux from the current node to it's neighbors. 
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>propu</code></td>
                             <td>
-                                The walker will move randomly to one of it's neighbor node but can't go back to their previous node. If the only node 
+                                The protester will move randomly to one of it's neighbor node but can't go back to their previous node. If the only node 
                                 they could go to is their previous node, they won't move.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>repu</code></td>
                             <td>
-                                Opposite of attra, the walker will try to go to their neighbor node with the smallest number of walkers 
-                                on it. In case of egality, the walker will choose randomly between the nodes of same value.
+                                Opposite of attra, the protester will try to go to their neighbor node with the smallest number of protesters 
+                                on it. In case of egality, the protester will choose randomly between the nodes of same value.
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>goku</code></td>
                             <td>
-                                The walker will teleport to a random node of the graph
+                                The protester will teleport to a random node of the graph
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align:center"><code>phobic</code></td>
                             <td>
-                                The walker will try to go to their neighbor node with the smallest, non zero number of walkers 
-                                on it. In case of egality, the walker will choose randomly between the nodes of same value.
-                                If every node around the walker is empty , the walker will also move randomly
+                                The protester will try to go to their neighbor node with the smallest, non zero number of protesters 
+                                on it. In case of egality, the protester will choose randomly between the nodes of same value.
+                                If every node around the protester is empty , the protester will also move randomly
                             </td>
                         </tr>
                         
@@ -252,20 +252,20 @@
                                 <td style="text-align:center"><code>mconst</code></td>
                                 <td>
                                     there is a constant propability (passed as argument) 
-                                    for a walker to not move.
+                                    for a protester to not move.
                                 </td>
                             </tr>
                             <tr>
                                 <td style="text-align:center"><code>mcrowd</code></td>
-                                <td>if the sum of the number of walkers on the neighbor nodes of a walker's current 
+                                <td>if the sum of the number of protesters on the neighbor nodes of a protester's current 
                                     node is higher than a threshold, it doesn't move.
                                 </td>
                             </tr>
                             <tr>
                                 <td style="text-align:center"><code>mprop</code></td>
                                 <td>
-                                    every walker has a 1/n ,where n is the 
-                                    number of walkers on it's current node, chance to move.
+                                    every protester has a 1/n ,where n is the 
+                                    number of protesters on it's current node, chance to move.
                                 </td>
                             </tr>
                      </tbody></table>
@@ -278,7 +278,7 @@
                         When passing normal rules their coefficients will be normalised. This allows for more flexibility with arguments. 
                         for example if you pass "rand:1 align:3" , "rand:0.1 align:0.3", "rand:100 align:300" you can expect the same results. <br/>
                         The "mrules" are NOT normalized. The mconst rule takes a floating point number between 0 and 1 with 0 meaning 
-                        Walkers will always move and one meaning they'll never move. "mcrowd" takes an integer as argument.
+                        protesters will always move and one meaning they'll never move. "mcrowd" takes an integer as argument.
                     </p>
                 </div>
                 <div id="p42">
@@ -309,7 +309,7 @@
                                     <td style="text-align:center"><code>-w</code></td>
                                     <td>
                                         requires a positionnal arguments, instead of randomly initialising 
-                                        the position of the walkers on the graph, will load their 
+                                        the position of the protesters on the graph, will load their 
                                         position from a binary file.
                                     </td>
                                 </tr>
@@ -325,7 +325,7 @@
                                     <td style="text-align:center"><code>-s</code></td>
                                     <td>
                                         requires a positionnal argument, at the iteration passed as argument, 
-                                        will randomly shuffle the walkers instead of moving them accordign to the 
+                                        will randomly shuffle the protesters instead of moving them accordign to the 
                                         rules passed at the start of the program.
                                     </td>
                                 </tr> 
@@ -345,7 +345,7 @@
                 <div id="p43">
                     <h4><em>IV.2: Error Messages</em></h4>
                     <p>
-                        Walking on Graphs has a custom error system. When catching an error the program will print error traces 
+                        protesting on Graphs has a custom error system. When catching an error the program will print error traces 
                         allowing to understand which function calls caused the simulation to fail. These error are not the clearest
                         but I think they're better than random segfaults (and they make the program easier to debug). 
                         The error flags are stored in an enum in the <a href="../src/../common.h">src/../common.h file</a>. 
@@ -365,7 +365,7 @@
                     This section will be used for 
                     various parts of the more "technical" side 
                     of the docu. You don't have to 
-                    check it out to understand what Walking on Graphs 
+                    check it out to understand what protesting on Graphs 
                     is and how it's used. But feel free 
                     to give it a read if you're interrested in 
                     learning more about it :)
@@ -402,8 +402,8 @@
                         During the runtime, the lookup of the flux in the line l at the iteration i is retrieved from the 
                         cur_flux array. <br/>
                         The flux that will be used at the iteration i+1 is calculated in the next_flux array. 
-                        I use these two arrays because they make it possible to move every walker at the "same time". 
-                        ie: every walker has access to the same informations when they move.<br/> 
+                        I use these two arrays because they make it possible to move every protester at the "same time". 
+                        ie: every protester has access to the same informations when they move.<br/> 
                         It also makes it possible 
                         to "prepare the next iteration" in O(1) since I just need to swap the two arrays and flush the 
                         new "next array".
@@ -413,16 +413,16 @@
                     </p>
                 </div>
                 <div id="p54">
-                    <h4><em>V.4: WalkerCurNext</em></h4>
+                    <h4><em>V.4: protesterCurNext</em></h4>
                     <p>
-                        the WalkerCurNext is a simple wrapper around two arrays of 32bits unsigned integer of the 
+                        the protesterCurNext is a simple wrapper around two arrays of 32bits unsigned integer of the 
                         same size (with the same number of elements)
                         <br/>
                         the 'size' field of the structure is the number of elements in the arrays.
                         <br/>
-                        the arrays store the number of walker in a node of the graph. To retrieve the number 
+                        the arrays store the number of protester in a node of the graph. To retrieve the number 
                         of <br/>
-                        to calculate the number of walkers in a node n at the iteration i+1 you increment 
+                        to calculate the number of protesters in a node n at the iteration i+1 you increment 
                         the next_num array.<br/>
                         Using two arrays allows to swap the two arrays like I do with the LineArray 
                         to prepare an iteration in O(1).
@@ -450,9 +450,9 @@
                         the Rule * rule_arr is the actual array containing the rules present in a tactic.
                         an entry in the array contains a coeff represented as an 16 bit integer that is calculated by 
                         flooring the numbers given as argument to the program<br/> and a function pointer to the rule associated 
-                        with this coeff. When calculating the movement of a Walker , a random number is generated and 
-                        the rule corresponding to this number is used to determine the rule a walker will choose 
-                        which calculates the node a walker will go to.
+                        with this coeff. When calculating the movement of a protester , a random number is generated and 
+                        the rule corresponding to this number is used to determine the rule a protester will choose 
+                        which calculates the node a protester will go to.
                     </p>
                 
                 <div id="p57">
@@ -472,10 +472,10 @@
                         These files are : <br/>
                         <ul>
                         <li>[trace name]_curnum keeping track of 
-                        the number of walker at each nodes (the WalkerCurNext.cur array is added to the file after each iteration).</li>
+                        the number of protester at each nodes (the protesterCurNext.cur array is added to the file after each iteration).</li>
                         <li>[trace name]_flux if the start of flux dump 
                         </body>
-                        <li>[trace name]_wkpos keeping track of the position of the walkers (the WalkerArrat.array is added to the file after each iteration) </li>
+                        <li>[trace name]_wkpos keeping track of the position of the protesters (the protesterArrat.array is added to the file after each iteration) </li>
                         </ul>
                     </p>
                 </div>

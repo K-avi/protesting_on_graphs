@@ -16,7 +16,7 @@ done :
     
     - script can load a city into a networkx graph thingy (easy part) 
 
-    - walker structure pretty much done 
+    - protester structure pretty much done 
 
     - apparently I wrote a tactics structure I didn't even remember it 
 
@@ -74,8 +74,8 @@ done :
 
     - format output 
 
-    - separate mutable / immutable fields of walkers (necessary to create relevant trace)
-      I actually just replaced the posref inside the walker to an uint32 representing 
+    - separate mutable / immutable fields of protesters (necessary to create relevant trace)
+      I actually just replaced the posref inside the protester to an uint32 representing 
       the index so it should work now 
     
     - remove more elements from structures to gain space (I might be able to remove more 
@@ -89,7 +89,7 @@ done :
 
     - make sure that the program behaves well when not given optionnal args
 
-    - scale walker num like opt args
+    - scale protester num like opt args
 
     - fix the args handling (I think)
 
@@ -111,11 +111,11 @@ done :
       affect the number of nodes where I get out of the cache so I'm not sure what 
       causes me to break in perftest. I'm really confused
 
-    - perftest another 20000walker * 1000 it simul cuz the last result was messed up 
+    - perftest another 20000protester * 1000 it simul cuz the last result was messed up 
       done; results are what were expected but kinda disapointing- redo the flux correctly ; current flux thing is bad 
     
     - wrote + tested most of the dt analysis functions ; haven't tested 
-      the nb nodes visited by walkers yet 
+      the nb nodes visited by protesters yet 
     
     - wrote python script to start 1 simulation and generate it's trace 
 
@@ -124,7 +124,7 @@ done :
     
     -  fix the number of threads used for the program (not tested )
 
-    - figure out proper way to parse walking_on_graphs rules 
+    - figure out proper way to parse protesting_on_graphs rules 
       they can be given as a single beeg string to bash and it will then 
       be read correctly by the C program (cool)
     
@@ -147,11 +147,11 @@ done :
 
     - data analysis is : done (yes. yes. yes.)
 
-    - possibility to start simulation w an array of walkers  ; this allows to "restart" a simul 
+    - possibility to start simulation w an array of protesters  ; this allows to "restart" a simul 
       -d also dumps final flux state so by loading the _hrend and _wkend from a previous dump 
       you can basically restart a simul w new parameters (nice stuff)
     
-    - 1/n coeff to not move (ur coeff to move i 1/n where n is the number of walkers  
+    - 1/n coeff to not move (ur coeff to move i 1/n where n is the number of protesters  
       currently at your position)
     
     - test the move coeff thingy
@@ -178,7 +178,7 @@ done :
     - the flux thing I forgot what it was supposed to be exactly :
       during the last 10 iteratiosn ; the sum of flux from a to b 
       minus the sum of flux from b to a 
-      then sum all of that ; divide it by the nb of walkers 
+      then sum all of that ; divide it by the nb of protesters 
       times the nb of iteration the flux has been dumped for 
 
     - write the mean simul thing for the flux value  ( might need more testing )
@@ -231,7 +231,7 @@ done :
     
     -  run align on small word (generate it, filter it , discretise it )  
 
-    - collective randwalk w 3 then 2 times more wk than nodes 
+    - collective randprotest w 3 then 2 times more wk than nodes 
         then 1.5 then 1 then then 0.8 - 0.2 step of 0.2 and 0.1
 
         should converge to around the same nb of gp unless too few guys

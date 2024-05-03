@@ -6,7 +6,7 @@ import subprocess as sb
 import numpy as np
 import time as t
 import argparse as args
-
+import osmnx as ox 
 
 
 def run_simul_once(
@@ -113,7 +113,7 @@ def main():
     parser = args.ArgumentParser(
         prog="autorun sim",
         description="script retrieving a graph from \
-        osm, running a walking on graph simul on it and then doing dt analysis on the simul",
+        osm, running a protesting on graph simul on it and then doing dt analysis on the simul",
     )
     parser.add_argument(
         "lattitude", metavar="latt", type=float, nargs=1,
@@ -155,8 +155,8 @@ def main():
         nargs=1, help="number of threads used per batch",
     )
     parser.add_argument(
-        "coeff_walkers", metavar="walkers", type=int,
-        nargs=1, help="coeff of walkers per batch",
+        "coeff_protesters", metavar="protesters", type=int,
+        nargs=1, help="coeff of protesters per batch",
     )
     parser.add_argument(
         "nb_iterations", metavar="nb_iterations", type=int,
@@ -187,7 +187,7 @@ def main():
     start_time = t.time()
     (nb_thread_max, tot, coeff_wk, nb_it, sim_opt) = (
         opt.nb_thread_max[0], opt.simul_tot[0],
-        opt.coeff_walkers[0], opt.nb_iterations[0],
+        opt.coeff_protesters[0], opt.nb_iterations[0],
         opt.simul_opt[0],
     )
     output_file = opt.output_file[0]

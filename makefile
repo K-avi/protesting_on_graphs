@@ -1,4 +1,4 @@
-# walking_on_graphs: A simulation of .... walkers on graphs
+# protesting_on_graphs: A simulation of .... protesters on graphs
 # Copyright (C) 2023 Ivan Mulot-Radojcic 
 #
 # This program is free software: you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 # or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
 # for more details: https://www.gnu.org/licenses/
 
-TARGET:= walking_on_graphs
+TARGET:= protesting_on_graphs
 
 
 ALLPROGS= $(TARGET) $(TEST)
@@ -21,7 +21,7 @@ all: $(ALLPROGS)
 progs: $(PROGRAMS)
 
 $(TARGET): 
-	$(MAKE) -C src/ ../walking_on_graphs
+	$(MAKE) -C src/ ../protesting_on_graphs
 
 clean:
 	$(MAKE) -C src/ clean

@@ -62,7 +62,7 @@ def get_efficiency(base_path_array,
     simulation in a base. 
     the x coordinate is the "gathering" 
     of the sim defined by 
-    it's mean nb of walkers on occupied nodes. 
+    it's mean nb of protesters on occupied nodes. 
     it's y coordinate is it's 
     flocking 
     """
@@ -189,7 +189,7 @@ def get_efficiency_var(base_path_array,
     simulation in a base. 
     the x coordinate is the "gathering" 
     of the sim defined by 
-    it's mean nb of walkers on occupied nodes. 
+    it's mean nb of protesters on occupied nodes. 
     it's y coordinate is it's 
     flocking 
     """

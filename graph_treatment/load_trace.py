@@ -63,15 +63,15 @@ def load_adj_mat(path):
     return sp.csr_array((np.ones(ne), (col, row)), dtype="int8")
 
 
-def merge_wknum_adj_mat(node_walker_num_arr, adj_mat):
+def merge_wknum_adj_mat(node_protester_num_arr, adj_mat):
     """
     updates a sp.sparse.csgraph representing an adj mat by 
-    removing the nodes w/o walker
+    removing the nodes w/o protester
     
     function was rewritten by https://github.com/Pacidus
     """
     nadj = adj_mat.copy()
-    mask = node_walker_num_arr > 0
+    mask = node_protester_num_arr > 0
     nadj *= mask
     nadj *= nadj.transpose()
     nadj.eliminate_zeros()

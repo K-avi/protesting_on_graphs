@@ -3,7 +3,7 @@ This repo contains the code written during my internship at the Lip6 lab.
 
 The goals of my internship are: 
 
-- implement an efficient Simulation of walkers on a graph
+- implement an efficient Simulation of protesters on a graph
 - write data analysis of this simulation 
 - maybe do other fun things (generating a small db of simulations ? ) 
 

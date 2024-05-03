@@ -4,9 +4,9 @@
 #include "../tactics/misc_rules.h"
 
 uint8_t init_pos(GraphTable * gtable){
-    /*inits position of walkers on the graphs; 
+    /*inits position of protesters on the graphs; 
     
-    warning : puts walker num in the NEXT_NUM array 
+    warning : puts protester num in the NEXT_NUM array 
     watch out for compatibility with the prepare_ite fn
     */
     if(!gtable){ report_err("init_pos", GT_NULL); return GT_NULL;}
@@ -26,13 +26,13 @@ uint8_t init_pos(GraphTable * gtable){
 static uint8_t prepare_ite( GraphTable * gtable){
     /*
     prepartion fn to call before iterating; 
-    flushes the previous values of flux and position of walkers arrays and 
+    flushes the previous values of flux and position of protesters arrays and 
     swaps the next and current ones 
     O(1)
     */
     if(!gtable){ report_err("prepare_ite", GT_NULL); return GT_NULL;}
 
-    uint8_t failure= swapWalkerCurNext(gtable->wkcn);
+    uint8_t failure= swapprotesterCurNext(gtable->wkcn);
     if(failure) { report_err("prepare_ite", failure); return failure;}
 
     failure= swap_flux_curnext(gtable->arrLine);
@@ -46,13 +46,13 @@ static uint8_t prepare_ite( GraphTable * gtable){
 static uint8_t iterate_once(GraphTable * gtable , Tactics * t, SEARCH_UTILS * search_util){
     /*
     iteration function; 
-    for every walker; chooses a node ; update relevant fields for next iteration 
-    (flux, number of walkers in a node , walker position,... )
+    for every protester; chooses a node ; update relevant fields for next iteration 
+    (flux, number of protesters in a node , protester position,... )
     warning : some of the fields are updated by the call to choose node 
     if the choose_node fn doesn't update flux correctly it might cause an issue. 
     While this is highly a questionnable choice, 
     it was also a convenient one
-    O(w) where w is the number of walkers 
+    O(w) where w is the number of protesters 
     */
 
     for(uint32_t i=0; i<gtable->warray->size;i++){
@@ -107,8 +107,8 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     char * trace_curnum=malloc( (9+ strnlen(trace_name,248 )) * sizeof(char)); ; 
     snprintf(trace_curnum, 256, "%s_curnum", trace_name);
 
-    char * trace_walkerpos=malloc( (8+ strnlen(trace_name,249 )) * sizeof(char)); ; 
-    snprintf(trace_walkerpos, 256, "%s_wkpos", trace_name);
+    char * trace_protesterpos=malloc( (8+ strnlen(trace_name,249 )) * sizeof(char)); ; 
+    snprintf(trace_protesterpos, 256, "%s_wkpos", trace_name);
 
     char * trace_lines=malloc( (7+ strnlen(trace_name,250 )) * sizeof(char)); ; 
     snprintf(trace_lines, 256, "%s_lines", trace_name);
@@ -116,16 +116,16 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
     FILE * f_hr = fopen(trace_human_readable, "w");
     FILE * f_flux = fopen(trace_flux, "wb");
     FILE * f_curnum = fopen(trace_curnum, "wb");
-    FILE * f_wkpos = fopen(trace_walkerpos, "wb");
+    FILE * f_wkpos = fopen(trace_protesterpos, "wb");
     FILE * f_lines = fopen(trace_lines, "w");
     
     free(trace_human_readable);free(trace_flux); 
-    free(trace_curnum); free(trace_walkerpos); free(trace_lines);
+    free(trace_curnum); free(trace_protesterpos); free(trace_lines);
 
     //dumps human readable info once
 
     if(!(f_hr && f_flux && f_curnum && f_wkpos && f_lines)){
-        //printf("%p %p %p %p\n%s %s %s %s\n", f_hr , f_flux , f_curnum , f_wkpos, trace_human_readable, trace_flux, trace_curnum , trace_walkerpos);
+        //printf("%p %p %p %p\n%s %s %s %s\n", f_hr , f_flux , f_curnum , f_wkpos, trace_human_readable, trace_flux, trace_curnum , trace_protesterpos);
         report_err("iterate_ntimes_dump",  ERRGLAG_CANTWRITE);
         return ERRGLAG_CANTWRITE;
     }
@@ -205,7 +205,7 @@ uint8_t iterate_ntimes_dump( GraphTable * gtable, Tactics * tactics, uint32_t it
         report_err("iterate_ntimes_dump cant write3",  ERRGLAG_CANTWRITE);
         return ERRGLAG_CANTWRITE;
     }
-    fwrite( gtable->warray->array, sizeof(Walker), gtable->warray->size , f_wkend);
+    fwrite( gtable->warray->array, sizeof(protester), gtable->warray->size , f_wkend);
     fclose(f_wkend);
 
    

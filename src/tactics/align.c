@@ -3,7 +3,7 @@
 #include "misc_rules.h"
 
 
-uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     where d(n) is the number of neighbors of n
     O(d(n)*a) where d(n) is the degree of neighboors and a is the 
@@ -61,22 +61,22 @@ uint8_t rule_alignement(GraphTable * gtable, uint32_t node_from , uint32_t walke
     }   
 
     if(cur_arr_max == 0)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(!diff) return rule_rand(gtable,  node_from, protester_index, sutils);
     if(cur_arr_max == 1) { 
         gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[0]->node_index;
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
 
         gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[r]->node_index;
     }
     return T_OK;
 }//fixed; seems ok ; awful tbh 
 
-uint8_t rule_align_follow(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_align_follow(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     where d(n) is the number of neighbors of n
     O(d(n)*a) where d(n) is the degree of neighboors and a is the 
@@ -122,23 +122,23 @@ uint8_t rule_align_follow(GraphTable * gtable, uint32_t node_from , uint32_t wal
     }   
 
     if(cur_arr_max == 0)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(!diff) return rule_rand(gtable,  node_from, protester_index, sutils);
     if(cur_arr_max == 1) { 
         gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[0]->node_index;
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
 
         gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[r]->node_index;
     }
     return T_OK;
 }//fixed; seems ok ; awful tbh 
 
 
-uint8_t rule_align_vision(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_align_vision(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     where d(n) is the number of neighbors of n
     O(d(n)*a) where d(n) is the degree of neighboors and a is the 
@@ -203,22 +203,22 @@ uint8_t rule_align_vision(GraphTable * gtable, uint32_t node_from , uint32_t wal
     }   
 
     if(cur_arr_max == 0)  { report_err( "rule_alignement no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(!diff) return rule_rand(gtable,  node_from, protester_index, sutils);
     if(cur_arr_max == 1) { 
         gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[0]->node_index;
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
 
         gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[r]->node_index;
     }
     return T_OK;
 }//not tested ; awful tbh 
 
-uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /**/
     if(!gtable) { report_err( "rule_alignement", GT_NULL ) ; return GT_NULL;} 
   
@@ -265,12 +265,12 @@ uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32_t walk
         
 
     if(!diff){ //case where only every flux is zero 
-        return rule_rand(gtable, node_from, walker_index, sutils);
+        return rule_rand(gtable, node_from, protester_index, sutils);
     }
     uint64_t new_tot = tot; 
     min_flux = min_flux < 0 ? - min_flux : min_flux; 
     new_tot+= min_flux*cur_entry->neighboor_num; //not sure abt this 
-    if(new_tot == 0 ) return rule_rand(gtable, node_from, walker_index, sutils);
+    if(new_tot == 0 ) return rule_rand(gtable, node_from, protester_index, sutils);
     //makes the choice 
     double randval= (double) ((double)rand()/(double)RAND_MAX);
     for(uint32_t i=0; i<cur_entry->neighboor_num; i++){
@@ -283,7 +283,7 @@ uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32_t walk
             //moves and updates fields 
             gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
             gtable->wkcn->next_num[line_cur->node_index]++;
-            gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+            gtable->warray->array[protester_index].index_entry= line_cur->node_index;
 
             return T_OK;
         }
@@ -297,12 +297,12 @@ uint8_t rule_align_proba(GraphTable * gtable, uint32_t node_from , uint32_t walk
             
     gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_cur->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+    gtable->warray->array[protester_index].index_entry= line_cur->node_index;
     
     return T_OK;
 }// tested ; prolly ok
 
-uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     similar to alignement with coefficient ; only difference is that the values 
     equal to zero are not used 
@@ -351,13 +351,13 @@ uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_from , uin
         
 
     if(!diff){ //case where only every flux is zero 
-        return rule_rand(gtable, node_from, walker_index, sutils);
+        return rule_rand(gtable, node_from, protester_index, sutils);
     }else if(diff==1){
-        return rule_alignement(gtable, node_from,  walker_index, sutils);
+        return rule_alignement(gtable, node_from,  protester_index, sutils);
     }
 
     
-    if( tot == 0 ) return rule_rand(gtable, node_from, walker_index, sutils);
+    if( tot == 0 ) return rule_rand(gtable, node_from, protester_index, sutils);
     //makes the choice 
     double randval= (double) rand()/RAND_MAX;
     for(uint32_t i=0; i<cur_entry->neighboor_num; i++){
@@ -370,7 +370,7 @@ uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_from , uin
             //moves and updates fields 
             gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
             gtable->wkcn->next_num[line_cur->node_index]++;
-            gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+            gtable->warray->array[protester_index].index_entry= line_cur->node_index;
 
             return T_OK;
         }
@@ -383,12 +383,12 @@ uint8_t rule_align_proba_threshold(GraphTable * gtable, uint32_t node_from , uin
             
     gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_cur->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+    gtable->warray->array[protester_index].index_entry= line_cur->node_index;
 
     return T_OK;
 }// tested ; prolly ok
 
-uint8_t rule_align_proba_follow(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_align_proba_follow(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     similar to alignement with coefficient; 
     the difference is that the "flux" is just 
@@ -424,9 +424,9 @@ uint8_t rule_align_proba_follow(GraphTable * gtable, uint32_t node_from , uint32
     }
         
     if(!diff){ //case where only every flux is zero 
-        return rule_rand(gtable, node_from, walker_index, sutils);
+        return rule_rand(gtable, node_from, protester_index, sutils);
     }else if(diff==1){
-        return rule_alignement(gtable, node_from,  walker_index, sutils);
+        return rule_alignement(gtable, node_from,  protester_index, sutils);
     }
 
     //makes the choice 
@@ -441,7 +441,7 @@ uint8_t rule_align_proba_follow(GraphTable * gtable, uint32_t node_from , uint32
             //moves and updates fields 
             gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
             gtable->wkcn->next_num[line_cur->node_index]++;
-            gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+            gtable->warray->array[protester_index].index_entry= line_cur->node_index;
 
             return T_OK;
         }
@@ -454,13 +454,13 @@ uint8_t rule_align_proba_follow(GraphTable * gtable, uint32_t node_from , uint32
             
     gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
     gtable->wkcn->next_num[line_cur->node_index]++;
-    gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+    gtable->warray->array[protester_index].index_entry= line_cur->node_index;
 
     return T_OK;
 }//  tested ; prolly ok
 
 
-uint8_t rule_align_proba_exclusion(GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_align_proba_exclusion(GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
 
     variant of probalistic align where negative values 
@@ -526,12 +526,12 @@ uint8_t rule_align_proba_exclusion(GraphTable * gtable, uint32_t node_from , uin
         
     }   
 
-    if(cur_arr_pos == 0)  { return rule_sleep(gtable, node_from,  walker_index, sutils);} 
+    if(cur_arr_pos == 0)  { return rule_sleep(gtable, node_from,  protester_index, sutils);} 
     
     if(cur_arr_pos == 1) { 
         gtable->arrLine->next_flux[ arr_pos[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_pos[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_pos[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_pos[0]->node_index;
 
         return T_OK;
     }else{ //separate case where everyone is 0 and normal case
@@ -542,7 +542,7 @@ uint8_t rule_align_proba_exclusion(GraphTable * gtable, uint32_t node_from , uin
 
         gtable->arrLine->next_flux[ arr_pos[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_pos[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_pos[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_pos[r]->node_index;
 
         return T_OK;
         }
@@ -555,7 +555,7 @@ uint8_t rule_align_proba_exclusion(GraphTable * gtable, uint32_t node_from , uin
                 if(coeff_arr[i] >= randval){
                     gtable->arrLine->next_flux[ arr_pos[i] - gtable->arrLine->array]++;
                     gtable->wkcn->next_num[arr_pos[i]->node_index]++;
-                    gtable->warray->array[walker_index].index_entry= arr_pos[i]->node_index;
+                    gtable->warray->array[protester_index].index_entry= arr_pos[i]->node_index;
 
                     return T_OK;
                 }
@@ -565,7 +565,7 @@ uint8_t rule_align_proba_exclusion(GraphTable * gtable, uint32_t node_from , uin
     //in case of a floating point rounding error or something like that
     gtable->arrLine->next_flux[ arr_pos[cur_arr_pos-1] - gtable->arrLine->array]++;
     gtable->wkcn->next_num[arr_pos[cur_arr_pos-1]->node_index]++;
-    gtable->warray->array[walker_index].index_entry= arr_pos[cur_arr_pos-1]->node_index;
+    gtable->warray->array[protester_index].index_entry= arr_pos[cur_arr_pos-1]->node_index;
 
                     
     return T_OK;

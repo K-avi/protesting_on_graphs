@@ -1,7 +1,7 @@
 #include "tactics.h"
 #include "../misc.h"
 #include "search.h"
-#include "../graph_walkers/walker.h"
+#include "../graph_protesters/protester.h"
 
 #include "align.h"
 #include "attra.h"
@@ -101,7 +101,7 @@ static uint8_t rule_speed_crowd(GraphTable * gtable, uint32_t node_from , uint32
 }// tested ; seems ok
 
 
-uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t walker_index, SEARCH_UTILS * search_util){
+uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32_t protester_index, SEARCH_UTILS * search_util){
     /*
     chooses a rule from tactics t to use to select a node to move to
     O(c+t) where c is the complexity of the tactic chosen and t the number of tactics to choose from 
@@ -118,26 +118,26 @@ uint8_t choose_node( Tactics * t, GraphTable* gtable, uint32_t node_from, uint32
 
     if(!mv_check){   
         
-        uint32_t prev_index= gtable->warray->array[walker_index].index_entry;
-        return rule_sleep(gtable,  node_from,  walker_index, NULL);
+        uint32_t prev_index= gtable->warray->array[protester_index].index_entry;
+        return rule_sleep(gtable,  node_from,  protester_index, NULL);
 
         if(gtable->warray->array_prev)//only used when propulsion is active
-            gtable->warray->array_prev[walker_index].index_entry=prev_index;
+            gtable->warray->array_prev[protester_index].index_entry=prev_index;
     }
 
     for(uint32_t i=0; i<t->numb ; i++){
         if( uint_coeff<= t->rule_arr[i].rule_coeff){
 
-            uint32_t prev_index= gtable->warray->array[walker_index].index_entry;
+            uint32_t prev_index= gtable->warray->array[protester_index].index_entry;
 
-            failure= t->rule_arr[i].rule_function(gtable, node_from, walker_index, search_util);  
+            failure= t->rule_arr[i].rule_function(gtable, node_from, protester_index, search_util);  
             if(failure){ report_err("choose_node err1", failure); return failure;
             }
-            if(gtable->warray->array_prev+walker_index > gtable->warray->array_prev+gtable->warray->size){
+            if(gtable->warray->array_prev+protester_index > gtable->warray->array_prev+gtable->warray->size){
                  report_err("choose_node err weird", failure); return failure;
             }
            if(gtable->warray->array_prev!=NULL){
-            ((Walker*)(gtable->warray->array_prev+walker_index))->index_entry=prev_index;
+            ((protester*)(gtable->warray->array_prev+protester_index))->index_entry=prev_index;
             
             }
             return failure;

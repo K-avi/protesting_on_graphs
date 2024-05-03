@@ -149,7 +149,7 @@ uint8_t dfs_limited_nbwk(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
         *nb_sum+= gt->wkcn->cur_num[cur_node];
 
         for(uint32_t i =0 ; i < gt->entries[cur_node].neighboor_num; i++){//appends neighbors not already 
-        //seen AND with walkers to the stack
+        //seen AND with protesters to the stack
                     
             uint32_t neighbor_index = (gt->entries[cur_node].first_neighboor_ref+i)->node_index;
             //printf("%lu %lu\n",search_util->cur_sid ,search_util->sid_array[cur_node]  );
@@ -238,11 +238,11 @@ uint8_t dfs_limited_flux(GraphTable * gt , SEARCH_UTILS * search_util, uint8_t d
 
 uint8_t get_group_sizes(GraphTable * gt, SEARCH_UTILS * sutils, char* res_file){
     /*
-    creates a trace of the size and number of walkers per group in a file; 
+    creates a trace of the size and number of protesters per group in a file; 
 
     uses a dfs to do so so O(n) where n is the size of the graph
 
-    the file is formatted where the first value of each line is the number of walkers in the group 
+    the file is formatted where the first value of each line is the number of protesters in the group 
     and the second number is the size of every group ; 
 
     each couple is separated by a \n
@@ -272,7 +272,7 @@ uint8_t get_group_sizes(GraphTable * gt, SEARCH_UTILS * sutils, char* res_file){
             sutils->sid_array[start]=sutils->cur_sid;
 
             cur_gp_size = 0 ; //number of nodes in the group 
-            cur_gp_nbwk = 0 ; //number of walkers in the group
+            cur_gp_nbwk = 0 ; //number of protesters in the group
 
             while(sutils->stack.cur_in){
 
@@ -284,7 +284,7 @@ uint8_t get_group_sizes(GraphTable * gt, SEARCH_UTILS * sutils, char* res_file){
                 cur_gp_size++;
                
                 for(uint32_t i =0 ; i < gt->entries[cur_node].neighboor_num; i++){//appends neighbors not already 
-                //seen AND with walkers to the stack
+                //seen AND with protesters to the stack
                     
                     uint32_t neighbor_index = (gt->entries[cur_node].first_neighboor_ref+i)->node_index;
                   
@@ -297,7 +297,7 @@ uint8_t get_group_sizes(GraphTable * gt, SEARCH_UTILS * sutils, char* res_file){
                 }
             }
 
-            if(cur_gp_nbwk > 1){ //lonely walkers are NOT groups 
+            if(cur_gp_nbwk > 1){ //lonely protesters are NOT groups 
                 fprintf(fsearch, "%lu %lu \n", cur_gp_nbwk, cur_gp_size);
             }
         }

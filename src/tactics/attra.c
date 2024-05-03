@@ -3,7 +3,7 @@
 
 #include "misc_rules.h"
 
-uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     chooses the neighbor with the most entry and goes there 
 
@@ -47,24 +47,24 @@ uint8_t rule_attraction( GraphTable * gtable, uint32_t node_from , uint32_t walk
     }   
     
     if(cur_arr_max == 0)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(!diff) return rule_rand(gtable,  node_from, protester_index, sutils);
     if(cur_arr_max == 1) { 
         gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[0]->node_index;
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
 
         gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[r]->node_index;
     }
 
     return T_OK;
 
 }//fixed ; works
 
-uint8_t rule_attra_vision( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_attra_vision( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
     chooses the neighbor with the most entry and goes there 
 
@@ -116,30 +116,30 @@ uint8_t rule_attra_vision( GraphTable * gtable, uint32_t node_from , uint32_t wa
     }   
     
     if(cur_arr_max == 0)  { report_err( "rule_attraction no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(!diff) return rule_rand(gtable,  node_from, protester_index, sutils);
     if(cur_arr_max == 1) { 
         gtable->arrLine->next_flux[ arr_max[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[0]->node_index;
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_max;
 
         gtable->arrLine->next_flux[ arr_max[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_max[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_max[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_max[r]->node_index;
     }
 
     return T_OK;
 
 }//fixed ; works
 
-uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
-    calculates the sum of the number of walkers stored on the neighbor nodes 
+    calculates the sum of the number of protesters stored on the neighbor nodes 
     of node_from ; associates coefficient proportionnal to the number of 
-    walkers they store.
-    Generate a random number to pick a node and then moves the walker 
-    at walker_index to it
+    protesters they store.
+    Generate a random number to pick a node and then moves the protester 
+    at protester_index to it
 
     O(d(node_from)*2) kinda awful
     */
@@ -161,7 +161,7 @@ uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32
     }
 
     if(tot==0){ //selects random node if all of the neighbors are empty
-        return rule_rand(gtable, node_from, walker_index, sutils);
+        return rule_rand(gtable, node_from, protester_index, sutils);
     }
 
     //makes the choice 
@@ -174,19 +174,19 @@ uint8_t rule_attraction_proba( GraphTable * gtable , uint32_t node_from , uint32
             //moves and updates fields 
             gtable->arrLine->next_flux[ line_cur- gtable->arrLine->array]++;
             gtable->wkcn->next_num[line_cur->node_index]++;
-            gtable->warray->array[walker_index].index_entry= line_cur->node_index;
+            gtable->warray->array[protester_index].index_entry= line_cur->node_index;
 
             return T_OK;
         }
     }  
      
-    return rule_rand(gtable,node_from,walker_index, sutils);
+    return rule_rand(gtable,node_from,protester_index, sutils);
 }//tested; 
 //seems ok
 
-uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
-    chooses the neighbor with the least walkers and goes there 
+    chooses the neighbor with the least protesters and goes there 
 
     WARNING : will update the flux field of gtable 
 
@@ -228,26 +228,26 @@ uint8_t rule_repulsion( GraphTable * gtable, uint32_t node_from , uint32_t walke
     }   
     
     if(cur_arr_min == 0)  { report_err( "rule_agoraphobic no neighbors 2", MV_NONEIGHBOORS ) ; return MV_NONEIGHBOORS;} 
-    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(!diff) return rule_rand(gtable,  node_from, protester_index, sutils);
     if(cur_arr_min == 1) { 
         gtable->arrLine->next_flux[ arr_min[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_min[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_min[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_min[0]->node_index;
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_min;
 
         gtable->arrLine->next_flux[ arr_min[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_min[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_min[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_min[r]->node_index;
     }
 
     return T_OK;
 
 }//tested prolly ok
 
-uint8_t rule_agoraphobic( GraphTable * gtable, uint32_t node_from , uint32_t walker_index, SEARCH_UTILS * sutils){
+uint8_t rule_agoraphobic( GraphTable * gtable, uint32_t node_from , uint32_t protester_index, SEARCH_UTILS * sutils){
     /*
-    chooses the neighbor with the least walkers over but more than 0 walkers
+    chooses the neighbor with the least protesters over but more than 0 protesters
 
     WARNING : will update the flux field of gtable 
 
@@ -289,18 +289,18 @@ uint8_t rule_agoraphobic( GraphTable * gtable, uint32_t node_from , uint32_t wal
     }   
     
     
-    if(!diff) return rule_rand(gtable,  node_from, walker_index, sutils);
-    if(cur_arr_min == 0)  return rule_rand(gtable,  node_from, walker_index, sutils);
+    if(!diff) return rule_rand(gtable,  node_from, protester_index, sutils);
+    if(cur_arr_min == 0)  return rule_rand(gtable,  node_from, protester_index, sutils);
     if(cur_arr_min == 1) { 
         gtable->arrLine->next_flux[ arr_min[0] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_min[0]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_min[0]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_min[0]->node_index;
     }else{
         uint32_t r = (rand()%UINT32_MAX)%cur_arr_min;
 
         gtable->arrLine->next_flux[ arr_min[r] - gtable->arrLine->array]++;
         gtable->wkcn->next_num[arr_min[r]->node_index]++;
-        gtable->warray->array[walker_index].index_entry= arr_min[r]->node_index;
+        gtable->warray->array[protester_index].index_entry= arr_min[r]->node_index;
     }
 
     return T_OK;
